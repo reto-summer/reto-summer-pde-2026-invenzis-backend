@@ -30,7 +30,6 @@ public class ArceClientService {
         try {
             RssResponseDTO response = restClient.get()
                     .uri("/consultas/rss/tipo-pub/VIG/tipo-doc/C/filtro-cat/CAT/familia/3/sub-familia/10")
-                    // Aceptamos cualquier variante de XML
                     .accept(MediaType.APPLICATION_XML, MediaType.TEXT_XML, MediaType.valueOf("application/rss+xml"))
                     .retrieve()
                     .body(RssResponseDTO.class);
