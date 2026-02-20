@@ -4,7 +4,8 @@
     <meta charset="UTF-8"/>
 </head>
 <body>
-<h1><span th:text="${items.size()}"></span> Licitaciones ARCE del día <span th:text="${fecha}"></span></h1>
+<h1 th:if="${#lists.isEmpty(items)}">No hay nuevas licitaciones ARCE para el día <span th:text="${fecha}"></span></h1>
+<h1 th:unless="${#lists.isEmpty(items)}"><span th:text="${items.size()}"></span> Licitaciones ARCE del día <span th:text="${fecha}"></span></h1>
 
     <p th:if="${#lists.isEmpty(items)}">No se encontraron licitaciones para hoy.</p>
 
