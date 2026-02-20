@@ -3,30 +3,34 @@ package com.example.reto_backend_febrero2026.licitacion;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import com.example.reto_backend_febrero2026.clase.ClaseModel;
+import com.example.reto_backend_febrero2026.familia.FamiliaModel;
+import com.example.reto_backend_febrero2026.subclase.SubclaseModel;
+import com.example.reto_backend_febrero2026.subfamilia.SubfamiliaModel;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class LicitacionModel {
 
-    @JsonProperty(“id_licitacion”)
+    @JsonProperty("id_licitacion")
     private Integer idLicitacion;
 
     private String title;
     private String description;
 
-    @JsonProperty(“fecha_publicacion”)
-    @JsonFormat(pattern = “yyyy-MM-dd”)
+    @JsonProperty("fecha_publicacion")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate fechaPublicacion;
 
-    @JsonProperty(“fecha_cierre”)
-    @JsonFormat(pattern = “yyyy-MM-dd’T’HH:mm:ss”)
+    @JsonProperty("fecha_cierre")
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime fechaCierre;
 
     private String link;
 
     private FamiliaModel familia;
     private SubfamiliaModel subfamilia;
-    private ClaseSimpleModel clase;
+    private ClaseModel clase;
     private SubclaseModel subclase;
 
     public LicitacionModel() {
@@ -36,7 +40,7 @@ public class LicitacionModel {
                             LocalDate fechaPublicacion, LocalDateTime fechaCierre,
                             String link, FamiliaModel familia,
                             SubfamiliaModel subfamilia,
-                            ClaseSimpleModel clase,
+                            ClaseModel clase,
                             SubclaseModel subclase) {
         this.idLicitacion = idLicitacion;
         this.title = title;
@@ -114,11 +118,11 @@ public class LicitacionModel {
         this.subfamilia = subfamilia;
     }
 
-    public ClaseSimpleModel getClase() {
+    public ClaseModel getClase() {
         return clase;
     }
 
-    public void setClase(ClaseSimpleModel clase) {
+    public void setClase(ClaseModel clase) {
         this.clase = clase;
     }
 
