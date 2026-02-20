@@ -13,6 +13,7 @@ import org.thymeleaf.context.Context;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -20,6 +21,7 @@ import java.util.Locale;
 public class MailService {
 
     private static final Logger log = LoggerFactory.getLogger(MailService.class);
+    private static final String EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@(.+)$";
 
     private final JavaMailSender mailSender;
     private final TemplateEngine templateEngine;
@@ -35,6 +37,20 @@ public class MailService {
         this.templateEngine = templateEngine;
     }
 
+    private String[] parseEmailList(String emailString) {
+        if (emailString == null || emailString.trim().isEmpty()) {
+            log.warn("Lista de emails vacía");
+            return new String[0];
+        }
+
+        return Arrays.stream(emailString.split(","))
+                .map(String::trim)
+                .filter(email -> !email.isEmpty())
+                .filter(email -> email.matches(EMAIL_REGEX))
+                .toArray(String[]::new);
+    }
+
+
     public void sendLicitacionesEmail(List<LicitacionModel> items) {
         String fecha = LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy", new Locale("es", "UY")));
 
@@ -44,16 +60,24 @@ public class MailService {
 
         String htmlContent = templateEngine.process("email/licitaciones", ctx);
 
+        // Parsear emails desde application.properties
+        String[] recipients = parseEmailList(mailTo);
+
+        if (recipients.length == 0) {
+            log.error("No hay destinatarios válidos configurados en mail.to");
+            return;
+        }
+
         try {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
             helper.setFrom(mailFrom);
-            helper.setTo(mailTo);
+            helper.setTo(recipients);
             helper.setSubject(items.size() + " Licitaciones ARCE - " + fecha);
             helper.setText(htmlContent, true);
 
             mailSender.send(message);
-            log.info("Email de licitaciones enviado a {} con {} ítems", mailTo, items.size());
+            log.info("Email de licitaciones enviado a {} destinatarios con {} ítems", recipients.length, items.size());
         } catch (Exception e) {
             log.error("Error al enviar email de licitaciones: {}", e.getMessage(), e);
         }
