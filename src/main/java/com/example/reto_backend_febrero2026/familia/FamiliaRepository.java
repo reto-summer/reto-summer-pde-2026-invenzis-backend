@@ -1,4 +1,9 @@
 package com.example.reto_backend_febrero2026.familia;
 
-public interface FamiliaRepository {
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface FamiliaRepository extends JpaRepository<FamiliaModel, Integer> {
+
 }
