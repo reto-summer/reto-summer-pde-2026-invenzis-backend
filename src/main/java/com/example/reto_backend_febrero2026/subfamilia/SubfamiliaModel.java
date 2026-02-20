@@ -1,98 +1,114 @@
 package com.example.reto_backend_febrero2026.subfamilia;
 
-import java.util.Arrays;
+import com.example.reto_backend_febrero2026.familia.FamiliaModel;
+import jakarta.persistence.*;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import java.io.Serializable;
+import java.time.LocalDate;
+import java.util.Objects;
 
-public enum SubfamiliaModel {
-	INFRAESTRUCTURA_TECNOLOGICA(10, 43, "INFRAESTRUCTURA TECNOLOGICA"),
-	SERVICIOS_TECNOLOGIAS_INFORMACION_COMUNICACION(3, 10, "SERVICIOS DE TECNOLOGIAS DE LA INFORMACION Y COMUNICACION"),
-	PRODUCTOS_USO_EXCLUSIVO_ANCAP(12, 2, "PRODUCTOS DE USO EXCLUSIVO DE ANCAP, SIN CRITERIO ARCE"),
-	PRODUCTOS_USO_EXCLUSIVO_ANTEL(12, 3, "PRODUCTOS DE USO EXCLUSIVO DE ANTEL, SIN CRITERIO ARCE"),
-	SERVICIOS_PERSONALES(1, 1, "SERVICIOS PERSONALES"),
-	OTROS_GASTOS(11, 1, "OTROS GASTOS"),
-	PRODUCTOS_USO_EXCLUSIVO_UTE(12, 1, "PRODUCTOS DE USO EXCLUSIVOS DE UTE, SIN CRITERIOS ARCE"),
-	ALIMENTOS_PRODUCTOS_AGROPECUARIOS(2, 1, "ALIMENTOS Y PRODUCTOS AGROPECUARIOS, FORESTALES Y MARITIMOS"),
-	SERVICIOS_BASICOS(3, 1, "SERVICIOS BASICOS"),
-	MINERALES(2, 2, "MINERALES"),
-	PRODUCTOS_TEXTILES_VESTIR_CUERO(2, 3, "PRODUCTOS TEXTILES, DE VESTIR Y CUERO"),
-	PRODUCTOS_PAPEL_LIBROS_DOCUMENTOS(2, 4, "PRODUCTOS DE PAPEL, LIBROS, DOCUMENTOS  IMPRESOS Y DIGITALES"),
-	PRODUCTOS_ENERGETICOS(2, 5, "PRODUCTOS ENERGETICOS"),
-	PRODUCTOS_QUIMICOS_EXCEPTO_MEDICAMENTOS(2, 6, "PROD. QUIMICOS Y CONEXOS EXCEPTO MEDIC.Y ANTISEP. USO HUMANO"),
-	PRODUCTOS_MINERALES_NO_METALICOS_MADERA(2, 7, "PRODUCTOS MINERALES NO METALICOS Y DE MADERA"),
-	PRODUCTOS_METALICOS(2, 8, "PRODUCTOS METALICOS"),
-	OTROS_MATERIALES_SUMINISTROS(2, 9, "OTROS MATERIALES Y SUMINISTROS"),
-	PUBLICIDAD_IMPRESIONES_ENCUADERNACIONES(3, 2, "PUBLICIDAD, IMPRESIONES Y ENCUADERNACIONES"),
-	MAQUINARIAS_EQUIPOS_PRODUCCION(4, 1, "MAQUINARIAS Y EQUIPOS DE PRODUCCION"),
-	MAQUINAS_EQUIPOS_OFICINA(4, 2, "MAQUINAS Y EQUIPOS DE OFICINA Y SIMILARES"),
-	PASAJES_VIATICOS_GASTOS_TRASLADO(3, 3, "PASAJES, VIATICOS Y OTROS GASTOS DE TRASLADO"),
-	EQUIPOS_MEDICOS_SANITARIOS(4, 3, "EQUIPOS MEDICOS, SANITARIOS, ODONTOLOGICOS Y CIENTIFICOS"),
-	TRANSPORTE_ALMACENAJE(3, 4, "TRANSPORTE Y ALMACENAJE"),
-	EQUIPOS_EDUCACIONALES_CULTURALES(4, 4, "EQUIPOS EDUCACIONALES, CULTURALES Y RECREATIVOS"),
-	ARRENDAMIENTOS(3, 5, "ARRENDAMIENTOS"),
-	EQUIPOS_TRANSPORTE(4, 5, "EQUIPOS DE TRANSPORTE"),
-	EQUIPOS_COMUNICACIONES_EXCEPTO_TELEFONIA(4, 6, "EQUIPOS DE COMUNICACIONES EXCEPTO TELEFONIA"),
-	MOTORES_PARTES_REEMPLAZO(4, 7, "MOTORES Y PARTES PARA REEMPLAZO"),
-	MOBILIARIO(4, 8, "MOBILIARIO"),
-	OTRAS_MAQUINAS_EQUIPOS_MOBILIARIOS(4, 9, "OTRAS MAQUINAS, EQUIPOS Y MOBILIARIOS NUEVOS"),
-	TIERRAS(5, 1, "TIERRAS"),
-	EDIFICIOS(5, 2, "EDIFICIOS"),
-	MAQUINAS_EQUIPOS_MOBILIARIO_EXISTENTE(5, 3, "MAQUINAS, EQUIPOS Y MOBILIARIO EXISTENTE"),
-	ACTIVOS_FINANCIEROS(5, 5, "ACTIVOS FINANCIEROS"),
-	VIAS_COMUNICACION(6, 1, "VIAS DE COMUNICACION"),
-	EDIFICACIONES(6, 2, "EDIFICACIONES"),
-	OBRAS_HIDRAULICAS_ELECTRICAS(6, 3, "OBRAS HIDRAULICAS, HIDROELECTRICAS, ELECTRICAS Y SANITARIAS"),
-	OBRAS_URBANISTICAS(6, 4, "OBRAS URBANISTICAS"),
-	INSTALACIONES_TRANSMISION_DISTRIBUCION(6, 5, "INSTALACIONES DE TRASMISION Y DISTRIBUCION"),
-	MEJORAS_TIERRAS_PLANTACIONES(6, 6, "MEJORAS DE TIERRAS Y PLANTACIONES"),
-	PERFORACIONES_EXPLORACIONES_MINERAS(6, 7, "PERFORACIONES Y EXPLORACIONES MINERAS"),
-	REPARACIONES_MAYORES_EXTRAORDINARIAS(6, 8, "REPARACIONES MAYORES Y EXTRAORDINARIAS"),
-	TRIBUTOS_MULTAS_SEGUROS_COMISIONES(3, 6, "TRIBUTOS, MULTAS, RECARGOS, SEGUROS Y COMISIONES"),
-	SERVICIOS_MANTENIMIENTO_REPARACIONES_MENORES(3, 7, "SERVICIOS CONTRATADOS PARA MANTENIM.Y REPARACIONES MENORES"),
-	SERVICIOS_PROFESIONALES_CONTRATADOS(3, 8, "SERVICIOS PROFESIONALES CONTRATADOS"),
-	OTROS_SERVICIOS_CONTRATADOS(3, 9, "OTROS SERVICIOS CONTRATADOS"),
-	SEMOVIENTES(5, 4, "SEMOVIENTES"),
-	INSTALACION_SERVICIOS_LOCALES(6, 9, "INSTALACION DE SERVICIOS LOCALES"),
-	PRODUCTOS_USO_MARINO(2, 10, "PRODUCTOS DE USO MARINO"),
-	REPUESTOS_ACCESORIOS(2, 12, "REPUESTOS Y ACCESORIOS"),
-	PRODUCTOS_QUIMICOS_MEDICAMENTOS_USO_HUMANO(2, 13, "PROD. QUIM. Y CONEXOS-MEDICAMENTOS Y ANTISEPTICOS USO HUMANO"),
-	OTRAS_TIERRAS_EDIFICIOS_BIENES_USO(5, 6, "OTRAS TIERRAS, EDIFICIOS Y OTROS BIENES DE USO");
+@Entity
+@Table(name = "subflias")
+@IdClass(SubfamiliaModel.SubfamiliaId.class)
+public class SubfamiliaModel {
 
-	private final int famiCod;
-	private final int cod;
-	private final String description;
+    @Id
+    @Column(name = "fami_cod")
+    private Integer famiCod;
 
-	SubfamiliaModel(int famiCod, int cod, String description) {
-		this.famiCod = famiCod;
-		this.cod = cod;
-		this.description = description;
-	}
+    @Id
+    @Column(name = "cod")
+    private Integer cod;
 
-	@JsonProperty("fami_cod")
-	public int getFamiCod() {
-		return famiCod;
-	}
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "fami_cod", insertable = false, updatable = false)
+    private FamiliaModel familia;
 
-	public int getCod() {
-		return cod;
-	}
+    @Column(name = "descripcion", nullable = false)
+    private String descripcion;
 
-	public String getDescription() {
-		return description;
-	}
+    @Column(name = "fecha_baja")
+    private LocalDate fechaBaja;
 
-	public static SubfamiliaModel findByFamiCodAndCod(int famiCod, int cod) {
-		for (SubfamiliaModel subfamilia : values()) {
-			if (subfamilia.famiCod == famiCod && subfamilia.cod == cod) {
-				return subfamilia;
-			}
-		}
-		throw new IllegalArgumentException("No Subfamilia found with famiCod: " + famiCod + " and cod: " + cod);
-	}
+    @Column(name = "motivo_baja")
+    private String motivoBaja;
 
-	public static SubfamiliaModel[] findByFamiCod(int famiCod) {
-		return Arrays.stream(values())
-				.filter(subfamilia -> subfamilia.famiCod == famiCod)
-				.toArray(SubfamiliaModel[]::new);
-	}
+    public SubfamiliaModel() {}
+
+    public SubfamiliaModel(Integer famiCod, Integer cod, String descripcion) {
+        this.famiCod = famiCod;
+        this.cod = cod;
+        this.descripcion = descripcion;
+    }
+
+    public Integer getFamiCod() {
+        return famiCod;
+    }
+
+    public void setFamiCod(Integer famiCod) {
+        this.famiCod = famiCod;
+    }
+
+    public Integer getCod() {
+        return cod;
+    }
+
+    public void setCod(Integer cod) {
+        this.cod = cod;
+    }
+
+    public FamiliaModel getFamilia() {
+        return familia;
+    }
+
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
+
+    public LocalDate getFechaBaja() {
+        return fechaBaja;
+    }
+
+    public void setFechaBaja(LocalDate fechaBaja) {
+        this.fechaBaja = fechaBaja;
+    }
+
+    public String getMotivoBaja() {
+        return motivoBaja;
+    }
+
+    public void setMotivoBaja(String motivoBaja) {
+        this.motivoBaja = motivoBaja;
+    }
+
+    public static class SubfamiliaId implements Serializable {
+
+        private Integer famiCod;
+        private Integer cod;
+
+        public SubfamiliaId() {}
+
+        public SubfamiliaId(Integer famiCod, Integer cod) {
+            this.famiCod = famiCod;
+            this.cod = cod;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof SubfamiliaId)) return false;
+            SubfamiliaId that = (SubfamiliaId) o;
+            return Objects.equals(famiCod, that.famiCod) &&
+                   Objects.equals(cod, that.cod);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(famiCod, cod);
+        }
+    }
 }
