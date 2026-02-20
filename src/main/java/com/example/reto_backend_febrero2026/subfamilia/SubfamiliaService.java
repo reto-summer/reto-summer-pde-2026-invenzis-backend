@@ -21,14 +21,9 @@ public class SubfamiliaService implements ISubfamiliaService {
     @Override
     public SubfamiliaModel findById(Integer famiCod, Integer cod) {
 
-        SubfamiliaModel.SubfamiliaId id =
-                new SubfamiliaModel.SubfamiliaId(famiCod, cod);
+        SubfamiliaModel.SubfamiliaId id = new SubfamiliaModel.SubfamiliaId(famiCod, cod);
 
-        return subfamiliaRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException(
-                        "Subfamilia no encontrada con famiCod: "
-                                + famiCod + " y cod: " + cod
-                ));
+        return subfamiliaRepository.findById(id).orElseThrow(() -> new RuntimeException("Subfamilia no encontrada con famiCod: " + famiCod + " y cod: " + cod));
     }
 
     @Override
