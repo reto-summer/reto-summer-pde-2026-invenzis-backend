@@ -2,10 +2,10 @@ package com.example.reto_backend_febrero2026.familia;
 
 import org.springframework.stereotype.Service;
 
-import java.utils.List;
+import java.util.List;
 
 @Service
-public class FamiliaService  implements IFamiliaService {
+public class FamiliaService implements IFamiliaService {
     private final FamiliaRepository familiaRepository;
 
     public FamiliaService(FamiliaRepository familiaRepository){
@@ -13,7 +13,12 @@ public class FamiliaService  implements IFamiliaService {
     }
 
     @Override
+    public List<FamiliaModel> findAll() {
+        return familiaRepository.findAll();
+    }
+
+    @Override
     public FamiliaModel findById(Integer cod) {
-        return familiaRepository.findById(cod).orElseThrow(() -> new RunTimeException("Familia no encontrada por código: " + cod));
+        return familiaRepository.findById(cod).orElseThrow(() -> new RuntimeException("Familia no encontrada por código: " + cod));
     }
 }
