@@ -2,10 +2,8 @@ package com.example.reto_backend_febrero2026.licitacion.controller;
 
 import com.example.reto_backend_febrero2026.licitacion.dto.LicitacionModelDTO;
 import com.example.reto_backend_febrero2026.licitacion.service.interfaces.ILicitacionService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 
@@ -18,12 +16,18 @@ import java.time.LocalDateTime;
 
         @Autowired
         private ILicitacionService tenderService;
-        /*
+
         @GetMapping("/ById/{id}")
         public ResponseEntity<LicitacionModelDTO> getTenderById(@PathVariable int id) {
             LicitacionModelDTO tender = tenderService.getTenderById(id);
             return ResponseEntity.ok(tender);
         }
+
+        @PostMapping("/save") // TESTING LUEGO VER SI DEJAR O BORRAR
+        public ResponseEntity<LicitacionModelDTO> saveTender(@RequestBody LicitacionModelDTO tenderDTO) {
+            return ResponseEntity.ok(tenderService.saveTender(tenderDTO));
+        }
+        /*
 
         @GetMapping("/title/{titulo}")
         public ResponseEntity<LicitacionModelDTO> getTenderByTitle(@PathVariable String titulo) {

@@ -27,6 +27,15 @@ public class LicitacionService implements ILicitacionService {
         LicitacionModel tender = tenderRepository.getTenderById(id);
         return tenderMapper.tenderToTenderDTO(tender);
     }
+
+    @Override
+    public LicitacionModelDTO saveTender(LicitacionModelDTO dto) {
+
+        LicitacionModel tender = tenderMapper.tenderDTOtoTender(dto);
+        tenderRepository.save(tender);
+        return tenderMapper.tenderToTenderDTO(tender);
+    }
+
     /*@Override
     public LicitacionModelDTO getTenderByTitle(String titulo){
         LicitacionModel tender = tenderRepository.getTenderByTitle(titulo);

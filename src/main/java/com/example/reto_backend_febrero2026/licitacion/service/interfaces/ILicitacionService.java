@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 
 public interface ILicitacionService {
     LicitacionModelDTO getTenderById(int id);
+    LicitacionModelDTO saveTender(LicitacionModelDTO dto);
     //LicitacionModelDTO getTenderByTitle(String titulo);
     //LicitacionModelDTO getTenderByfecha_publicacion(LocalDate fecha);
     //LicitacionModelDTO getTenderByfecha_cierre(LocalDateTime fecha);
