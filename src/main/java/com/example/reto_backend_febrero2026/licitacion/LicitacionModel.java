@@ -2,6 +2,7 @@ package com.example.reto_backend_febrero2026.licitacion;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 import com.example.reto_backend_febrero2026.clase.ClaseModel;
 import com.example.reto_backend_febrero2026.familia.FamiliaModel;
@@ -9,9 +10,14 @@ import com.example.reto_backend_febrero2026.subclase.SubclaseModel;
 import com.example.reto_backend_febrero2026.subfamilia.SubfamiliaModel;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.*;
 
+@Entity
+@Table(name = "licitacion")
 public class LicitacionModel {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // ver si hacer incremental o no
     @JsonProperty("id_licitacion")
     private Integer idLicitacion;
 
@@ -19,29 +25,33 @@ public class LicitacionModel {
     private String description;
 
     @JsonProperty("fecha_publicacion")
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    private LocalDate fechaPublicacion;
+    @JsonFormat(pattern = "EEE, dd MMM yyyy HH:mm:ss Z", locale = "en")
+    private OffsetDateTime fechaPublicacion;
 
     @JsonProperty("fecha_cierre")
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    @JsonFormat(pattern = "dd/MM/yyyy HH:mm")
     private LocalDateTime fechaCierre;
 
     private String link;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "familia_cod", referencedColumnName = "cod")
     private FamiliaModel familia;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumns({
+            @JoinColumn(name = "subfami_fami_cod", referencedColumnName = "fami_cod"),
+            @JoinColumn(name = "subfami_cod", referencedColumnName = "cod")
+    })
     private SubfamiliaModel subfamilia;
-    private ClaseModel clase;
-    private SubclaseModel subclase;
 
     public LicitacionModel() {
     }
 
     public LicitacionModel(Integer idLicitacion, String title, String description,
-                            LocalDate fechaPublicacion, LocalDateTime fechaCierre,
+                           OffsetDateTime fechaPublicacion, LocalDateTime fechaCierre,
                             String link, FamiliaModel familia,
-                            SubfamiliaModel subfamilia,
-                            ClaseModel clase,
-                            SubclaseModel subclase) {
+                            SubfamiliaModel subfamilia) {
         this.idLicitacion = idLicitacion;
         this.title = title;
         this.description = description;
@@ -50,8 +60,6 @@ public class LicitacionModel {
         this.link = link;
         this.familia = familia;
         this.subfamilia = subfamilia;
-        this.clase = clase;
-        this.subclase = subclase;
     }
 
     public Integer getIdLicitacion() {
@@ -74,11 +82,11 @@ public class LicitacionModel {
         return description;
     }
 
-    public LocalDate getFechaPublicacion() {
+    public OffsetDateTime getFechaPublicacion() {
         return fechaPublicacion;
     }
 
-    public void setFechaPublicacion(LocalDate fechaPublicacion) {
+    public void setFechaPublicacion(OffsetDateTime fechaPublicacion) {
         this.fechaPublicacion = fechaPublicacion;
     }
 
@@ -116,21 +124,5 @@ public class LicitacionModel {
 
     public void setSubfamilia(SubfamiliaModel subfamilia) {
         this.subfamilia = subfamilia;
-    }
-
-    public ClaseModel getClase() {
-        return clase;
-    }
-
-    public void setClase(ClaseModel clase) {
-        this.clase = clase;
-    }
-
-    public SubclaseModel getSubclase() {
-        return subclase;
-    }
-
-    public void setSubclase(SubclaseModel subclase) {
-        this.subclase = subclase;
     }
 }

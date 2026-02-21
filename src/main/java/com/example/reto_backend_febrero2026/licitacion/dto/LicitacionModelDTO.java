@@ -2,6 +2,7 @@ package com.example.reto_backend_febrero2026.licitacion.dto;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 import com.example.reto_backend_febrero2026.clase.ClaseModel;
 import com.example.reto_backend_febrero2026.familia.FamiliaModel;
@@ -9,6 +10,7 @@ import com.example.reto_backend_febrero2026.subclase.SubclaseModel;
 import com.example.reto_backend_febrero2026.subfamilia.SubfamiliaModel;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.*;
 
 public class LicitacionModelDTO {
 
@@ -19,29 +21,24 @@ public class LicitacionModelDTO {
     private String description;
 
     @JsonProperty("fecha_publicacion")
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    private LocalDate fechaPublicacion;
+    private OffsetDateTime fechaPublicacion;
 
     @JsonProperty("fecha_cierre")
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime fechaCierre;
 
     private String link;
 
     private FamiliaModel familia;
+
     private SubfamiliaModel subfamilia;
-    private ClaseModel clase;
-    private SubclaseModel subclase;
 
     public LicitacionModelDTO() {
     }
 
     public LicitacionModelDTO(Integer idLicitacion, String title, String description,
-                              LocalDate fechaPublicacion, LocalDateTime fechaCierre,
-                              String link, FamiliaModel familia,
-                              SubfamiliaModel subfamilia,
-                              ClaseModel clase,
-                              SubclaseModel subclase) {
+                              OffsetDateTime fechaPublicacion, LocalDateTime fechaCierre,
+                           String link, FamiliaModel familia,
+                           SubfamiliaModel subfamilia) {
         this.idLicitacion = idLicitacion;
         this.title = title;
         this.description = description;
@@ -50,8 +47,6 @@ public class LicitacionModelDTO {
         this.link = link;
         this.familia = familia;
         this.subfamilia = subfamilia;
-        this.clase = clase;
-        this.subclase = subclase;
     }
 
     public Integer getIdLicitacion() {
@@ -74,11 +69,11 @@ public class LicitacionModelDTO {
         return description;
     }
 
-    public LocalDate getFechaPublicacion() {
+    public OffsetDateTime getFechaPublicacion() {
         return fechaPublicacion;
     }
 
-    public void setFechaPublicacion(LocalDate fechaPublicacion) {
+    public void setFechaPublicacion(OffsetDateTime fechaPublicacion) {
         this.fechaPublicacion = fechaPublicacion;
     }
 
@@ -116,21 +111,5 @@ public class LicitacionModelDTO {
 
     public void setSubfamilia(SubfamiliaModel subfamilia) {
         this.subfamilia = subfamilia;
-    }
-
-    public ClaseModel getClase() {
-        return clase;
-    }
-
-    public void setClase(ClaseModel clase) {
-        this.clase = clase;
-    }
-
-    public SubclaseModel getSubclase() {
-        return subclase;
-    }
-
-    public void setSubclase(SubclaseModel subclase) {
-        this.subclase = subclase;
     }
 }
