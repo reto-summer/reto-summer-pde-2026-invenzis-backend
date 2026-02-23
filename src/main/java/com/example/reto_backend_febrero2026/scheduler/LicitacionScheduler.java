@@ -23,7 +23,7 @@ public class LicitacionScheduler {
         this.mailService = mailService;
     }
 
-    @Scheduled(cron = "0 0 10 * * *")
+    @Scheduled(cron = "0 * * * * *")
     public void enviarResumenDiario() {
         log.info("Iniciando envío diario de licitaciones ARCE");
         List<LicitacionItemRecord> items = arceClientService.obtenerLicitaciones();
