@@ -13,16 +13,12 @@ public class FamiliaModel {
     @Column(name = "descripcion", nullable = false, length = 255)
     private String descripcion;
 
-    @Column(name = "comprable", nullable = false, length = 1)
-    private String comprable; // 'S' o 'N'
-
     public FamiliaModel() {
     }
 
-    public FamiliaModel(Integer cod, String descripcion, String comprable) {
+    public FamiliaModel(Integer cod, String descripcion) {
         this.cod = cod;
         this.descripcion = descripcion;
-        this.comprable = comprable;
     }
 
     public Integer getCod() {
@@ -41,11 +37,4 @@ public class FamiliaModel {
         this.descripcion = descripcion;
     }
 
-    public String getComprable() {
-        return comprable;
-    }
-
-    public void setComprable(String comprable) {
-        this.comprable = comprable;
-    }
 }

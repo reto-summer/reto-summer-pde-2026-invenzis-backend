@@ -27,12 +27,6 @@ public class SubfamiliaModel {
     @Column(name = "descripcion", nullable = false)
     private String descripcion;
 
-    @Column(name = "fecha_baja")
-    private LocalDate fechaBaja;
-
-    @Column(name = "motivo_baja")
-    private String motivoBaja;
-
     public SubfamiliaModel() {}
 
     public SubfamiliaModel(Integer famiCod, Integer cod, String descripcion) {
@@ -69,21 +63,6 @@ public class SubfamiliaModel {
         this.descripcion = descripcion;
     }
 
-    public LocalDate getFechaBaja() {
-        return fechaBaja;
-    }
-
-    public void setFechaBaja(LocalDate fechaBaja) {
-        this.fechaBaja = fechaBaja;
-    }
-
-    public String getMotivoBaja() {
-        return motivoBaja;
-    }
-
-    public void setMotivoBaja(String motivoBaja) {
-        this.motivoBaja = motivoBaja;
-    }
 
     public static class SubfamiliaId implements Serializable {
 

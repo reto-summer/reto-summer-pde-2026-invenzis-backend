@@ -1,5 +1,6 @@
 package com.example.reto_backend_febrero2026.service;
 
+import com.example.reto_backend_febrero2026.audit.Auditable;
 import com.example.reto_backend_febrero2026.integration.servlet.dto.LicitacionItemRecord;
 import jakarta.mail.internet.MimeMessage;
 import org.slf4j.Logger;
@@ -19,7 +20,6 @@ import java.util.Locale;
 
 @Service
 public class MailService {
-
 
     private static final Logger log = LoggerFactory.getLogger(MailService.class);
     private static final String EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@(.+)$";
@@ -51,13 +51,9 @@ public class MailService {
                 .toArray(String[]::new);
     }
 
-
-<<<<<<< HEAD
+    @Auditable(module = "EMAIL_SERVICE", action = "SEND_MAIL")
     public void sendLicitacionesEmail(List<LicitacionItemRecord> items) {
-=======
-    public void sendLicitacionesEmail(List<LicitacionModel> items) {
-        List<LicitacionModel> safeItems = items == null ? List.of() : items;
->>>>>>> 9759ba4581349b8e81d2d5f77a0ea6983407f3a8
+        List<LicitacionItemRecord> safeItems = items == null ? List.of() : items;
         String fecha = LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy", new Locale("es", "UY")));
 
         Context ctx = new Context(new Locale("es", "UY"));
@@ -66,7 +62,6 @@ public class MailService {
 
         String htmlContent = templateEngine.process("email/licitaciones", ctx);
 
-        // Parsear emails desde application.properties
         String[] recipients = parseEmailList(mailTo);
 
         if (recipients.length == 0) {
@@ -89,6 +84,7 @@ public class MailService {
             log.info("Email de licitaciones enviado a {} destinatarios con {} ítems", recipients.length, safeItems.size());
         } catch (Exception e) {
             log.error("Error al enviar email de licitaciones: {}", e.getMessage(), e);
+            throw new RuntimeException("ERROR en envío de mail: " + e);
         }
     }
 }
