@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 
 import com.example.reto_backend_febrero2026.familia.FamiliaModel;
+import com.example.reto_backend_febrero2026.subfamilia.SubfamiliaModel;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
@@ -13,11 +14,11 @@ import jakarta.persistence.*;
 public class LicitacionModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // ver si hacer incremental o no
-        @JsonProperty("id_licitacion")
+    @JsonProperty("id_licitacion")
     private Integer idLicitacion;
-
+    @Column(columnDefinition = "TEXT")
     private String title;
+    @Column(columnDefinition = "TEXT")
     private String description;
 
     @JsonProperty("fecha_publicacion")
@@ -33,6 +34,12 @@ public class LicitacionModel {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "familia_cod", referencedColumnName = "cod")
     private FamiliaModel familia;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumns({
+            @JoinColumn(name = "subfami_fami_cod", referencedColumnName = "fami_cod"),
+            @JoinColumn(name = "subfami_cod", referencedColumnName = "cod")
+    })
     private SubfamiliaModel subfamilia;
 
     public LicitacionModel() {
@@ -41,7 +48,7 @@ public class LicitacionModel {
     public LicitacionModel(Integer idLicitacion, String title, String description,
                            OffsetDateTime fechaPublicacion, LocalDateTime fechaCierre,
                             String link, FamiliaModel familia,
-                            com.example.reto_backend_febrero2026.subfamilia.SubfamiliaModel subfamilia) {
+                            SubfamiliaModel subfamilia) {
         this.idLicitacion = idLicitacion;
         this.title = title;
         this.description = description;
@@ -108,11 +115,11 @@ public class LicitacionModel {
         this.familia = familia;
     }
 
-    public com.example.reto_backend_febrero2026.subfamilia.SubfamiliaModel getSubfamilia() {
+    public SubfamiliaModel getSubfamilia() {
         return subfamilia;
     }
 
-    public void setSubfamilia(com.example.reto_backend_febrero2026.subfamilia.SubfamiliaModel subfamilia) {
+    public void setSubfamilia(SubfamiliaModel subfamilia) {
         this.subfamilia = subfamilia;
     }
 }

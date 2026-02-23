@@ -48,7 +48,6 @@ public class FamiliaRepository implements IFamiliaRepository {
 
     @Override
     public FamiliaModel save(FamiliaModel subfamilia) {
-        // Si el código ya existe -> update; si no -> insert.
         String checkSql = "SELECT COUNT(1) FROM familias WHERE cod = ?";
         Integer count = jdbcTemplate.queryForObject(checkSql, Integer.class, subfamilia.getCod());
         if (count != null && count > 0) {

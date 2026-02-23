@@ -22,16 +22,17 @@ import java.time.LocalDateTime;
             LicitacionModelDTO tender = tenderService.getTenderById(id);
             return ResponseEntity.ok(tender);
         }
-        /*
-        @PostMapping("/save") // TESTING
-        public ResponseEntity<LicitacionModelDTO> saveTender(@RequestBody LicitacionModelDTO tenderDTO) {
-            return ResponseEntity.ok(tenderService.saveTender(tenderDTO));
-        }
 
         @GetMapping("/title/{titulo}")
         public ResponseEntity<LicitacionModelDTO> getTenderByTitle(@PathVariable String titulo) {
             LicitacionModelDTO tender = tenderService.getTenderByTitle(titulo);
             return ResponseEntity.ok(tender);
+        }
+
+        /*
+        @PostMapping("/save") // TESTING
+        public ResponseEntity<LicitacionModelDTO> saveTender(@RequestBody LicitacionModelDTO tenderDTO) {
+            return ResponseEntity.ok(tenderService.saveTender(tenderDTO));
         }
 
         @GetMapping("/fecha_publicacion/{YYYY-MM-DD}")
