@@ -30,11 +30,6 @@ public class SubfamiliaRepository {
                     s.setDescripcion(rs.getString("descripcion"));
 
                     Date fechaBaja = rs.getDate("fecha_baja");
-                    if (fechaBaja != null) {
-                        s.setFechaBaja(fechaBaja.toLocalDate());
-                    }
-
-                    s.setMotivoBaja(rs.getString("motivo_baja"));
 
                     return s;
                 }
@@ -100,8 +95,6 @@ public class SubfamiliaRepository {
             jdbcTemplate.update(
                     updateSql,
                     subFamilia.getDescripcion(),
-                    subFamilia.getFechaBaja(),
-                    subFamilia.getMotivoBaja(),
                     subFamilia.getFamiCod(),
                     subFamilia.getCod()
             );
@@ -117,9 +110,7 @@ public class SubfamiliaRepository {
                     insertSql,
                     subFamilia.getFamiCod(),
                     subFamilia.getCod(),
-                    subFamilia.getDescripcion(),
-                    subFamilia.getFechaBaja(),
-                    subFamilia.getMotivoBaja()
+                    subFamilia.getDescripcion()
             );
         }
         return subFamilia;
