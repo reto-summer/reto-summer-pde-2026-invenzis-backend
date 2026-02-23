@@ -5,6 +5,7 @@ import com.example.reto_backend_febrero2026.integration.servlet.dto.LicitacionIt
 import jakarta.mail.internet.MimeMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -27,6 +28,9 @@ public class MailService {
 
     private final JavaMailSender mailSender;
     private final TemplateEngine templateEngine;
+
+    @Autowired(required = false)
+    private MailRepository mailRepository;
 
     @Value("${mail.to}")
     private String mailTo;
@@ -51,6 +55,23 @@ public class MailService {
                 .filter(email -> email.matches(EMAIL_REGEX))
                 .toArray(String[]::new);
     }
+    
+    private String[] getEmailRecipients() {
+        if (mailRepository != null) {
+            try {
+                List<String> emailsFromDb = mailRepository.findAllActiveEmails();
+                if (!emailsFromDb.isEmpty()) {
+                    log.info("Usando {} emails de la base de datos", emailsFromDb.size());
+                    return emailsFromDb.toArray(new String[0]);
+                }
+            } catch (Exception e) {
+                log.warn("Error al obtener emails de la base de datos, usando fallback de properties", e);
+            }
+        }
+        
+        log.info("Usando emails de application.properties");
+        return parseEmailList(mailTo);
+    }
 
     @Async
     @Auditable(module = "EMAIL_SERVICE", action = "SEND_MAIL")
@@ -64,10 +85,10 @@ public class MailService {
 
         String htmlContent = templateEngine.process("email/licitaciones", ctx);
 
-        String[] recipients = parseEmailList(mailTo);
+        String[] recipients = getEmailRecipients();
 
         if (recipients.length == 0) {
-            log.error("No hay destinatarios válidos configurados en mail.to");
+            log.error("No hay destinatarios válidos configurados en BD ni en mail.to");
             return;
         }
 
