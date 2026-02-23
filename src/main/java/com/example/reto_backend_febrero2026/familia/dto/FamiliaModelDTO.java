@@ -1,22 +1,15 @@
-package com.example.reto_backend_febrero2026.familia;
+package com.example.reto_backend_febrero2026.familia.dto;
 
-import jakarta.persistence.*;
+public class FamiliaModelDTO {
 
-@Entity
-@Table(name = "familias")
-public class FamiliaModel {
-
-    @Id
-    @Column(name = "cod")
     private Integer cod;
 
-    @Column(name = "descripcion", nullable = false, length = 255)
     private String descripcion;
 
-    public FamiliaModel() {
+    public FamiliaModelDTO() {
     }
 
-    public FamiliaModel(Integer cod, String descripcion) {
+    public FamiliaModelDTO(Integer cod, String descripcion) {
         this.cod = cod;
         this.descripcion = descripcion;
     }
