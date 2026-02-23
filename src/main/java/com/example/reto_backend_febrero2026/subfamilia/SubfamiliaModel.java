@@ -67,7 +67,6 @@ public class SubfamiliaModel {
         this.descripcion = descripcion;
     }
 
-
     public static class SubfamiliaId implements Serializable {
 
         private Integer famiCod;
