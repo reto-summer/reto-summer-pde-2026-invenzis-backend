@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 import java.util.regex.Matcher;
@@ -95,15 +96,18 @@ public class LicitacionService implements ILicitacionService {
     }
 
     private void procesarFechas(LicitacionItemRecord dto, LicitacionModelDTO licitacionDto) {
-        // FechaPublicaciion
+        // FechaPublicacion
         try {
             if (dto.fechaPublicacion() != null) {
-                licitacionDto.setFechaPublicacion(OffsetDateTime.parse(dto.fechaPublicacion(), DateTimeFormatter.RFC_1123_DATE_TIME));
+                OffsetDateTime odt = OffsetDateTime.parse(dto.fechaPublicacion(), DateTimeFormatter.RFC_1123_DATE_TIME);
+
+                OffsetDateTime horaUruguay = odt.withOffsetSameInstant(ZoneOffset.of("-03:00"));
+
+                licitacionDto.setFechaPublicacion(horaUruguay);
             }
         } catch (Exception e) {
             System.err.println("Error obteniendo fechaPublicacion: " + e.getMessage());
         }
-
         // FechaCierre
         if (dto.description() != null) {
             Pattern pFecha = Pattern.compile("hasta:\\s*(\\d{2}/\\d{2}/\\d{4}\\s*\\d{2}:\\d{2})");
@@ -131,7 +135,6 @@ public class LicitacionService implements ILicitacionService {
     private Integer extraerIdDelLink(String link) {
         if (link == null) return null;
 
-        // Por si viene con formato JSON {link: "..."}
         String linkLimpio = link.replace("\"", "").replace("{", "").replace("}", "").trim();
 
         Pattern p = Pattern.compile("id/(\\d+)");

@@ -23,6 +23,7 @@ public class LicitacionScheduler {
         this.mailService = mailService;
     }
 
+    /*
     @Scheduled(cron = "0 * * * * *")
     public void enviarResumenDiario() {
         log.info("Iniciando envío diario de licitaciones ARCE");
@@ -30,4 +31,6 @@ public class LicitacionScheduler {
         mailService.sendLicitacionesEmail(items);
         log.info("Envío diario completado");
     }
+    */
+
 }
