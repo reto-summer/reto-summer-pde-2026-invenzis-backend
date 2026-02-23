@@ -1,6 +1,6 @@
 package com.example.reto_backend_febrero2026.service;
 
-import com.example.reto_backend_febrero2026.licitacion.LicitacionModel;
+import com.example.reto_backend_febrero2026.integration.servlet.dto.LicitacionItemRecord;
 import jakarta.mail.internet.MimeMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +19,7 @@ import java.util.Locale;
 
 @Service
 public class MailService {
+
 
     private static final Logger log = LoggerFactory.getLogger(MailService.class);
     private static final String EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@(.+)$";
@@ -51,7 +52,7 @@ public class MailService {
     }
 
 
-    public void sendLicitacionesEmail(List<LicitacionModel> items) {
+    public void sendLicitacionesEmail(List<LicitacionItemRecord> items) {
         String fecha = LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy", new Locale("es", "UY")));
 
         Context ctx = new Context(new Locale("es", "UY"));
