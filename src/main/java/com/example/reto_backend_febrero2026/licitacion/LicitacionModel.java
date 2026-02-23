@@ -1,13 +1,9 @@
 package com.example.reto_backend_febrero2026.licitacion;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 
-import com.example.reto_backend_febrero2026.clase.ClaseModel;
 import com.example.reto_backend_febrero2026.familia.FamiliaModel;
-import com.example.reto_backend_febrero2026.subclase.SubclaseModel;
-import com.example.reto_backend_febrero2026.subfamilia.SubfamiliaModel;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
@@ -43,7 +39,7 @@ public class LicitacionModel {
             @JoinColumn(name = "subfami_fami_cod", referencedColumnName = "fami_cod"),
             @JoinColumn(name = "subfami_cod", referencedColumnName = "cod")
     })
-    private SubfamiliaModel subfamilia;
+    private com.example.reto_backend_febrero2026.subfamilia.SubfamiliaModel subfamilia;
 
     public LicitacionModel() {
     }
@@ -51,7 +47,7 @@ public class LicitacionModel {
     public LicitacionModel(Integer idLicitacion, String title, String description,
                            OffsetDateTime fechaPublicacion, LocalDateTime fechaCierre,
                             String link, FamiliaModel familia,
-                            SubfamiliaModel subfamilia) {
+                            com.example.reto_backend_febrero2026.subfamilia.SubfamiliaModel subfamilia) {
         this.idLicitacion = idLicitacion;
         this.title = title;
         this.description = description;
@@ -118,11 +114,11 @@ public class LicitacionModel {
         this.familia = familia;
     }
 
-    public SubfamiliaModel getSubfamilia() {
+    public com.example.reto_backend_febrero2026.subfamilia.SubfamiliaModel getSubfamilia() {
         return subfamilia;
     }
 
-    public void setSubfamilia(SubfamiliaModel subfamilia) {
+    public void setSubfamilia(com.example.reto_backend_febrero2026.subfamilia.SubfamiliaModel subfamilia) {
         this.subfamilia = subfamilia;
     }
 }

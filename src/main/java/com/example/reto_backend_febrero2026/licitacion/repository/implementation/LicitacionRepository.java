@@ -1,7 +1,9 @@
 package com.example.reto_backend_febrero2026.licitacion.repository.implementation;
 
+import com.example.reto_backend_febrero2026.familia.FamiliaModel;
 import com.example.reto_backend_febrero2026.licitacion.LicitacionModel;
 import com.example.reto_backend_febrero2026.licitacion.repository.interfaces.ILicitacionRepository;
+import com.example.reto_backend_febrero2026.subfamilia.SubfamiliaModel;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -26,6 +28,24 @@ public class LicitacionRepository implements ILicitacionRepository {
         tender.setFechaPublicacion(rs.getObject("fecha_publicacion", OffsetDateTime.class));
         tender.setFechaCierre(rs.getObject("fecha_cierre", LocalDateTime.class));
         tender.setLink(rs.getString("link"));
+
+        // familia y subfamilia
+        Integer familiaCod = rs.getObject("familia_cod", Integer.class);
+        if (familiaCod != null) {
+            FamiliaModel familia = new FamiliaModel();
+            familia.setCod(familiaCod);
+            tender.setFamilia(familia);
+        }
+
+        Integer subFamiCod = rs.getObject("subfami_fami_cod", Integer.class);
+        Integer subCod = rs.getObject("subfami_cod", Integer.class);
+
+        if (subFamiCod != null && subCod != null) {
+            SubfamiliaModel sub = new SubfamiliaModel();
+            sub.setFamiCod(subFamiCod);
+            sub.setCod(subCod);
+            tender.setSubfamilia(sub);
+        }
         return tender;
     };
 
@@ -47,9 +67,10 @@ public class LicitacionRepository implements ILicitacionRepository {
     public LicitacionModel save(LicitacionModel tender) {
         String sql = """
             INSERT INTO licitacion
-            (title, description, fecha_publicacion, fecha_cierre, link)
-            VALUES (?, ?, ?, ?, ?)
-        """;
+              (title, description, fecha_publicacion, fecha_cierre, link,
+               familia_cod, subfami_fami_cod, subfami_cod)
+              VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            """;
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
@@ -60,6 +81,9 @@ public class LicitacionRepository implements ILicitacionRepository {
             ps.setObject(3, tender.getFechaPublicacion());
             ps.setObject(4, tender.getFechaCierre());
             ps.setString(5, tender.getLink());
+            ps.setInt(6, tender.getFamilia().getCod());
+            ps.setInt(7, tender.getSubfamilia().getFamiCod());
+            ps.setInt(8, tender.getSubfamilia().getCod());
             return ps;
         }, keyHolder);
 

@@ -1,41 +1,28 @@
-package com.example.reto_backend_febrero2026.subfamilia;
+package com.example.reto_backend_febrero2026.subfamilia.dto;
 
-import com.example.reto_backend_febrero2026.familia.FamiliaModel;
-import jakarta.persistence.*;
+import com.example.reto_backend_febrero2026.familia.dto.FamiliaModelDTO;
 
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Objects;
 
-@Entity
-@Table(name = "subflias")
-@IdClass(SubfamiliaModel.SubfamiliaId.class)
-public class SubfamiliaModel {
+public class SubfamiliaModelDTO {
 
-    @Id
-    @Column(name = "fami_cod")
     private Integer famiCod;
 
-    @Id
-    @Column(name = "cod")
     private Integer cod;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "fami_cod", insertable = false, updatable = false)
-    private FamiliaModel familia;
+    private FamiliaModelDTO familia;
 
-    @Column(name = "descripcion", nullable = false)
     private String descripcion;
 
-    @Column(name = "fecha_baja")
     private LocalDate fechaBaja;
 
-    @Column(name = "motivo_baja")
     private String motivoBaja;
 
-    public SubfamiliaModel() {}
+    public SubfamiliaModelDTO() {}
 
-    public SubfamiliaModel(Integer famiCod, Integer cod, String descripcion) {
+    public SubfamiliaModelDTO(Integer famiCod, Integer cod, String descripcion) {
         this.famiCod = famiCod;
         this.cod = cod;
         this.descripcion = descripcion;
@@ -57,11 +44,11 @@ public class SubfamiliaModel {
         this.cod = cod;
     }
 
-    public FamiliaModel getFamilia() {
+    public FamiliaModelDTO getFamilia() {
         return familia;
     }
 
-    public void setFamilia(FamiliaModel familia) {
+    public void setFamilia(FamiliaModelDTO familia) {
         this.familia = familia;
     }
 
@@ -107,7 +94,7 @@ public class SubfamiliaModel {
             if (!(o instanceof SubfamiliaId)) return false;
             SubfamiliaId that = (SubfamiliaId) o;
             return Objects.equals(famiCod, that.famiCod) &&
-                   Objects.equals(cod, that.cod);
+                    Objects.equals(cod, that.cod);
         }
 
         @Override

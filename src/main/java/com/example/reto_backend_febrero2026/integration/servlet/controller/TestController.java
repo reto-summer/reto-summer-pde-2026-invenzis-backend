@@ -16,8 +16,9 @@ public class TestController {
         this.arceClientService = service;
     }
 
-    @GetMapping("/api/test-rss")
-    public List<LicitacionItemRecord> getLicitaciones(){
-        return arceClientService.obtenerLicitaciones();
+    @GetMapping("/api/save-rss")
+    public String saveLicitaciones() {
+        arceClientService.obtenerLicitaciones();
+        return "Importación finalizada"; //cambiar
     }
 }
