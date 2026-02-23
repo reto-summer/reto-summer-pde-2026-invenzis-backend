@@ -30,8 +30,6 @@ public class LicitacionModel {
 
     private FamiliaModel familia;
     private SubfamiliaModel subfamilia;
-    private ClaseModel clase;
-    private SubclaseModel subclase;
 
     public LicitacionModel() {
     }
