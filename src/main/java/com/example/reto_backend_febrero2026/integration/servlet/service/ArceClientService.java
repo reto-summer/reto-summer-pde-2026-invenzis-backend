@@ -1,11 +1,18 @@
 package com.example.reto_backend_febrero2026.integration.servlet.service;
 
+import com.example.reto_backend_febrero2026.audit.AuditService;
+import com.example.reto_backend_febrero2026.audit.Auditable;
 import com.example.reto_backend_febrero2026.integration.servlet.dto.LicitacionItemRecord;
 import com.example.reto_backend_febrero2026.integration.servlet.dto.RssResponseDTO;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.xml.MappingJackson2XmlHttpMessageConverter;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Recover;
+import org.springframework.retry.annotation.Retryable;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
@@ -15,6 +22,9 @@ import java.util.List;
 public class ArceClientService {
 
     private final RestClient restClient;
+
+    @Autowired
+    AuditService auditService;
 
     public ArceClientService(RestClient.Builder builder) {
         XmlMapper xmlMapper = new XmlMapper();
@@ -26,6 +36,13 @@ public class ArceClientService {
                 .build();
     }
 
+    @Async
+    @Retryable(
+            retryFor = {Exception.class},
+            maxAttempts = 5,
+            backoff = @Backoff(delay = 2000, multiplier = 3)
+    )
+    @Auditable(module = "ARCE_CLIENTE_SERVICE",action = "GET_LICITACIONES_FROM_ARCE")
     public List<LicitacionItemRecord> obtenerLicitaciones() {
         try {
             RssResponseDTO response = restClient.get()
@@ -38,9 +55,20 @@ public class ArceClientService {
                     ? response.channel().items()
                     : List.of();
         } catch (Exception e) {
-            System.err.println("Error al obtener licitaciones: " + e.getMessage());
-            e.printStackTrace();
-            return List.of();
+            throw new RuntimeException("Error al conectar con ARCE RSS: " + e.getMessage(), e);
         }
+    }
+
+    @Recover
+    public List<LicitacionItemRecord> recover(Exception e) {
+        String traceId = org.slf4j.MDC.get("traceId");
+        String errorMessage = "FALTA: Se agotaron los 5 reintentos. El Servicio RSS de ARCE no responde";
+        System.err.println(errorMessage + "Detalle: " + e.getMessage());
+
+        auditService.saveAuditLog(
+                traceId, "ARCE_CLIENT_SERVICE","RECOVER_MODE",
+                errorMessage, e.getMessage(), "FATAL"
+        );
+        return List.of();
     }
 }
