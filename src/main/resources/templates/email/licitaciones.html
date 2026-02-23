@@ -11,19 +11,18 @@
     <table th:unless="${#lists.isEmpty(items)}">
         <thead>
             <tr>
-                <th>ID Compra</th>
-                <th>Categoría</th>
+                <th>Título</th>
+                <th>Descripción</th>
                 <th>Fecha publicación</th>
                 <th>Enlace</th>
             </tr>
         </thead>
         <tbody>
             <tr th:each="item : ${items}">
-                <td th:text="${item.idCompra}"></td>
-                <td th:text="${item.releaseId}"></td>
-                <td th:text="${item.category}"></td>
-                <td th:text="${item.pubDate}"></td>
-                <td><a th:href="${item.link}" th:text="'Ver detalle'">Ver detalle</a></td>
+                <td th:text="${item.titulo}"></td>
+                <td th:text="${item.description}"></td>
+                <td th:text="${item.fechaPublicacion}"></td>
+                <td><a th:href="${item.link}">Ver detalle</a></td>
             </tr>
         </tbody>
     </table>
