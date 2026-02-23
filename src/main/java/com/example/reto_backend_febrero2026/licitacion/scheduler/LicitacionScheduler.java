@@ -1,8 +1,8 @@
-package com.example.reto_backend_febrero2026.scheduler;
+package com.example.reto_backend_febrero2026.licitacion.scheduler;
 
 import com.example.reto_backend_febrero2026.integration.servlet.dto.LicitacionItemRecord;
 import com.example.reto_backend_febrero2026.integration.servlet.service.ArceClientService;
-import com.example.reto_backend_febrero2026.service.MailService;
+import com.example.reto_backend_febrero2026.mail.MailService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
