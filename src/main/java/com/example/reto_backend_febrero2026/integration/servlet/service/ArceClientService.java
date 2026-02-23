@@ -12,7 +12,6 @@ import org.springframework.http.converter.xml.MappingJackson2XmlHttpMessageConve
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Recover;
 import org.springframework.retry.annotation.Retryable;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
@@ -36,7 +35,6 @@ public class ArceClientService {
                 .build();
     }
 
-    @Async
     @Retryable(
             retryFor = {Exception.class},
             maxAttempts = 5,
