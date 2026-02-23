@@ -66,11 +66,11 @@ public class ArceClientService {
             List<LicitacionItemRecord> items = response.channel().items().stream()
                     .map(item -> new LicitacionItemRecord(
                             item.titulo(),
-                            item.link(),
                             item.description(),
+                            item.link(),
                             item.fechaPublicacion(),
-                            item.familaCod(),
-                            item.subFamiliaCod()
+                            familyCod,
+                            subFamilyCod
                     ))
                     .toList();
 

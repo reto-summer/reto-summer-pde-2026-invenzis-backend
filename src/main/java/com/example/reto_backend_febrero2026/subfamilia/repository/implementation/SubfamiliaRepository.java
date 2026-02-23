@@ -37,7 +37,7 @@ public class SubfamiliaRepository {
 
     public List<SubfamiliaModel> findAll() {
         String sql = """
-                SELECT fami_cod, cod, descripcion, fecha_baja, motivo_baja
+                SELECT fami_cod, cod, descripcion
                 FROM subflias
                 """;
         return jdbcTemplate.query(sql, subfamiliaRowMapper);
@@ -45,7 +45,7 @@ public class SubfamiliaRepository {
 
     public SubfamiliaModel findById(Integer famiCod, Integer cod) {
         String sql = """
-                SELECT fami_cod, cod, descripcion, fecha_baja, motivo_baja
+                SELECT fami_cod, cod, descripcion
                 FROM subflias
                 WHERE fami_cod = ? AND cod = ?
                 """;
@@ -62,7 +62,7 @@ public class SubfamiliaRepository {
 
     public List<SubfamiliaModel> findByFamiCod(Integer famiCod) {
         String sql = """
-                SELECT fami_cod, cod, descripcion, fecha_baja, motivo_baja
+                SELECT fami_cod, cod, descripcion
                 FROM subflias
                 WHERE fami_cod = ?
                 """;
@@ -88,7 +88,7 @@ public class SubfamiliaRepository {
         if (count != null && count > 0) {
             String updateSql = """
                     UPDATE subflias
-                    SET descripcion = ?, fecha_baja = ?, motivo_baja = ?
+                    SET descripcion = ?
                     WHERE fami_cod = ? AND cod = ?
                     """;
 
@@ -102,8 +102,8 @@ public class SubfamiliaRepository {
         } else {
             String insertSql = """
                     INSERT INTO subflias
-                    (fami_cod, cod, descripcion, fecha_baja, motivo_baja)
-                    VALUES (?, ?, ?, ?, ?)
+                    (fami_cod, cod, descripcion)
+                    VALUES (?, ?, ?)
                     """;
 
             jdbcTemplate.update(
