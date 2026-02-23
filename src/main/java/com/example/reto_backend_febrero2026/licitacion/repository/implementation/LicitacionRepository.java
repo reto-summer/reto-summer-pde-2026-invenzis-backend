@@ -76,24 +76,26 @@ public class LicitacionRepository implements ILicitacionRepository {
     @Override
     public LicitacionModel save(LicitacionModel tender) {
         String sql = """
-            INSERT INTO licitacion
-              (title, description, fecha_publicacion, fecha_cierre, link,
-               familia_cod, subfami_fami_cod, subfami_cod)
-              VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-            """;
+        INSERT INTO licitacion
+          (id_licitacion, title, description, fecha_publicacion, fecha_cierre, link,
+           familia_cod, subfami_fami_cod, subfami_cod)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """;
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id_licitacion"});
-            ps.setString(1, tender.getTitle());
-            ps.setString(2, tender.getDescription());
-            ps.setObject(3, tender.getFechaPublicacion());
-            ps.setObject(4, tender.getFechaCierre());
-            ps.setString(5, tender.getLink());
-            ps.setInt(6, tender.getFamilia().getCod());
-            ps.setInt(7, tender.getSubfamilia().getFamiCod());
-            ps.setInt(8, tender.getSubfamilia().getCod());
+
+            ps.setInt(1, tender.getIdLicitacion());
+            ps.setString(2, tender.getTitle());
+            ps.setString(3, tender.getDescription());
+            ps.setObject(4, tender.getFechaPublicacion());
+            ps.setObject(5, tender.getFechaCierre());
+            ps.setString(6, tender.getLink());
+            ps.setInt(7, tender.getFamilia().getCod());
+            ps.setInt(8, tender.getSubfamilia().getFamiCod());
+            ps.setInt(9, tender.getSubfamilia().getCod());
             return ps;
         }, keyHolder);
 

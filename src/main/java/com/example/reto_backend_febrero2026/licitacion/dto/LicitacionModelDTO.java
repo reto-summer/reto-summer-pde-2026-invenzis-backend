@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 
 import com.example.reto_backend_febrero2026.familia.FamiliaModel;
+import com.example.reto_backend_febrero2026.familia.dto.FamiliaModelDTO;
+import com.example.reto_backend_febrero2026.subfamilia.dto.SubfamiliaModelDTO;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class LicitacionModelDTO {
@@ -22,17 +24,17 @@ public class LicitacionModelDTO {
 
     private String link;
 
-    private FamiliaModel familia;
+    private FamiliaModelDTO familia;
 
-    private com.example.reto_backend_febrero2026.subfamilia.SubfamiliaModel subfamilia;
+    private SubfamiliaModelDTO subfamilia;
 
     public LicitacionModelDTO() {
     }
 
     public LicitacionModelDTO(Integer idLicitacion, String title, String description,
                               OffsetDateTime fechaPublicacion, LocalDateTime fechaCierre,
-                           String link, FamiliaModel familia,
-                           com.example.reto_backend_febrero2026.subfamilia.SubfamiliaModel subfamilia) {
+                           String link, FamiliaModelDTO familia,
+                              SubfamiliaModelDTO subfamilia) {
         this.idLicitacion = idLicitacion;
         this.title = title;
         this.description = description;
@@ -91,19 +93,19 @@ public class LicitacionModelDTO {
         this.link = link;
     }
 
-    public FamiliaModel getFamilia() {
+    public FamiliaModelDTO getFamilia() {
         return familia;
     }
 
-    public void setFamilia(FamiliaModel familia) {
+    public void setFamilia(FamiliaModelDTO familia) {
         this.familia = familia;
     }
 
-    public com.example.reto_backend_febrero2026.subfamilia.SubfamiliaModel getSubfamilia() {
+    public SubfamiliaModelDTO getSubfamilia() {
         return subfamilia;
     }
 
-    public void setSubfamilia(com.example.reto_backend_febrero2026.subfamilia.SubfamiliaModel subfamilia) {
+    public void setSubfamilia(SubfamiliaModelDTO subfamilia) {
         this.subfamilia = subfamilia;
     }
 }

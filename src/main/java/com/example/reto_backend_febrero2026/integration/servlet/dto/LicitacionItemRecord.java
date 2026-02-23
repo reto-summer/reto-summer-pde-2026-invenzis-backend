@@ -17,7 +17,6 @@ public record LicitacionItemRecord(
         String fechaPublicacion,
 
         Integer familaCod,
-
         Integer subFamiliaCod
 ) {
 }

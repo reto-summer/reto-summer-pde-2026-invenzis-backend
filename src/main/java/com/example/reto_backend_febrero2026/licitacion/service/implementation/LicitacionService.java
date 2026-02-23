@@ -1,6 +1,7 @@
 package com.example.reto_backend_febrero2026.licitacion.service.implementation;
 
 import com.example.reto_backend_febrero2026.familia.FamiliaModel;
+import com.example.reto_backend_febrero2026.familia.mapper.FamiliaMapper;
 import com.example.reto_backend_febrero2026.familia.repository.implementation.FamiliaRepository;
 import com.example.reto_backend_febrero2026.integration.servlet.dto.LicitacionItemRecord;
 import com.example.reto_backend_febrero2026.licitacion.LicitacionModel;
@@ -9,14 +10,15 @@ import com.example.reto_backend_febrero2026.licitacion.mapper.LicitacionMapper;
 import com.example.reto_backend_febrero2026.licitacion.repository.interfaces.ILicitacionRepository;
 import com.example.reto_backend_febrero2026.licitacion.service.interfaces.ILicitacionService;
 import com.example.reto_backend_febrero2026.subfamilia.SubfamiliaModel;
+import com.example.reto_backend_febrero2026.subfamilia.mapper.SubfamiliaMapper;
 import com.example.reto_backend_febrero2026.subfamilia.repository.implementation.SubfamiliaRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -27,13 +29,19 @@ public class LicitacionService implements ILicitacionService {
     private final LicitacionMapper tenderMapper;
     private final FamiliaRepository familiaRepository;
     private final SubfamiliaRepository subfamiliaRepository;
+    private final SubfamiliaMapper subfamiliaMapper;
+    private final FamiliaMapper familiaMapper;
 
     public LicitacionService(ILicitacionRepository tenderRepository,
-                             LicitacionMapper tenderMapper, FamiliaRepository familiaRepository, SubfamiliaRepository subfamiliaRepository) {
+                             LicitacionMapper tenderMapper,
+                             FamiliaRepository familiaRepository,
+                             SubfamiliaRepository subfamiliaRepository, SubfamiliaMapper subfamiliaMapper, FamiliaMapper familiaMapper) {
         this.tenderRepository = tenderRepository;
         this.tenderMapper = tenderMapper;
         this.familiaRepository = familiaRepository;
         this.subfamiliaRepository = subfamiliaRepository;
+        this.subfamiliaMapper = subfamiliaMapper;
+        this.familiaMapper = familiaMapper;
     }
 
     @Override
@@ -45,71 +53,94 @@ public class LicitacionService implements ILicitacionService {
     @Override
     @Transactional
     public LicitacionModelDTO saveTender(LicitacionItemRecord dto) {
-        LicitacionModelDTO licitacionDto = new LicitacionModelDTO();
-        Integer idExtraido = null;
+        Integer idExtraido = extraerIdDelLink(dto.link());
 
-        if (dto.link() != null) {
-            Pattern p = Pattern.compile("id/(\\d+)");
-            Matcher m = p.matcher(dto.link());
-            if (m.find()) {
-                idExtraido = Integer.parseInt(m.group(1));
-                licitacionDto.setIdLicitacion(idExtraido);
-            }
+        if (idExtraido != null) {
+            try {
+                LicitacionModel existente = tenderRepository.getTenderById(idExtraido);
+                if (existente != null) return tenderMapper.tenderToTenderDTO(existente);
+            } catch (Exception ignored) {}
         }
 
+        LicitacionModelDTO licitacionDto = new LicitacionModelDTO();
+        licitacionDto.setIdLicitacion(idExtraido);
+        licitacionDto.setTitle(dto.titulo());
+        licitacionDto.setLink(dto.link());
+
+        String descLimpia = limpiarHtml(dto.description());
+        licitacionDto.setDescription(descLimpia);
+
+        FamiliaModel familiaEntity;
         try {
-            if (idExtraido == null) throw new RuntimeException("ID no encontrado en link");
-
-            LicitacionModel existente = tenderRepository.getTenderById(idExtraido);
-            return tenderMapper.tenderToTenderDTO(existente);
-
+            familiaEntity = familiaRepository.findById(dto.familaCod());
         } catch (Exception e) {
-            licitacionDto.setTitle(dto.titulo());
-            licitacionDto.setDescription(dto.description());
-            licitacionDto.setLink(dto.link());
+            familiaEntity = familiaRepository.save(new FamiliaModel(dto.familaCod(), "Familia " + dto.familaCod()));
+        }
+        licitacionDto.setFamilia(familiaMapper.familyToFamilyDTO(familiaEntity));
 
-            try {
-                if (dto.fechaPublicacion() != null) {
-                    licitacionDto.setFechaPublicacion(OffsetDateTime.parse(dto.fechaPublicacion(), DateTimeFormatter.RFC_1123_DATE_TIME));
-                }
-            } catch (Exception ex) {
-                System.err.println("Error obteniendo la fecha publicación: " + ex.getMessage());
+        SubfamiliaModel subfamiliaEntity;
+        try {
+            subfamiliaEntity = subfamiliaRepository.findById(dto.familaCod(), dto.subFamiliaCod());
+        } catch (Exception e) {
+            subfamiliaEntity = subfamiliaRepository.save(new SubfamiliaModel(dto.familaCod(), dto.subFamiliaCod(), "Subfamilia " + dto.subFamiliaCod()));
+        }
+        licitacionDto.setSubfamilia(subfamiliaMapper.subFamilyToSubfamilyDTO(subfamiliaEntity));
+
+        procesarFechas(dto, licitacionDto);
+
+        LicitacionModel tender = tenderMapper.tenderDTOtoTender(licitacionDto);
+
+        LicitacionModel guardado = tenderRepository.save(tender);
+        return tenderMapper.tenderToTenderDTO(guardado);
+    }
+
+    private void procesarFechas(LicitacionItemRecord dto, LicitacionModelDTO licitacionDto) {
+        // FechaPublicaciion
+        try {
+            if (dto.fechaPublicacion() != null) {
+                licitacionDto.setFechaPublicacion(OffsetDateTime.parse(dto.fechaPublicacion(), DateTimeFormatter.RFC_1123_DATE_TIME));
             }
+        } catch (Exception e) {
+            System.err.println("Error obteniendo fechaPublicacion: " + e.getMessage());
+        }
 
-            if (dto.description() != null) {
-                Pattern pFecha = Pattern.compile("hasta:\\s*(\\d{2}/\\d{2}/\\d{4}\\s*\\d{2}:\\d{2})");
-                Matcher mFecha = pFecha.matcher(dto.description());
-                if (mFecha.find()) {
+        // FechaCierre
+        if (dto.description() != null) {
+            Pattern pFecha = Pattern.compile("hasta:\\s*(\\d{2}/\\d{2}/\\d{4}\\s*\\d{2}:\\d{2})");
+            Matcher mFecha = pFecha.matcher(dto.description());
+            if (mFecha.find()) {
+                try {
                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
                     licitacionDto.setFechaCierre(LocalDateTime.parse(mFecha.group(1), formatter));
+                } catch (Exception e) {
+                    System.err.println("Error obteniendo fechaCierre: " + e.getMessage());
                 }
             }
-
-            try {
-                licitacionDto.setFamilia(familiaRepository.findById(dto.familaCod()));
-            } catch (Exception ex) {
-                FamiliaModel familia = new FamiliaModel(dto.familaCod(), "Familia " + dto.familaCod());
-                familiaRepository.save(familia);
-                licitacionDto.setFamilia(familia);
-            }
-
-            try {
-                licitacionDto.setSubfamilia(subfamiliaRepository.findById(dto.subFamiliaCod(), dto.familaCod()));
-            } catch (Exception ex) {
-                SubfamiliaModel subfamilia = new SubfamiliaModel(dto.familaCod(), dto.subFamiliaCod(), "Subfamilia " + dto.subFamiliaCod());
-                subfamiliaRepository.save(subfamilia);
-                licitacionDto.setSubfamilia(subfamilia);
-            }
-
-            LicitacionModel tender = tenderMapper.tenderDTOtoTender(licitacionDto);
-            LicitacionModel guardado = tenderRepository.save(tender);
-
-            return tenderMapper.tenderToTenderDTO(guardado);
         }
     }
 
+    private String limpiarHtml(String texto) {
+        if (texto == null) return "";
+        return texto.replaceAll("<br\\s*/?>", "\n")
+                .replaceAll("&nbsp;", " ")
+                .replaceAll("&sol;", "/")
+                .replaceAll("<.*?>", "")
+                .trim();
+    }
+
+    private Integer extraerIdDelLink(String link) {
+        if (link == null) return null;
+
+        // Por si viene con formato JSON {link: "..."}
+        String linkLimpio = link.replace("\"", "").replace("{", "").replace("}", "").trim();
+
+        Pattern p = Pattern.compile("id/(\\d+)");
+        Matcher m = p.matcher(linkLimpio);
+        return m.find() ? Integer.parseInt(m.group(1)) : null;
+    }
+
     @Override
-    public LicitacionModelDTO getTenderByTitle(String titulo){
+    public LicitacionModelDTO getTenderByTitle(String titulo) {
         LicitacionModel tender = tenderRepository.getTenderByTitle(titulo);
         return tenderMapper.tenderToTenderDTO(tender);
     }
