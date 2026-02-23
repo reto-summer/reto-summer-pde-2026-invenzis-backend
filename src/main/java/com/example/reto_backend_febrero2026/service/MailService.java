@@ -1,5 +1,6 @@
 package com.example.reto_backend_febrero2026.service;
 
+import com.example.reto_backend_febrero2026.audit.Auditable;
 import com.example.reto_backend_febrero2026.licitacion.LicitacionModel;
 import jakarta.mail.internet.MimeMessage;
 import org.slf4j.Logger;
@@ -35,6 +36,7 @@ public class MailService {
         this.templateEngine = templateEngine;
     }
 
+    @Auditable(module = "EMAIL_SERVICE", action = "SEND_MAIL")
     public void sendLicitacionesEmail(List<LicitacionModel> items) {
         String fecha = LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy", new Locale("es", "UY")));
 
@@ -56,6 +58,7 @@ public class MailService {
             log.info("Email de licitaciones enviado a {} con {} ítems", mailTo, items.size());
         } catch (Exception e) {
             log.error("Error al enviar email de licitaciones: {}", e.getMessage(), e);
+            throw new RuntimeException("ERROR en envío de mail: " + e);
         }
     }
 }
