@@ -1,11 +1,13 @@
 package com.example.reto_backend_febrero2026.integration.servlet.service;
 
+import com.example.reto_backend_febrero2026.audit.Auditable;
 import com.example.reto_backend_febrero2026.integration.servlet.dto.LicitacionItemRecord;
 import com.example.reto_backend_febrero2026.integration.servlet.dto.RssResponseDTO;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.xml.MappingJackson2XmlHttpMessageConverter;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
@@ -26,6 +28,8 @@ public class ArceClientService {
                 .build();
     }
 
+    @Async
+    @Auditable(module = "ARCE_CLIENTE_SERVICE",action = "GET_LICITACIONES_FROM_ARCE")
     public List<LicitacionItemRecord> obtenerLicitaciones() {
         try {
             RssResponseDTO response = restClient.get()
@@ -38,9 +42,7 @@ public class ArceClientService {
                     ? response.channel().items()
                     : List.of();
         } catch (Exception e) {
-            System.err.println("Error al obtener licitaciones: " + e.getMessage());
-            e.printStackTrace();
-            return List.of();
+            throw new RuntimeException("Error al conectar con ARCE RSS: " + e.getMessage(), e);
         }
     }
 }
