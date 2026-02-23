@@ -1,11 +1,12 @@
 package com.example.reto_backend_febrero2026.mail;
 
 import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "destinos_email")
-public class MailDestination {
+public class MailModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,21 +35,15 @@ public class MailDestination {
         fechaActualizacion = LocalDateTime.now();
     }
 
-    // Constructors
-    public MailDestination() {}
+    public MailModel() {}
 
-    public MailDestination(String email) {
+    public MailModel(String email) {
         this.email = email;
         this.activo = true;
     }
 
-    // Getters and Setters
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getEmail() {
@@ -71,15 +66,7 @@ public class MailDestination {
         return fechaCreacion;
     }
 
-    public void setFechaCreacion(LocalDateTime fechaCreacion) {
-        this.fechaCreacion = fechaCreacion;
-    }
-
     public LocalDateTime getFechaActualizacion() {
         return fechaActualizacion;
-    }
-
-    public void setFechaActualizacion(LocalDateTime fechaActualizacion) {
-        this.fechaActualizacion = fechaActualizacion;
     }
 }

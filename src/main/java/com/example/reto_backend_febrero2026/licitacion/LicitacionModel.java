@@ -33,7 +33,7 @@ public class LicitacionModel {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "familia_cod", referencedColumnName = "cod")
     private FamiliaModel familia;
-    private SubfamiliaModel subfamilia;
+    private com.example.reto_backend_febrero2026.subfamilia.SubfamiliaModel subfamilia;
 
     public LicitacionModel() {
     }
