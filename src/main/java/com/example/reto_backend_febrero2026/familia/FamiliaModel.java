@@ -19,7 +19,7 @@ public class FamiliaModel {
     public FamiliaModel() {
     }
 
-    public FamiliaModel(Integer cod, String descripcion, String comprable) {
+    public FamiliaModel(Integer cod, String descripcion) {
         this.cod = cod;
         this.descripcion = descripcion;
         this.comprable = comprable;
