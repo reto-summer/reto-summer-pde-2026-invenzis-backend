@@ -1,4 +1,4 @@
-package com.example.reto_backend_febrero2026.service;
+package com.example.reto_backend_febrero2026.mail;
 
 import com.example.reto_backend_febrero2026.audit.Auditable;
 import com.example.reto_backend_febrero2026.integration.servlet.dto.LicitacionItemRecord;
