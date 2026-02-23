@@ -14,7 +14,7 @@ public class LicitacionModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // ver si hacer incremental o no
-    @JsonProperty("id_licitacion")
+        @JsonProperty("id_licitacion")
     private Integer idLicitacion;
 
     private String title;
