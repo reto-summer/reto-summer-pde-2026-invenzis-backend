@@ -64,6 +64,16 @@ public class LicitacionRepository implements ILicitacionRepository {
     }
 
     @Override
+    public LicitacionModel getTenderByTitle(String titulo) {
+        String sql = "SELECT * FROM licitacion WHERE titulo = ?";
+        try {
+            return jdbcTemplate.queryForObject(sql, tenderRowMapper, titulo);
+        } catch (EmptyResultDataAccessException e) {
+            throw new RuntimeException("No se encontró la licitación con Id: " + titulo);
+        }
+    }
+
+    @Override
     public LicitacionModel save(LicitacionModel tender) {
         String sql = """
             INSERT INTO licitacion
