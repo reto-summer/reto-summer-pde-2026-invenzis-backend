@@ -52,11 +52,16 @@ public class MailService {
     }
 
 
+<<<<<<< HEAD
     public void sendLicitacionesEmail(List<LicitacionItemRecord> items) {
+=======
+    public void sendLicitacionesEmail(List<LicitacionModel> items) {
+        List<LicitacionModel> safeItems = items == null ? List.of() : items;
+>>>>>>> 9759ba4581349b8e81d2d5f77a0ea6983407f3a8
         String fecha = LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy", new Locale("es", "UY")));
 
         Context ctx = new Context(new Locale("es", "UY"));
-        ctx.setVariable("items", items);
+        ctx.setVariable("items", safeItems);
         ctx.setVariable("fecha", fecha);
 
         String htmlContent = templateEngine.process("email/licitaciones", ctx);
@@ -74,11 +79,14 @@ public class MailService {
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
             helper.setFrom(mailFrom);
             helper.setTo(recipients);
-            helper.setSubject(items.size() + " Licitaciones ARCE - " + fecha);
+            String subject = safeItems.isEmpty()
+                    ? "Sin nuevas licitaciones ARCE - " + fecha
+                    : safeItems.size() + " Licitaciones ARCE - " + fecha;
+            helper.setSubject(subject);
             helper.setText(htmlContent, true);
 
             mailSender.send(message);
-            log.info("Email de licitaciones enviado a {} destinatarios con {} ítems", recipients.length, items.size());
+            log.info("Email de licitaciones enviado a {} destinatarios con {} ítems", recipients.length, safeItems.size());
         } catch (Exception e) {
             log.error("Error al enviar email de licitaciones: {}", e.getMessage(), e);
         }
