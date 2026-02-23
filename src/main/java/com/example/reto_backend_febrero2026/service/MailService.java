@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
@@ -51,6 +52,7 @@ public class MailService {
                 .toArray(String[]::new);
     }
 
+    @Async
     @Auditable(module = "EMAIL_SERVICE", action = "SEND_MAIL")
     public void sendLicitacionesEmail(List<LicitacionItemRecord> items) {
         List<LicitacionItemRecord> safeItems = items == null ? List.of() : items;
