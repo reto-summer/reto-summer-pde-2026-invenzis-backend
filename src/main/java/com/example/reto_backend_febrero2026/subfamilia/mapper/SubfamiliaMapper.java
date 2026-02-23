@@ -12,15 +12,11 @@ public interface SubfamiliaMapper {
     @Mapping(source = "cod", target = "cod")
     @Mapping(source = "familia", target = "familia")
     @Mapping(source = "descripcion", target = "descripcion")
-    @Mapping(source = "fechaBaja", target = "fechaBaja")
-    @Mapping(source = "motivoBaja", target = "motivoBaja")
     SubfamiliaModelDTO subFamilyToSubfamilyDTO(SubfamiliaModel subfamily);
 
     @Mapping(source = "famiCod", target = "famiCod")
     @Mapping(source = "cod", target = "cod")
     @Mapping(source = "familia", target = "familia")
     @Mapping(source = "descripcion", target = "descripcion")
-    @Mapping(source = "fechaBaja", target = "fechaBaja")
-    @Mapping(source = "motivoBaja", target = "motivoBaja")
     SubfamiliaModel subFamilyDTOtoSubfamily(SubfamiliaModelDTO subFamilyDTO);
 }
