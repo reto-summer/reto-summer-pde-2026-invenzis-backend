@@ -2,6 +2,8 @@ package com.example.reto_backend_febrero2026.integration.servlet.service;
 
 import com.example.reto_backend_febrero2026.familia.FamiliaModel;
 import com.example.reto_backend_febrero2026.familia.repository.implementation.FamiliaRepository;
+import com.example.reto_backend_febrero2026.audit.AuditService;
+import com.example.reto_backend_febrero2026.audit.Auditable;
 import com.example.reto_backend_febrero2026.integration.servlet.dto.LicitacionItemRecord;
 import com.example.reto_backend_febrero2026.integration.servlet.dto.RssResponseDTO;
 import com.example.reto_backend_febrero2026.licitacion.LicitacionModel;
@@ -10,8 +12,13 @@ import com.example.reto_backend_febrero2026.subfamilia.SubfamiliaModel;
 import com.example.reto_backend_febrero2026.subfamilia.repository.implementation.SubfamiliaRepository;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.xml.MappingJackson2XmlHttpMessageConverter;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Recover;
+import org.springframework.retry.annotation.Retryable;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
@@ -70,6 +77,14 @@ public class ArceClientService {
 
         // Familia guarda si no existe
         FamiliaModel familia;
+    @Async
+    @Retryable(
+            retryFor = {Exception.class},
+            maxAttempts = 5,
+            backoff = @Backoff(delay = 2000, multiplier = 3)
+    )
+    @Auditable(module = "ARCE_CLIENTE_SERVICE",action = "GET_LICITACIONES_FROM_ARCE")
+    public List<LicitacionItemRecord> obtenerLicitaciones() {
         try {
             familia = familiaRepository.findById(FAMILIA_COD);
         } catch (Exception e) {
@@ -148,5 +163,19 @@ public class ArceClientService {
         }
 
         return null;
+    }
+}
+
+    @Recover
+    public List<LicitacionItemRecord> recover(Exception e) {
+        String traceId = org.slf4j.MDC.get("traceId");
+        String errorMessage = "FALTA: Se agotaron los 5 reintentos. El Servicio RSS de ARCE no responde";
+        System.err.println(errorMessage + "Detalle: " + e.getMessage());
+
+        auditService.saveAuditLog(
+                traceId, "ARCE_CLIENT_SERVICE","RECOVER_MODE",
+                errorMessage, e.getMessage(), "FATAL"
+        );
+        return List.of();
     }
 }
