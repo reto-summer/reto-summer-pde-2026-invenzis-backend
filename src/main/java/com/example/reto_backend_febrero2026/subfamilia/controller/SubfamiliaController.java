@@ -1,5 +1,8 @@
-package com.example.reto_backend_febrero2026.subfamilia;
+package com.example.reto_backend_febrero2026.subfamilia.controller;
 
+import com.example.reto_backend_febrero2026.subfamilia.dto.SubfamiliaModelDTO;
+import com.example.reto_backend_febrero2026.subfamilia.service.interfaces.ISubfamiliaService;
+import com.example.reto_backend_febrero2026.subfamilia.SubfamiliaModel;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,17 +19,17 @@ public class SubfamiliaController {
     }
 
     @GetMapping
-    public List<SubfamiliaModel> findAll() {
+    public List<SubfamiliaModelDTO> findAll() {
         return subfamiliaService.findAll();
     }
 
     @GetMapping("/familia/{famiCod}")
-    public List<SubfamiliaModel> findByFamiCod(@PathVariable Integer famiCod) {
+    public List<SubfamiliaModelDTO> findByFamiCod(@PathVariable Integer famiCod) {
         return subfamiliaService.findByFamiCod(famiCod);
     }
 
     @GetMapping("/{famiCod}/{cod}")
-    public SubfamiliaModel findById(
+    public SubfamiliaModelDTO findById(
             @PathVariable Integer famiCod,
             @PathVariable Integer cod) {
 
