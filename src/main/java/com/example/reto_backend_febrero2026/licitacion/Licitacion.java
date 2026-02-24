@@ -19,6 +19,8 @@ public class Licitacion {
     private Integer idLicitacion;
     @Column(name = "TITULO", columnDefinition = "TEXT")
     private String titulo;
+    @Column(name = "TIPO_LICITACION", columnDefinition = "TEXT")
+    private String tipoLicitacion;
     @Column(name = "DESCRIPCION", columnDefinition = "TEXT")
     private String descripcion;
 
@@ -49,10 +51,11 @@ public class Licitacion {
     public Licitacion() {
     }
 
-    public Licitacion(Integer idLicitacion, String titulo, String descripcion, OffsetDateTime fechaPublicacion, LocalDateTime fechaCierre,
+    public Licitacion(Integer idLicitacion, String titulo, String tipoLicitacion, String descripcion, OffsetDateTime fechaPublicacion, LocalDateTime fechaCierre,
                       String link, Familia familia, Subfamilia subfamilia) {
         this.idLicitacion = idLicitacion;
         this.titulo = titulo;
+        this.tipoLicitacion = tipoLicitacion;
         this.descripcion = descripcion;
         this.fechaPublicacion = fechaPublicacion;
         this.fechaCierre = fechaCierre;
@@ -124,4 +127,8 @@ public class Licitacion {
     public void setSubfamilia(Subfamilia subfamilia) {
         this.subfamilia = subfamilia;
     }
+
+    public String getTipoLicitacion() { return tipoLicitacion; }
+
+    public void setTipoLicitacion(String tipoLicitacion) { this.tipoLicitacion = tipoLicitacion; }
 }
