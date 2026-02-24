@@ -39,7 +39,7 @@ public record OCDSFullResponse(
     public record Tender(
             String id,
             String title,
-            String description,
+            String descripcion,
             String status,
             List<ItemOCDS> items,
             String procurementMethod,
@@ -54,7 +54,7 @@ public record OCDSFullResponse(
     @JsonIgnoreProperties(ignoreUnknown = true)
     public record ItemOCDS(
             String id,
-            String description,
+            String descripcion,
             Classification classification,
             Integer quantity,
             Unit unit
@@ -64,6 +64,6 @@ public record OCDSFullResponse(
     public record Document(String id, String documentType, String url, String format) {}
     public record Identifier(String id, String legalName) {}
     public record Buyer(String id, String name) {}
-    public record Classification(String id, String description) {}
+    public record Classification(String id, String descripcion) {}
     public record Unit(String id, String name) {}
 }
