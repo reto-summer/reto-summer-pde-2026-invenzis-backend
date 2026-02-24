@@ -39,6 +39,20 @@ public class LicitacionUtility {
         return m.find() ? Optional.of(Integer.parseInt(m.group(1))) : Optional.empty();
     }
 
+    @Named("extraerTipoLicitacion")
+    public String extraerTipoLicitacion(String title) {
+        if (title == null || title.isBlank()) {
+            return null;
+        }
+
+        String limpio = title.replaceAll("[\"{}]", "").trim();
+        int index = limpio.indexOf(" - ");
+
+        return index == -1
+                ? null
+                : limpio.substring(index + 3).trim();
+    }
+
     public Optional<LocalDateTime> extraerFechaCierre(String descripcion) {
         if (descripcion == null) return Optional.empty();
 

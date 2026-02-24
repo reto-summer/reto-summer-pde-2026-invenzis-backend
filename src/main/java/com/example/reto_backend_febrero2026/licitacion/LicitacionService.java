@@ -30,8 +30,6 @@ public class LicitacionService implements ILicitacionService {
     @Autowired
     LicitacionMapper licitacionMapper;
 
-
-
     @Override
     public LicitacionDTO getLicitacionById(int id) {
         Licitacion licitacion = licitacionRepository.getLicitacionById(id);
