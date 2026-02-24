@@ -5,15 +5,15 @@ import com.example.reto_backend_febrero2026.familia.*;
 import com.example.reto_backend_febrero2026.integration.servlet.dto.LicitacionItemRecord;
 import com.example.reto_backend_febrero2026.subfamilia.*;
 import jakarta.transaction.Transactional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 @Service
 public class LicitacionService implements ILicitacionService {
-
-    private static final Logger log = LoggerFactory.getLogger(LicitacionService.class);
 
     @Autowired
     LicitacionUtility licitacionUtility;
@@ -31,9 +31,18 @@ public class LicitacionService implements ILicitacionService {
     LicitacionMapper licitacionMapper;
 
     @Override
+    public List<LicitacionDTO> findAll() {
+        return licitacionRepository.findAll().stream()
+                .map(licitacionMapper::licitacionToLicitacionDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public LicitacionDTO getLicitacionById(int id) {
-        Licitacion licitacion = licitacionRepository.getLicitacionById(id);
-        return licitacionMapper.licitacionToLicitacionDTO(licitacion);
+        return licitacionRepository
+                .getLicitacionById(id)
+                .map(licitacionMapper::licitacionToLicitacionDTO)
+                .orElseThrow(() -> new RuntimeException("No existe licitación con id: " + id));
     }
 
     @Auditable(module = "LICITACION_SERVICE", action = "CLEAN_SAVE")
@@ -43,11 +52,13 @@ public class LicitacionService implements ILicitacionService {
         Integer id = licitacionUtility.extraerIdDelLink(itemRecord.link()).orElse(null);
 
         if (id != null) {
-            Licitacion existente = licitacionRepository.getLicitacionById(id);
-            if (existente != null) {
-                return licitacionMapper.licitacionToLicitacionDTO(existente);
+            Optional<Licitacion> existente = licitacionRepository.getLicitacionById(id);
+
+            if (existente.isPresent()) {
+                return licitacionMapper.licitacionToLicitacionDTO(existente.get());
             }
         }
+
         LicitacionDTO licitacionDTO = licitacionMapper.itemRecordToDTO(itemRecord);
 
         FamiliaDTO familiaDTO = iFamiliaService.findById(itemRecord.familiaCod());
@@ -60,13 +71,14 @@ public class LicitacionService implements ILicitacionService {
         Licitacion licitacion = licitacionMapper.licitacionDTOtoLicitacion(licitacionDTO);
         licitacionRepository.save(licitacion);
         return licitacionDTO;
+    }
 
+    public LicitacionDTO getLicitacionByTitulo(String titulo){
+        return licitacionRepository
+                .getLicitacionByTitulo(titulo)
+                .map(licitacionMapper::licitacionToLicitacionDTO)
+                .orElseThrow(() -> new RuntimeException("No existe licitación con titulo: " + titulo));
     }
-        public LicitacionDTO getLicitacionByTitulo(String titulo){
-            Licitacion licitacion = licitacionRepository.getLicitacionByTitulo(titulo);
-            LicitacionDTO dto = licitacionMapper.licitacionToLicitacionDTO(licitacion);
-            return dto;
-        }
-    }
+}
 
 

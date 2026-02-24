@@ -3,6 +3,7 @@ package com.example.reto_backend_febrero2026.familia;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -22,40 +23,52 @@ public class FamiliaService implements IFamiliaService {
         return familiaRepository.findAll()
                 .stream()
                 .map(familiaMapper::familyToFamilyDTO)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
     public FamiliaDTO findById(Integer cod) {
-        try {
-            Familia familia = familiaRepository.findById(cod);
-            return familiaMapper.familyToFamilyDTO(familia);
-        } catch (RuntimeException e) {
-            throw new IllegalArgumentException("No se encontró la familia con COD=" + cod, e);
-        }
+        return familiaRepository.findById(cod)
+                .map(familiaMapper::familyToFamilyDTO)
+                .orElseThrow(() ->
+                        new IllegalArgumentException("No se encontró la familia con cod=" + cod)
+                );
     }
 
     @Override
     public FamiliaDTO saveFamily(FamiliaDTO dto) {
 
+        if (dto.getCod() == null) {
+            throw new IllegalArgumentException("cod no puede ser null");
+        }
+
+        if (dto.getDescripcion() == null) {
+            dto.setDescripcion("");
+        }
+
         Familia familia = familiaMapper.familyDTOtoFamily(dto);
-
-        if (familia.getCod() == null) {
-            throw new IllegalArgumentException("COD no puede ser null");
-        }
-
-        if (familia.getDescripcion() == null) {
-            familia.setDescripcion("");
-        }
 
         Familia saved = familiaRepository.save(familia);
 
-        return familiaMapper.familyToFamilyDTO(saved);
+        FamiliaDTO savedDTO = familiaMapper.familyToFamilyDTO(saved);
+
+        return savedDTO;
     }
 
     private Familia getOrCreateFamily(Integer cod) {
-        if (cod == null) return null;
-        Familia f = familiaRepository.findById(cod);
-        return (f != null) ? f : familiaRepository.save(new Familia(cod, "Familia " + cod));
+
+        if (cod == null) {
+            return null;
+        }
+
+        Optional<Familia> existente = familiaRepository.findById(cod);
+
+        if (existente.isPresent()) {
+            return existente.get();
+        }
+
+        Familia nuevaFamilia = new Familia(cod, "Familia " + cod);
+
+        return familiaRepository.save(nuevaFamilia);
     }
 }
