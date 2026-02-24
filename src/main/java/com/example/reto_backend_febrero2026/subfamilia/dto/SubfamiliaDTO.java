@@ -1,24 +1,27 @@
-package com.example.reto_backend_febrero2026.familia;
+package com.example.reto_backend_febrero2026.subfamilia.dto;
 
-import jakarta.persistence.*;
+public class SubfamiliaDTO {
 
-@Entity
-@Table(name = "familias")
-public class FamiliaModel {
+    private Integer famiCod;
 
-    @Id
-    @Column(name = "cod")
     private Integer cod;
 
-    @Column(name = "descripcion", nullable = false, length = 255)
     private String descripcion;
 
-    public FamiliaModel() {
-    }
+    public SubfamiliaDTO() {}
 
-    public FamiliaModel(Integer cod, String descripcion) {
+    public SubfamiliaDTO(Integer famiCod, Integer cod, String descripcion) {
+        this.famiCod = famiCod;
         this.cod = cod;
         this.descripcion = descripcion;
+    }
+
+    public Integer getFamiCod() {
+        return famiCod;
+    }
+
+    public void setFamiCod(Integer famiCod) {
+        this.famiCod = famiCod;
     }
 
     public Integer getCod() {

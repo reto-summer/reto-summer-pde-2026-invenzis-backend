@@ -1,28 +1,34 @@
-package com.example.reto_backend_febrero2026.subfamilia.dto;
+package com.example.reto_backend_febrero2026.subfamilia;
 
-import com.example.reto_backend_febrero2026.familia.dto.FamiliaModelDTO;
+import com.example.reto_backend_febrero2026.familia.Familia;
+import jakarta.persistence.*;
 
 import java.io.Serializable;
-import java.time.LocalDate;
 import java.util.Objects;
 
-public class SubfamiliaModelDTO {
+@Entity
+@Table(name = "SUBFLIAS")
+@IdClass(Subfamilia.SubfamiliaId.class)
+public class Subfamilia {
 
+    @Id
+    @Column(name = "FAMI_COD")
     private Integer famiCod;
 
+    @Id
+    @Column(name = "COD")
     private Integer cod;
 
-    private FamiliaModelDTO familia;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "FAMI_COD", insertable = false, updatable = false)
+    private Familia familia;
 
+    @Column(name = "DESCRIPCION", nullable = false)
     private String descripcion;
 
-    private LocalDate fechaBaja;
+    public Subfamilia() {}
 
-    private String motivoBaja;
-
-    public SubfamiliaModelDTO() {}
-
-    public SubfamiliaModelDTO(Integer famiCod, Integer cod, String descripcion) {
+    public Subfamilia(Integer famiCod, Integer cod, String descripcion) {
         this.famiCod = famiCod;
         this.cod = cod;
         this.descripcion = descripcion;
@@ -44,11 +50,11 @@ public class SubfamiliaModelDTO {
         this.cod = cod;
     }
 
-    public FamiliaModelDTO getFamilia() {
+    public Familia getFamilia() {
         return familia;
     }
 
-    public void setFamilia(FamiliaModelDTO familia) {
+    public void setFamilia(Familia familia) {
         this.familia = familia;
     }
 
@@ -58,22 +64,6 @@ public class SubfamiliaModelDTO {
 
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
-    }
-
-    public LocalDate getFechaBaja() {
-        return fechaBaja;
-    }
-
-    public void setFechaBaja(LocalDate fechaBaja) {
-        this.fechaBaja = fechaBaja;
-    }
-
-    public String getMotivoBaja() {
-        return motivoBaja;
-    }
-
-    public void setMotivoBaja(String motivoBaja) {
-        this.motivoBaja = motivoBaja;
     }
 
     public static class SubfamiliaId implements Serializable {
@@ -94,7 +84,7 @@ public class SubfamiliaModelDTO {
             if (!(o instanceof SubfamiliaId)) return false;
             SubfamiliaId that = (SubfamiliaId) o;
             return Objects.equals(famiCod, that.famiCod) &&
-                    Objects.equals(cod, that.cod);
+                   Objects.equals(cod, that.cod);
         }
 
         @Override

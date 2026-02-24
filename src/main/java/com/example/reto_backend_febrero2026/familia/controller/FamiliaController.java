@@ -1,7 +1,6 @@
 package com.example.reto_backend_febrero2026.familia.controller;
 
-import com.example.reto_backend_febrero2026.familia.FamiliaModel;
-import com.example.reto_backend_febrero2026.familia.dto.FamiliaModelDTO;
+import com.example.reto_backend_febrero2026.familia.dto.FamiliaDTO;
 import com.example.reto_backend_febrero2026.familia.service.interfaces.IFamiliaService;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,12 +18,12 @@ public class FamiliaController {
     }
 
     @GetMapping
-    public List<FamiliaModelDTO> findAll() {
+    public List<FamiliaDTO> findAll() {
         return familiaService.findAll();
     }
 
     @GetMapping("/{cod}")
-    public FamiliaModelDTO findById(@PathVariable Integer cod) {
+    public FamiliaDTO findById(@PathVariable Integer cod) {
         return familiaService.findById(cod);
     }
 }

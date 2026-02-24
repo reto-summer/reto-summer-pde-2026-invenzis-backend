@@ -1,15 +1,22 @@
-package com.example.reto_backend_febrero2026.familia.dto;
+package com.example.reto_backend_febrero2026.familia;
 
-public class FamiliaModelDTO {
+import jakarta.persistence.*;
 
+@Entity
+@Table(name = "FAMILIAS")
+public class Familia {
+
+    @Id
+    @Column(name = "COD")
     private Integer cod;
 
+    @Column(name = "DESCRIPCION", nullable = false, length = 255)
     private String descripcion;
 
-    public FamiliaModelDTO() {
+    public Familia() {
     }
 
-    public FamiliaModelDTO(Integer cod, String descripcion) {
+    public Familia(Integer cod, String descripcion) {
         this.cod = cod;
         this.descripcion = descripcion;
     }
@@ -29,4 +36,5 @@ public class FamiliaModelDTO {
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
     }
+
 }

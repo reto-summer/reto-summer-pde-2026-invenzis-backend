@@ -1,7 +1,7 @@
 package com.example.reto_backend_febrero2026.subfamilia.service.implementation;
 
-import com.example.reto_backend_febrero2026.subfamilia.SubfamiliaModel;
-import com.example.reto_backend_febrero2026.subfamilia.dto.SubfamiliaModelDTO;
+import com.example.reto_backend_febrero2026.subfamilia.Subfamilia;
+import com.example.reto_backend_febrero2026.subfamilia.dto.SubfamiliaDTO;
 import com.example.reto_backend_febrero2026.subfamilia.mapper.SubfamiliaMapper;
 import com.example.reto_backend_febrero2026.subfamilia.repository.interfaces.ISubfamiliaRepository;
 import com.example.reto_backend_febrero2026.subfamilia.service.interfaces.ISubfamiliaService;
@@ -23,7 +23,7 @@ public class SubfamiliaService implements ISubfamiliaService {
     }
 
     @Override
-    public List<SubfamiliaModelDTO> findAll() {
+    public List<SubfamiliaDTO> findAll() {
         return subfamiliaRepository.findAll()
                 .stream()
                 .map(subfamiliaMapper::subFamilyToSubfamilyDTO)
@@ -31,12 +31,12 @@ public class SubfamiliaService implements ISubfamiliaService {
     }
 
     @Override
-    public SubfamiliaModelDTO findById(Integer famiCod, Integer cod) {
+    public SubfamiliaDTO findById(Integer famiCod, Integer cod) {
 
-        SubfamiliaModel.SubfamiliaId id =
-                new SubfamiliaModel.SubfamiliaId(famiCod, cod);
+        Subfamilia.SubfamiliaId id =
+                new Subfamilia.SubfamiliaId(famiCod, cod);
 
-        SubfamiliaModel subfamilia = subfamiliaRepository.findById(id)
+        Subfamilia subfamilia = subfamiliaRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException(
                         "Subfamilia no encontrada con famiCod: "
                                 + famiCod + " y cod: " + cod
@@ -46,7 +46,7 @@ public class SubfamiliaService implements ISubfamiliaService {
     }
 
     @Override
-    public List<SubfamiliaModelDTO> findByFamiCod(Integer famiCod) {
+    public List<SubfamiliaDTO> findByFamiCod(Integer famiCod) {
         return subfamiliaRepository.findByFamiCod(famiCod)
                 .stream()
                 .map(subfamiliaMapper::subFamilyToSubfamilyDTO)
@@ -54,13 +54,19 @@ public class SubfamiliaService implements ISubfamiliaService {
     }
 
     @Override
-    public SubfamiliaModelDTO saveFamily(SubfamiliaModelDTO dto) {
+    public SubfamiliaDTO saveFamily(SubfamiliaDTO dto) {
 
-        SubfamiliaModel subfamilia =
-                subfamiliaMapper.subFamilyDTOtoSubfamily(dto);
+        Subfamilia subfamilia = subfamiliaMapper.subFamilyDTOtoSubfamily(dto);
 
-        SubfamiliaModel saved =
-                subfamiliaRepository.save(subfamilia);
+        if (subfamilia.getFamiCod() == null || subfamilia.getCod() == null) {
+            throw new IllegalArgumentException("FAMI_COD y COD son obligatorios");
+        }
+
+        if (subfamilia.getDescripcion() == null) {
+            subfamilia.setDescripcion("");
+        }
+
+        Subfamilia saved = subfamiliaRepository.save(subfamilia);
 
         return subfamiliaMapper.subFamilyToSubfamilyDTO(saved);
     }
