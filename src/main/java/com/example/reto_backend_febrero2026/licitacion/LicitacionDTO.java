@@ -9,16 +9,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class LicitacionDTO {
 
-    @JsonProperty("id_licitacion")
     private Integer idLicitacion;
 
-    @JsonProperty("titulo")
     private String titulo;
 
-    @JsonProperty("tipo_licitacion")
     private String tipoLicitacion;
 
-    @JsonProperty("descripcion")
     private String descripcion;
 
     @JsonProperty("enviado")
@@ -27,16 +23,12 @@ public class LicitacionDTO {
     @JsonProperty("fecha_publicacion")
     private OffsetDateTime fechaPublicacion;
 
-    @JsonProperty("fecha_cierre")
     private LocalDateTime fechaCierre;
 
-    @JsonProperty("link")
     private String link;
 
-    @JsonProperty("familia")
     private FamiliaDTO familia;
 
-    @JsonProperty("subfamilia")
     private SubfamiliaDTO subfamilia;
 
     public LicitacionDTO() {
