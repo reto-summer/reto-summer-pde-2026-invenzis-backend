@@ -10,6 +10,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class LicitacionService implements ILicitacionService {
 
@@ -25,10 +28,17 @@ public class LicitacionService implements ILicitacionService {
     IFamiliaService iFamiliaService;
 
     @Autowired
-    ILicitacionRepository licitacionRepository;
+    LicitacionRepository licitacionRepository;
 
     @Autowired
     LicitacionMapper licitacionMapper;
+
+    @Override
+    public List<LicitacionDTO> findAll() {
+        return licitacionRepository.findAll().stream()
+                .map(licitacionMapper::licitacionToLicitacionDTO)
+                .collect(Collectors.toList());
+    }
 
     @Override
     public LicitacionDTO getLicitacionById(int id) {
