@@ -68,6 +68,7 @@ public class Subfamilia {
 
     public static class SubfamiliaId implements Serializable {
 
+        private static final long serialVersionUID = 1L;
         private Integer famiCod;
         private Integer cod;
 
