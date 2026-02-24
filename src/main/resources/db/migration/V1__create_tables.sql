@@ -21,3 +21,12 @@ CREATE TABLE IF NOT EXISTS destinos_email (
     fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     fecha_actualizacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TABLE IF NOT EXISTS notificacion (
+    id_notificaciones INTEGER PRIMARY KEY,
+    titulo VARCHAR(255) NOT NULL,
+    exito BOOLEAN NOT NULL,
+    detalle TEXT NULL,
+    contenido TEXT NULL,
+    fecha_ejecucion TIMESTAMP NOT NULL
+);

@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import org.slf4j.MDC;
 
 @Service
 public class MailService implements IMailService {
@@ -109,6 +110,9 @@ public class MailService implements IMailService {
     public void sendLicitacionesEmail(List<LicitacionItemRecord> items) {
         List<LicitacionItemRecord> safeItems = items == null ? List.of() : items;
         String fecha = LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy", new Locale("es", "UY")));
+        String subject = safeItems.isEmpty()
+                ? "Sin nuevas licitaciones ARCE - " + fecha
+                : safeItems.size() + " Licitaciones ARCE - " + fecha;
 
         Context ctx = new Context(new Locale("es", "UY"));
         ctx.setVariable("items", safeItems);
@@ -116,27 +120,36 @@ public class MailService implements IMailService {
 
         String htmlContent = templateEngine.process("email/licitaciones", ctx);
 
+        // Set notification context for AuditAspect
+        MDC.put("notificationTitle", subject);
+        MDC.put("notificationContent", htmlContent);
+
         String[] recipients = getEmailRecipients();
 
         if (recipients.length == 0) {
+            MDC.put("notificationSuccess", "false");
+            MDC.put("notificationDetail", "Sin destinatarios válidos en BD ni mail.to");
             log.error("No hay destinatarios válidos configurados en BD ni en mail.to");
             return;
         }
 
         try {
+            String recipientsList = String.join(", ", recipients);
+            MDC.put("notificationDetail", "Enviado a: " + recipientsList);
+            MDC.put("notificationSuccess", "true");
+
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
             helper.setFrom(mailFrom);
             helper.setTo(recipients);
-            String subject = safeItems.isEmpty()
-                    ? "Sin nuevas licitaciones ARCE - " + fecha
-                    : safeItems.size() + " Licitaciones ARCE - " + fecha;
             helper.setSubject(subject);
             helper.setText(htmlContent, true);
 
             mailSender.send(message);
             log.info("Email de licitaciones enviado a {} destinatarios con {} ítems", recipients.length, safeItems.size());
         } catch (Exception e) {
+            MDC.put("notificationSuccess", "false");
+            MDC.put("notificationDetail", e.getMessage());
             log.error("Error al enviar email de licitaciones: {}", e.getMessage(), e);
             throw new RuntimeException("ERROR en envío de mail: " + e);
         }
