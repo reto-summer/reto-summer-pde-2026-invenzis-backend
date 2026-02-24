@@ -25,7 +25,7 @@ public class AuditLog {
     @Column(nullable = false, updatable = false)
     private String action;
 
-    @Column(nullable = false, updatable = false)
+    @Column(nullable = false, updatable = false, columnDefinition = "TEXT")
     private String message;
 
     @Column(columnDefinition = "TEXT", nullable = false, updatable = false)

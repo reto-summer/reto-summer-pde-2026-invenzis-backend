@@ -8,12 +8,17 @@ public record LicitacionItemRecord(
         String titulo,
 
         @JacksonXmlProperty(localName = "description")
-        String description,
+        String descripcion,
 
         @JacksonXmlProperty(localName = "link")
         String link,
 
         @JacksonXmlProperty(localName = "pubDate")
-        String fechaPublicacion
+        String fechaPublicacion,
+
+        String fechaCierre,
+
+        Integer familiaCod,
+        Integer subFamiliaCod
 ) {
 }
