@@ -1,17 +1,16 @@
 package com.example.reto_backend_febrero2026.subfamilia.service.interfaces;
 
-import com.example.reto_backend_febrero2026.subfamilia.SubfamiliaModel;
-import com.example.reto_backend_febrero2026.subfamilia.dto.SubfamiliaModelDTO;
+import com.example.reto_backend_febrero2026.subfamilia.dto.SubfamiliaDTO;
 
 import java.util.List;
 
 public interface ISubfamiliaService {
 
-    List<SubfamiliaModelDTO> findAll();
+    List<SubfamiliaDTO> findAll();
 
-    SubfamiliaModelDTO findById(Integer famiCod, Integer cod);
+    SubfamiliaDTO findById(Integer famiCod, Integer cod);
 
-    List<SubfamiliaModelDTO> findByFamiCod(Integer famiCod);
+    List<SubfamiliaDTO> findByFamiCod(Integer famiCod);
 
-    SubfamiliaModelDTO saveFamily(SubfamiliaModelDTO subFamilia);
+    SubfamiliaDTO saveFamily(SubfamiliaDTO subFamilia);
 }

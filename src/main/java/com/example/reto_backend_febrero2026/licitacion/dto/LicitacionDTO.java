@@ -3,18 +3,21 @@ package com.example.reto_backend_febrero2026.licitacion.dto;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 
-import com.example.reto_backend_febrero2026.familia.FamiliaModel;
-import com.example.reto_backend_febrero2026.familia.dto.FamiliaModelDTO;
-import com.example.reto_backend_febrero2026.subfamilia.dto.SubfamiliaModelDTO;
+import com.example.reto_backend_febrero2026.familia.dto.FamiliaDTO;
+import com.example.reto_backend_febrero2026.subfamilia.dto.SubfamiliaDTO;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
-public class LicitacionModelDTO {
+public class LicitacionDTO {
 
     @JsonProperty("id_licitacion")
     private Integer idLicitacion;
 
-    private String title;
-    private String description;
+    @JsonProperty("titulo")
+    private String titulo;
+
+    @JsonProperty("descripcion")
+    private String descripcion;
 
     @JsonProperty("fecha_publicacion")
     private OffsetDateTime fechaPublicacion;
@@ -22,22 +25,25 @@ public class LicitacionModelDTO {
     @JsonProperty("fecha_cierre")
     private LocalDateTime fechaCierre;
 
+    @JsonProperty("link")
     private String link;
 
-    private FamiliaModelDTO familia;
+    @JsonProperty("familia")
+    private FamiliaDTO familia;
 
-    private SubfamiliaModelDTO subfamilia;
+    @JsonProperty("subfamilia")
+    private SubfamiliaDTO subfamilia;
 
-    public LicitacionModelDTO() {
+    public LicitacionDTO() {
     }
 
-    public LicitacionModelDTO(Integer idLicitacion, String title, String description,
-                              OffsetDateTime fechaPublicacion, LocalDateTime fechaCierre,
-                           String link, FamiliaModelDTO familia,
-                              SubfamiliaModelDTO subfamilia) {
+    public LicitacionDTO(Integer idLicitacion, String titulo, String descripcion,
+                         OffsetDateTime fechaPublicacion, LocalDateTime fechaCierre,
+                         String link, FamiliaDTO familia,
+                         SubfamiliaDTO subfamilia) {
         this.idLicitacion = idLicitacion;
-        this.title = title;
-        this.description = description;
+        this.titulo = titulo;
+        this.descripcion = descripcion;
         this.fechaPublicacion = fechaPublicacion;
         this.fechaCierre = fechaCierre;
         this.link = link;
@@ -53,16 +59,20 @@ public class LicitacionModelDTO {
         this.idLicitacion = idLicitacion;
     }
 
-    public String getTitle() {
-        return title;
+    public String getTitulo() {
+        return titulo;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setTitulo(String titulo) {
+        this.titulo = titulo;
     }
 
-    public String getDescription() {
-        return description;
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
     }
 
     public OffsetDateTime getFechaPublicacion() {
@@ -81,10 +91,6 @@ public class LicitacionModelDTO {
         this.fechaCierre = fechaCierre;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
     public String getLink() {
         return link;
     }
@@ -93,19 +99,19 @@ public class LicitacionModelDTO {
         this.link = link;
     }
 
-    public FamiliaModelDTO getFamilia() {
+    public FamiliaDTO getFamilia() {
         return familia;
     }
 
-    public void setFamilia(FamiliaModelDTO familia) {
+    public void setFamilia(FamiliaDTO familia) {
         this.familia = familia;
     }
 
-    public SubfamiliaModelDTO getSubfamilia() {
+    public SubfamiliaDTO getSubfamilia() {
         return subfamilia;
     }
 
-    public void setSubfamilia(SubfamiliaModelDTO subfamilia) {
+    public void setSubfamilia(SubfamiliaDTO subfamilia) {
         this.subfamilia = subfamilia;
     }
 }

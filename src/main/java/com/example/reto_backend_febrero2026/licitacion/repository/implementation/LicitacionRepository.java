@@ -1,17 +1,16 @@
 package com.example.reto_backend_febrero2026.licitacion.repository.implementation;
 
-import com.example.reto_backend_febrero2026.familia.FamiliaModel;
-import com.example.reto_backend_febrero2026.licitacion.LicitacionModel;
+import com.example.reto_backend_febrero2026.familia.Familia;
+import com.example.reto_backend_febrero2026.licitacion.Licitacion;
 import com.example.reto_backend_febrero2026.licitacion.repository.interfaces.ILicitacionRepository;
-import com.example.reto_backend_febrero2026.subfamilia.SubfamiliaModel;
+import com.example.reto_backend_febrero2026.subfamilia.Subfamilia;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
+import java.sql.Types;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 
@@ -20,33 +19,33 @@ public class LicitacionRepository implements ILicitacionRepository {
 
     private final JdbcTemplate jdbcTemplate;
 
-    private static final RowMapper<LicitacionModel> tenderRowMapper = (rs, rowNum) -> {
-        LicitacionModel tender = new LicitacionModel();
-        tender.setIdLicitacion(rs.getInt("id_licitacion"));
-        tender.setTitle(rs.getString("title"));
-        tender.setDescription(rs.getString("description"));
-        tender.setFechaPublicacion(rs.getObject("fecha_publicacion", OffsetDateTime.class));
-        tender.setFechaCierre(rs.getObject("fecha_cierre", LocalDateTime.class));
-        tender.setLink(rs.getString("link"));
+    private static final RowMapper<Licitacion> licitacionRowMapper = (rs, rowNum) -> {
+        Licitacion licitacion = new Licitacion();
+        licitacion.setIdLicitacion(rs.getInt("id_licitacion"));
+        licitacion.setTitulo(rs.getString("titulo"));
+        licitacion.setDescripcion(rs.getString("descripcion"));
+        licitacion.setFechaPublicacion(rs.getObject("fecha_publicacion", OffsetDateTime.class));
+        licitacion.setFechaCierre(rs.getObject("fecha_cierre", LocalDateTime.class));
+        licitacion.setLink(rs.getString("link"));
 
         // familia y subfamilia
         Integer familiaCod = rs.getObject("familia_cod", Integer.class);
         if (familiaCod != null) {
-            FamiliaModel familia = new FamiliaModel();
+            Familia familia = new Familia();
             familia.setCod(familiaCod);
-            tender.setFamilia(familia);
+            licitacion.setFamilia(familia);
         }
 
         Integer subFamiCod = rs.getObject("subfami_fami_cod", Integer.class);
         Integer subCod = rs.getObject("subfami_cod", Integer.class);
 
         if (subFamiCod != null && subCod != null) {
-            SubfamiliaModel sub = new SubfamiliaModel();
+            Subfamilia sub = new Subfamilia();
             sub.setFamiCod(subFamiCod);
             sub.setCod(subCod);
-            tender.setSubfamilia(sub);
+            licitacion.setSubfamilia(sub);
         }
-        return tender;
+        return licitacion;
     };
 
     public LicitacionRepository(JdbcTemplate jdbcTemplate) {
@@ -54,56 +53,57 @@ public class LicitacionRepository implements ILicitacionRepository {
     }
 
     @Override
-    public LicitacionModel getTenderById(int tenderId) {
-        String sql = "SELECT * FROM licitacion WHERE id_licitacion = ?";
+    public Licitacion getLicitacionById(int licitacionId) {
+        String sql = "SELECT * FROM LICITACION WHERE ID_LICITACION = ?";
         try {
-            return jdbcTemplate.queryForObject(sql, tenderRowMapper, tenderId);
+            return jdbcTemplate.queryForObject(sql, licitacionRowMapper, licitacionId);
         } catch (EmptyResultDataAccessException e) {
-            throw new RuntimeException("No se encontró la licitación con Id: " + tenderId);
+            return null;
         }
     }
 
     @Override
-    public LicitacionModel getTenderByTitle(String titulo) {
-        String sql = "SELECT * FROM licitacion WHERE titulo = ?";
+    public Licitacion getLicitacionByTitulo(String titulo) {
+        String sql = "SELECT * FROM LICITACION WHERE TITULO = ?";
         try {
-            return jdbcTemplate.queryForObject(sql, tenderRowMapper, titulo);
+            return jdbcTemplate.queryForObject(sql, licitacionRowMapper, titulo);
         } catch (EmptyResultDataAccessException e) {
-            throw new RuntimeException("No se encontró la licitación con Id: " + titulo);
+            return null;
         }
     }
 
     @Override
-    public LicitacionModel save(LicitacionModel tender) {
+    public Licitacion save(Licitacion licitacion) {
         String sql = """
-        INSERT INTO licitacion
-          (id_licitacion, title, description, fecha_publicacion, fecha_cierre, link,
-           familia_cod, subfami_fami_cod, subfami_cod)
-          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-        """;
-
-        KeyHolder keyHolder = new GeneratedKeyHolder();
+        INSERT INTO LICITACION
+          (ID_LICITACION, TITULO, DESCRIPCION, FECHA_PUBLICACION, FECHA_CIERRE, LINK,
+           FAMILIA_COD, SUBFAMI_FAMI_COD, SUBFAMI_COD)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    """;
 
         jdbcTemplate.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id_licitacion"});
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1, licitacion.getIdLicitacion());
+            ps.setString(2, licitacion.getTitulo());
+            ps.setString(3, licitacion.getDescripcion());
+            ps.setObject(4, licitacion.getFechaPublicacion());
+            ps.setObject(5, licitacion.getFechaCierre());
+            ps.setString(6, licitacion.getLink());
 
-            ps.setInt(1, tender.getIdLicitacion());
-            ps.setString(2, tender.getTitle());
-            ps.setString(3, tender.getDescription());
-            ps.setObject(4, tender.getFechaPublicacion());
-            ps.setObject(5, tender.getFechaCierre());
-            ps.setString(6, tender.getLink());
-            ps.setInt(7, tender.getFamilia().getCod());
-            ps.setInt(8, tender.getSubfamilia().getFamiCod());
-            ps.setInt(9, tender.getSubfamilia().getCod());
+            if (licitacion.getFamilia() != null) ps.setInt(7, licitacion.getFamilia().getCod());
+            else ps.setNull(7, Types.INTEGER);
+
+            if (licitacion.getSubfamilia() != null) {
+                ps.setInt(8, licitacion.getSubfamilia().getFamiCod());
+                ps.setInt(9, licitacion.getSubfamilia().getCod());
+            } else {
+                ps.setNull(8, Types.INTEGER);
+                ps.setNull(9, Types.INTEGER);
+            }
+
             return ps;
-        }, keyHolder);
+        });
 
-        Number key = keyHolder.getKey();
-        if (key != null) {
-            tender.setIdLicitacion(key.intValue());
-        }
-
-        return tender;
+        return licitacion;
     }
 }

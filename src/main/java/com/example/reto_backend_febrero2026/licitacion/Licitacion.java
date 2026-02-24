@@ -3,55 +3,57 @@ package com.example.reto_backend_febrero2026.licitacion;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 
-import com.example.reto_backend_febrero2026.familia.FamiliaModel;
-import com.example.reto_backend_febrero2026.subfamilia.SubfamiliaModel;
+import com.example.reto_backend_febrero2026.familia.Familia;
+import com.example.reto_backend_febrero2026.subfamilia.Subfamilia;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "licitacion")
-public class LicitacionModel {
+@Table(name = "LICITACION")
+public class Licitacion {
 
     @Id
-    @JsonProperty("id_licitacion")
+    @JsonProperty("ID_LICITACION")
+    @Column(name = "ID_LICITACION")
     private Integer idLicitacion;
-    @Column(columnDefinition = "TEXT")
-    private String title;
-    @Column(columnDefinition = "TEXT")
-    private String description;
+    @Column(name = "TITULO", columnDefinition = "TEXT")
+    private String titulo;
+    @Column(name = "DESCRIPCION", columnDefinition = "TEXT")
+    private String descripcion;
 
     @JsonProperty("fecha_publicacion")
     @JsonFormat(pattern = "EEE, dd MMM yyyy HH:mm:ss Z", locale = "en")
+    @Column(name = "FECHA_PUBLICACION")
     private OffsetDateTime fechaPublicacion;
 
     @JsonProperty("fecha_cierre")
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm")
+    @Column(name = "FECHA_CIERRE")
     private LocalDateTime fechaCierre;
 
+    @Column(name = "LINK")
     private String link;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "familia_cod", referencedColumnName = "cod")
-    private FamiliaModel familia;
+    @JoinColumn(name = "FAMILIA_COD", referencedColumnName = "COD")
+    private Familia familia;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumns({
-            @JoinColumn(name = "subfami_fami_cod", referencedColumnName = "fami_cod"),
-            @JoinColumn(name = "subfami_cod", referencedColumnName = "cod")
+            @JoinColumn(name = "SUBFAMI_FAMI_COD", referencedColumnName = "FAMI_COD"),
+            @JoinColumn(name = "SUBFAMI_COD", referencedColumnName = "COD")
     })
-    private SubfamiliaModel subfamilia;
+    private Subfamilia subfamilia;
 
-    public LicitacionModel() {
+    public Licitacion() {
     }
 
-    public LicitacionModel(Integer idLicitacion, String title, String description,
-                           OffsetDateTime fechaPublicacion, LocalDateTime fechaCierre,
-                            String link, FamiliaModel familia,
-                            SubfamiliaModel subfamilia) {
+    public Licitacion(Integer idLicitacion, String titulo, String descripcion, OffsetDateTime fechaPublicacion, LocalDateTime fechaCierre,
+                      String link, Familia familia, Subfamilia subfamilia) {
         this.idLicitacion = idLicitacion;
-        this.title = title;
-        this.description = description;
+        this.titulo = titulo;
+        this.descripcion = descripcion;
         this.fechaPublicacion = fechaPublicacion;
         this.fechaCierre = fechaCierre;
         this.link = link;
@@ -67,16 +69,20 @@ public class LicitacionModel {
         this.idLicitacion = idLicitacion;
     }
 
-    public String getTitle() {
-        return title;
+    public String getTitulo() {
+        return titulo;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setTitulo(String titulo) {
+        this.titulo = titulo;
     }
 
-    public String getDescription() {
-        return description;
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
     }
 
     public OffsetDateTime getFechaPublicacion() {
@@ -95,10 +101,6 @@ public class LicitacionModel {
         this.fechaCierre = fechaCierre;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
     public String getLink() {
         return link;
     }
@@ -107,19 +109,19 @@ public class LicitacionModel {
         this.link = link;
     }
 
-    public FamiliaModel getFamilia() {
+    public Familia getFamilia() {
         return familia;
     }
 
-    public void setFamilia(FamiliaModel familia) {
+    public void setFamilia(Familia familia) {
         this.familia = familia;
     }
 
-    public SubfamiliaModel getSubfamilia() {
+    public Subfamilia getSubfamilia() {
         return subfamilia;
     }
 
-    public void setSubfamilia(SubfamiliaModel subfamilia) {
+    public void setSubfamilia(Subfamilia subfamilia) {
         this.subfamilia = subfamilia;
     }
 }

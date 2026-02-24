@@ -1,7 +1,7 @@
 package com.example.reto_backend_febrero2026.subfamilia.mapper;
 
-import com.example.reto_backend_febrero2026.subfamilia.SubfamiliaModel;
-import com.example.reto_backend_febrero2026.subfamilia.dto.SubfamiliaModelDTO;
+import com.example.reto_backend_febrero2026.subfamilia.Subfamilia;
+import com.example.reto_backend_febrero2026.subfamilia.dto.SubfamiliaDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -10,13 +10,11 @@ public interface SubfamiliaMapper {
 
     @Mapping(source = "famiCod", target = "famiCod")
     @Mapping(source = "cod", target = "cod")
-    @Mapping(source = "familia", target = "familia")
     @Mapping(source = "descripcion", target = "descripcion")
-    SubfamiliaModelDTO subFamilyToSubfamilyDTO(SubfamiliaModel subfamily);
+    SubfamiliaDTO subFamilyToSubfamilyDTO(Subfamilia subfamily);
 
     @Mapping(source = "famiCod", target = "famiCod")
     @Mapping(source = "cod", target = "cod")
-    @Mapping(source = "familia", target = "familia")
     @Mapping(source = "descripcion", target = "descripcion")
-    SubfamiliaModel subFamilyDTOtoSubfamily(SubfamiliaModelDTO subFamilyDTO);
+    Subfamilia subFamilyDTOtoSubfamily(SubfamiliaDTO subFamilyDTO);
 }
