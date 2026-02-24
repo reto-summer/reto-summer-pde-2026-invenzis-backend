@@ -21,6 +21,7 @@ public class LicitacionRepository implements ILicitacionRepository {
         Licitacion licitacion = new Licitacion();
         licitacion.setIdLicitacion(rs.getInt("id_licitacion"));
         licitacion.setTitulo(rs.getString("titulo"));
+        licitacion.setTipoLicitacion(rs.getString("tipo_licitacion"));
         licitacion.setDescripcion(rs.getString("descripcion"));
         licitacion.setFechaPublicacion(rs.getObject("fecha_publicacion", OffsetDateTime.class));
         licitacion.setFechaCierre(rs.getObject("fecha_cierre", LocalDateTime.class));
@@ -74,29 +75,30 @@ public class LicitacionRepository implements ILicitacionRepository {
     public Licitacion save(Licitacion licitacion) {
         String sql = """
         INSERT INTO LICITACION
-          (ID_LICITACION, TITULO, DESCRIPCION, FECHA_PUBLICACION, FECHA_CIERRE, LINK,
+          (ID_LICITACION, TITULO, TIPO_LICITACION, DESCRIPCION, FECHA_PUBLICACION, FECHA_CIERRE, LINK,
            FAMILIA_COD, SUBFAMI_FAMI_COD, SUBFAMI_COD)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     """;
 
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sql);
             ps.setInt(1, licitacion.getIdLicitacion());
             ps.setString(2, licitacion.getTitulo());
-            ps.setString(3, licitacion.getDescripcion());
-            ps.setObject(4, licitacion.getFechaPublicacion());
-            ps.setObject(5, licitacion.getFechaCierre());
-            ps.setString(6, licitacion.getLink());
+            ps.setString(3, licitacion.getTipoLicitacion());
+            ps.setString(4, licitacion.getDescripcion());
+            ps.setObject(5, licitacion.getFechaPublicacion());
+            ps.setObject(6, licitacion.getFechaCierre());
+            ps.setString(7, licitacion.getLink());
 
-            if (licitacion.getFamilia() != null) ps.setInt(7, licitacion.getFamilia().getCod());
-            else ps.setNull(7, Types.INTEGER);
+            if (licitacion.getFamilia() != null) ps.setInt(8, licitacion.getFamilia().getCod());
+            else ps.setNull(8, Types.INTEGER);
 
             if (licitacion.getSubfamilia() != null) {
-                ps.setInt(8, licitacion.getSubfamilia().getFamiCod());
-                ps.setInt(9, licitacion.getSubfamilia().getCod());
+                ps.setInt(9, licitacion.getSubfamilia().getFamiCod());
+                ps.setInt(10, licitacion.getSubfamilia().getCod());
             } else {
-                ps.setNull(8, Types.INTEGER);
                 ps.setNull(9, Types.INTEGER);
+                ps.setNull(10, Types.INTEGER);
             }
 
             return ps;

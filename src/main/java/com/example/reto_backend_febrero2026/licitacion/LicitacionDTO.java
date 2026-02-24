@@ -15,6 +15,9 @@ public class LicitacionDTO {
     @JsonProperty("titulo")
     private String titulo;
 
+    @JsonProperty("tipo_licitacion")
+    private String tipoLicitacion;
+
     @JsonProperty("descripcion")
     private String descripcion;
 
@@ -36,12 +39,13 @@ public class LicitacionDTO {
     public LicitacionDTO() {
     }
 
-    public LicitacionDTO(Integer idLicitacion, String titulo, String descripcion,
+    public LicitacionDTO(Integer idLicitacion, String titulo, String tipoLicitacion, String descripcion,
                          OffsetDateTime fechaPublicacion, LocalDateTime fechaCierre,
                          String link, FamiliaDTO familia,
                          SubfamiliaDTO subfamilia) {
         this.idLicitacion = idLicitacion;
         this.titulo = titulo;
+        this.tipoLicitacion = tipoLicitacion;
         this.descripcion = descripcion;
         this.fechaPublicacion = fechaPublicacion;
         this.fechaCierre = fechaCierre;
@@ -113,4 +117,8 @@ public class LicitacionDTO {
     public void setSubfamilia(SubfamiliaDTO subfamilia) {
         this.subfamilia = subfamilia;
     }
+
+    public String getTipoLicitacion() { return tipoLicitacion; }
+
+    public void setTipoLicitacion(String tipoLicitacion) { this.tipoLicitacion = tipoLicitacion; }
 }
