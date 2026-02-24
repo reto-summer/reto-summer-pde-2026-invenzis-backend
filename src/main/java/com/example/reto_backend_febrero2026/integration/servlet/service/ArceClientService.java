@@ -4,9 +4,8 @@ import com.example.reto_backend_febrero2026.audit.AuditService;
 import com.example.reto_backend_febrero2026.audit.Auditable;
 import com.example.reto_backend_febrero2026.integration.servlet.dto.LicitacionItemRecord;
 import com.example.reto_backend_febrero2026.integration.servlet.dto.RssResponseDTO;
-import com.example.reto_backend_febrero2026.licitacion.dto.LicitacionDTO;
-import com.example.reto_backend_febrero2026.licitacion.service.implementation.LicitacionService;
-import com.example.reto_backend_febrero2026.licitacion.service.interfaces.ILicitacionService;
+import com.example.reto_backend_febrero2026.licitacion.LicitacionDTO;
+import com.example.reto_backend_febrero2026.licitacion.ILicitacionService;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +19,6 @@ import org.springframework.web.client.RestClient;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.stream.Stream;
 
 @Service
 public class ArceClientService {
@@ -74,8 +72,7 @@ public class ArceClientService {
                                 familyCod,
                                 subFamilyCod
                         );
-                        // El service limpia HTML, extrae fechaCierre y guarda en Supabase
-                        return licitacionService.saveLicitacion(record);
+                        return licitacionService.cleanSave(record);
                     })
                     .toList();
 
