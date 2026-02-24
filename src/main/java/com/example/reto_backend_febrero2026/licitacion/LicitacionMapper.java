@@ -12,6 +12,7 @@ public interface LicitacionMapper {
 
     @Mapping(source = "link", target = "idLicitacion", qualifiedByName = "extraerId")
     @Mapping(source = "descripcion", target = "descripcion", qualifiedByName = "limpiarHTML")
+    @Mapping(source = "enviado", target = "enviado")
     @Mapping(source = "fechaPublicacion", target = "fechaPublicacion", qualifiedByName = "parsearFechaPublicacion")
     @Mapping(source = "descripcion", target = "fechaCierre", qualifiedByName = "extraerFechaCierre")
     @Mapping(target = "familia", ignore = true)
