@@ -3,14 +3,14 @@ package com.example.reto_backend_febrero2026.familia;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "FAMILIAS")
+@Table(name = "familias")
 public class Familia {
 
     @Id
-    @Column(name = "COD")
+    @Column(name = "cod")
     private Integer cod;
 
-    @Column(name = "DESCRIPCION", nullable = false, length = 255)
+    @Column(name = "descripcion", nullable = false, length = 255)
     private String descripcion;
 
     public Familia() {
