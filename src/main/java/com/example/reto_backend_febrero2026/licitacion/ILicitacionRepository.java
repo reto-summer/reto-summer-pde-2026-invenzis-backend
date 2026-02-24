@@ -5,9 +5,10 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
-public interface LicitacionRepository extends JpaRepository<Licitacion, Integer> {
+public interface ILicitacionRepository extends JpaRepository<Licitacion, Integer> {
 
     @Query("""
         SELECT l FROM Licitacion l
@@ -22,7 +23,8 @@ public interface LicitacionRepository extends JpaRepository<Licitacion, Integer>
         LEFT JOIN FETCH l.subfamilia
         WHERE l.idLicitacion = :id
     """)
-    Licitacion getLicitacionById(Integer id);
+    Optional<Licitacion> getLicitacionById(Integer id);
+
 
     @Query("""
         SELECT l FROM Licitacion l
@@ -30,5 +32,5 @@ public interface LicitacionRepository extends JpaRepository<Licitacion, Integer>
         LEFT JOIN FETCH l.subfamilia
         WHERE l.titulo = :titulo
     """)
-    Licitacion getLicitacionByTitulo(String titulo);
+    Optional<Licitacion> getLicitacionByTitulo(String titulo);
 }
