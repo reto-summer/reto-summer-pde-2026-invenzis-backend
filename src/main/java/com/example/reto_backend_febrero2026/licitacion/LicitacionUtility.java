@@ -50,7 +50,7 @@ public class LicitacionUtility {
 
         return index == -1
                 ? null
-                : limpio.substring(index + 3).trim();
+                : limpio.substring(0, index).trim();
     }
 
     public Optional<LocalDateTime> extraerFechaCierre(String descripcion) {
