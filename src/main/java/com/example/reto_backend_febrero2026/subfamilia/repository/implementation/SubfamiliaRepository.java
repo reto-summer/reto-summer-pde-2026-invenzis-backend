@@ -1,6 +1,6 @@
 package com.example.reto_backend_febrero2026.subfamilia.repository.implementation;
 
-import com.example.reto_backend_febrero2026.subfamilia.SubfamiliaModel;
+import com.example.reto_backend_febrero2026.subfamilia.Subfamilia;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -20,91 +20,69 @@ public class SubfamiliaRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    private static final RowMapper<SubfamiliaModel> subfamiliaRowMapper =
-            new RowMapper<>() {
-                @Override
-                public SubfamiliaModel mapRow(ResultSet rs, int rowNum) throws SQLException {
-                    SubfamiliaModel s = new SubfamiliaModel();
-                    s.setFamiCod(rs.getInt("fami_cod"));
-                    s.setCod(rs.getInt("cod"));
-                    s.setDescripcion(rs.getString("descripcion"));
-
-                    Date fechaBaja = rs.getDate("fecha_baja");
-
-                    return s;
-                }
+    private static final RowMapper<Subfamilia> subfamiliaRowMapper =
+            (rs, rowNum) -> {
+                Subfamilia s = new Subfamilia();
+                s.setFamiCod(rs.getInt("FAMI_COD"));
+                s.setCod(rs.getInt("COD"));
+                s.setDescripcion(rs.getString("DESCRIPCION"));
+                return s;
             };
 
-    public List<SubfamiliaModel> findAll() {
+    public List<Subfamilia> findAll() {
         String sql = """
-                SELECT fami_cod, cod, descripcion
-                FROM subflias
+                SELECT FAMI_COD, COD, DESCRIPCION
+                FROM SUBFLIAS
                 """;
         return jdbcTemplate.query(sql, subfamiliaRowMapper);
     }
 
-    public SubfamiliaModel findById(Integer famiCod, Integer cod) {
+    public Subfamilia findById(Integer famiCod, Integer cod) {
         String sql = """
-                SELECT fami_cod, cod, descripcion
-                FROM subflias
-                WHERE fami_cod = ? AND cod = ?
+                SELECT FAMI_COD, COD, DESCRIPCION
+                FROM SUBFLIAS
+                WHERE FAMI_COD = ? AND COD = ?
                 """;
 
         try {
             return jdbcTemplate.queryForObject(sql, subfamiliaRowMapper, famiCod, cod);
         } catch (EmptyResultDataAccessException e) {
-            throw new RuntimeException(
-                    "Subfamilia no encontrada con famiCod: "
-                            + famiCod + " y cod: " + cod
-            );
+            return null;
         }
     }
 
-    public List<SubfamiliaModel> findByFamiCod(Integer famiCod) {
+    public List<Subfamilia> findByFamiCod(Integer famiCod) {
         String sql = """
-                SELECT fami_cod, cod, descripcion
-                FROM subflias
-                WHERE fami_cod = ?
+                SELECT FAMI_COD, COD, DESCRIPCION
+                FROM SUBFLIAS
+                WHERE FAMI_COD = ?
                 """;
 
         return jdbcTemplate.query(sql, subfamiliaRowMapper, famiCod);
     }
 
-    public SubfamiliaModel save(SubfamiliaModel subFamilia) {
+    public Subfamilia save(Subfamilia subFamilia) {
 
-        String checkSql = """
-                SELECT COUNT(1)
-                FROM subflias
-                WHERE fami_cod = ? AND cod = ?
-                """;
+        String updateSql = """
+            UPDATE SUBFLIAS
+            SET DESCRIPCION = ?
+            WHERE FAMI_COD = ? AND COD = ?
+            """;
 
-        Integer count = jdbcTemplate.queryForObject(
-                checkSql,
-                Integer.class,
+        int rowsAffected = jdbcTemplate.update(
+                updateSql,
+                subFamilia.getDescripcion(),
                 subFamilia.getFamiCod(),
                 subFamilia.getCod()
         );
 
-        if (count != null && count > 0) {
-            String updateSql = """
-                    UPDATE subflias
-                    SET descripcion = ?
-                    WHERE fami_cod = ? AND cod = ?
-                    """;
+        if (rowsAffected == 0) {
 
-            jdbcTemplate.update(
-                    updateSql,
-                    subFamilia.getDescripcion(),
-                    subFamilia.getFamiCod(),
-                    subFamilia.getCod()
-            );
-
-        } else {
             String insertSql = """
-                    INSERT INTO subflias
-                    (fami_cod, cod, descripcion)
-                    VALUES (?, ?, ?)
-                    """;
+                INSERT INTO SUBFLIAS
+                (FAMI_COD, COD, DESCRIPCION)
+                VALUES (?, ?, ?)
+                """;
 
             jdbcTemplate.update(
                     insertSql,
@@ -113,6 +91,7 @@ public class SubfamiliaRepository {
                     subFamilia.getDescripcion()
             );
         }
+
         return subFamilia;
     }
 }

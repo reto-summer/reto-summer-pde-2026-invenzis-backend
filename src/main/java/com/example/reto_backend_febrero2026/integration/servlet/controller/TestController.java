@@ -2,11 +2,13 @@ package com.example.reto_backend_febrero2026.integration.servlet.controller;
 
 import com.example.reto_backend_febrero2026.integration.servlet.dto.LicitacionItemRecord;
 import com.example.reto_backend_febrero2026.integration.servlet.service.ArceClientService;
+import com.example.reto_backend_febrero2026.licitacion.dto.LicitacionDTO;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @RestController
 public class TestController {
@@ -18,8 +20,10 @@ public class TestController {
     }
 
     @GetMapping("/api/save-rss")
-    public String saveLicitaciones(@RequestParam Integer familyCod, @RequestParam Integer subFamilyCod ) {
-        arceClientService.obtenerLicitaciones(familyCod, subFamilyCod);
-        return "Importación finalizada"; //cambiar
+    public CompletableFuture<List<LicitacionDTO>> saveLicitaciones(
+            @RequestParam Integer familyCod,
+            @RequestParam Integer subFamilyCod) {
+
+        return arceClientService.obtenerLicitaciones(familyCod, subFamilyCod);
     }
 }

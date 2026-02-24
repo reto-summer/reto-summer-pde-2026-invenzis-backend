@@ -1,6 +1,6 @@
 package com.example.reto_backend_febrero2026.familia.repository.implementation;
 
-import com.example.reto_backend_febrero2026.familia.FamiliaModel;
+import com.example.reto_backend_febrero2026.familia.Familia;
 import com.example.reto_backend_febrero2026.familia.repository.interfaces.IFamiliaRepository;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -16,10 +16,10 @@ public class FamiliaRepository implements IFamiliaRepository {
 
     private final JdbcTemplate jdbcTemplate;
 
-    private static final RowMapper<FamiliaModel> familiaRowMapper = new RowMapper<>() {
+    private static final RowMapper<Familia> familiaRowMapper = new RowMapper<>() {
         @Override
-        public FamiliaModel mapRow(ResultSet rs, int rowNum) throws SQLException {
-            FamiliaModel f = new FamiliaModel();
+        public Familia mapRow(ResultSet rs, int rowNum) throws SQLException {
+            Familia f = new Familia();
             f.setCod(rs.getInt("cod"));
             f.setDescripcion(rs.getString("descripcion"));
             return f;
@@ -31,31 +31,31 @@ public class FamiliaRepository implements IFamiliaRepository {
     }
 
     @Override
-    public List<FamiliaModel> findAll() {
-        String sql = "SELECT cod, descripcion FROM familias";
+    public List<Familia> findAll() {
+        String sql = "SELECT COD, DESCRIPCION FROM FAMILIAS";
         return jdbcTemplate.query(sql, familiaRowMapper);
     }
 
     @Override
-    public FamiliaModel findById(Integer cod) {
-        String sql = "SELECT cod, descripcion FROM familias WHERE cod = ?";
+    public Familia findById(Integer cod) {
+        String sql = "SELECT COD, DESCRIPCION FROM FAMILIAS WHERE COD = ?";
        try {
             return jdbcTemplate.queryForObject(sql, familiaRowMapper, cod);
         } catch (EmptyResultDataAccessException e) {
-            throw new RuntimeException("No se encontró la licitación con Id: " + cod);
-        } //probar
+            return null;
+        }
     }
 
     @Override
-    public FamiliaModel save(FamiliaModel subfamilia) {
-        String checkSql = "SELECT COUNT(1) FROM familias WHERE cod = ?";
+    public Familia save(Familia subfamilia) {
+        String checkSql = "SELECT COUNT(1) FROM FAMILIAS WHERE COD = ?";
         Integer count = jdbcTemplate.queryForObject(checkSql, Integer.class, subfamilia.getCod());
         if (count != null && count > 0) {
-            String updateSql = "UPDATE familias SET descripcion = ? WHERE cod = ?";
+            String updateSql = "UPDATE FAMILIAS SET DESCRIPCION = ? WHERE COD = ?";
             jdbcTemplate.update(updateSql, subfamilia.getDescripcion(), subfamilia.getCod());
             return subfamilia;
         } else {
-            String insertSql = "INSERT INTO familias (cod, descripcion) VALUES (?, ?)";
+            String insertSql = "INSERT INTO FAMILIAS (COD, DESCRIPCION) VALUES (?, ?)";
             jdbcTemplate.update(insertSql, subfamilia.getCod(), subfamilia.getDescripcion());
             return subfamilia;
         }

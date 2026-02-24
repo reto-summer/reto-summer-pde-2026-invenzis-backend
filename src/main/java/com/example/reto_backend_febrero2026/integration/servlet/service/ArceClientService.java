@@ -4,6 +4,7 @@ import com.example.reto_backend_febrero2026.audit.AuditService;
 import com.example.reto_backend_febrero2026.audit.Auditable;
 import com.example.reto_backend_febrero2026.integration.servlet.dto.LicitacionItemRecord;
 import com.example.reto_backend_febrero2026.integration.servlet.dto.RssResponseDTO;
+import com.example.reto_backend_febrero2026.licitacion.dto.LicitacionDTO;
 import com.example.reto_backend_febrero2026.licitacion.service.implementation.LicitacionService;
 import com.example.reto_backend_febrero2026.licitacion.service.interfaces.ILicitacionService;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -49,11 +50,11 @@ public class ArceClientService {
     )
 
     @Auditable(module = "ARCE_CLIENTE_SERVICE", action = "GET_LICITACIONES_FROM_ARCE")
-    public CompletableFuture<List<LicitacionItemRecord>> obtenerLicitaciones(Integer familyCod, Integer subFamilyCod) {
+    public CompletableFuture<List<LicitacionDTO>> obtenerLicitaciones(Integer familyCod, Integer subFamilyCod) {
         try {
             RssResponseDTO response = restClient.get()
                     .uri("/consultas/rss/tipo-pub/VIG/tipo-doc/C/filtro-cat/CAT/familia/{familyCod}/sub-familia/{subFamilyCod}", familyCod, subFamilyCod)
-                    .accept(MediaType.APPLICATION_XML, MediaType.TEXT_XML, MediaType.valueOf("application/rss+xml"))
+                    .accept(MediaType.APPLICATION_XML)
                     .retrieve()
                     .body(RssResponseDTO.class);
 
@@ -61,20 +62,24 @@ public class ArceClientService {
                 return CompletableFuture.completedFuture(List.of());
             }
 
-            List<LicitacionItemRecord> items = response.channel().items().stream()
-                    .map(item -> new LicitacionItemRecord(
-                            item.titulo(),
-                            item.description(),
-                            item.link(),
-                            item.fechaPublicacion(),
-                            familyCod,
-                            subFamilyCod
-                    ))
+            List<LicitacionDTO> resultados = response.channel().items().stream()
+                    .map(item -> {
+
+                        LicitacionItemRecord record = new LicitacionItemRecord(
+                                item.titulo(),
+                                item.descripcion(),
+                                item.link(),
+                                item.fechaPublicacion(),
+                                null,
+                                familyCod,
+                                subFamilyCod
+                        );
+                        // El service limpia HTML, extrae fechaCierre y guarda en Supabase
+                        return licitacionService.saveLicitacion(record);
+                    })
                     .toList();
 
-            items.forEach(licitacionService::saveTender);
-
-            return CompletableFuture.completedFuture(items);
+            return CompletableFuture.completedFuture(resultados);
 
         } catch (Exception e) {
             throw new RuntimeException("Error al conectar con ARCE RSS: " + e.getMessage(), e);
@@ -82,19 +87,15 @@ public class ArceClientService {
     }
 
     @Recover
-    public CompletableFuture<List<LicitacionItemRecord>> recover(Exception e, Integer familyCod, Integer subFamilyCod) {
+    public CompletableFuture<List<LicitacionDTO>> recover(Exception e, Integer familyCod, Integer subFamilyCod) {
         String traceId = org.slf4j.MDC.get("traceId");
-        String errorMessage = "FALTA: Se agotaron los 5 reintentos. El Servicio RSS de ARCE no responde para familia " + familyCod;
+        String errorMessage = "FALTA: Se agotaron los 5 reintentos para familia " + familyCod;
 
         System.err.println(errorMessage + " | Detalle: " + e.getMessage());
 
         auditService.saveAuditLog(
-                traceId,
-                "ARCE_CLIENT_SERVICE",
-                "RECOVER_MODE",
-                errorMessage,
-                e.getMessage(),
-                "FATAL"
+                traceId, "ARCE_CLIENT_SERVICE", "RECOVER_MODE",
+                errorMessage, e.getMessage(), "FATAL"
         );
 
         return CompletableFuture.completedFuture(List.of());
