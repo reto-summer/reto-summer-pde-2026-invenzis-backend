@@ -1,9 +1,8 @@
-package com.example.reto_backend_febrero2026;
+package com.example.reto_backend_febrero2026.licitacion;
 
 import com.example.reto_backend_febrero2026.familia.FamiliaDTO;
 import com.example.reto_backend_febrero2026.familia.IFamiliaService;
 import com.example.reto_backend_febrero2026.integration.servlet.dto.LicitacionItemRecord;
-import com.example.reto_backend_febrero2026.licitacion.*;
 import com.example.reto_backend_febrero2026.subfamilia.ISubfamiliaService;
 import com.example.reto_backend_febrero2026.subfamilia.SubfamiliaDTO;
 import org.junit.jupiter.api.Test;
@@ -11,6 +10,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
@@ -56,7 +57,7 @@ class LicitacionServiceTest {
         when(licitacionUtility.extraerIdDelLink(itemRecord.link()))
                 .thenReturn(Optional.of(1));
 
-        when(licitacionRepository.getLicitacionById(1))
+        when(licitacionRepository.findById(1))
                 .thenReturn(Optional.empty());
 
         LicitacionDTO dto = new LicitacionDTO();
@@ -113,7 +114,7 @@ class LicitacionServiceTest {
         Licitacion existente = new Licitacion();
         LicitacionDTO dtoExistente = new LicitacionDTO();
 
-        when(licitacionRepository.getLicitacionById(1))
+        when(licitacionRepository.findById(1))
                 .thenReturn(Optional.of(existente));
 
         when(licitacionMapper.licitacionToLicitacionDTO(existente))
@@ -124,7 +125,7 @@ class LicitacionServiceTest {
         assertNotNull(resultado);
         assertSame(dtoExistente, resultado);
 
-        verify(licitacionRepository).getLicitacionById(1);
+        verify(licitacionRepository).findById(1);
         verify(licitacionMapper).licitacionToLicitacionDTO(existente);
 
         verify(licitacionRepository, never()).save(any());
@@ -144,7 +145,7 @@ class LicitacionServiceTest {
         LicitacionDTO dto = new LicitacionDTO();
         dto.setIdLicitacion(id);
 
-        when(licitacionRepository.getLicitacionById(id))
+        when(licitacionRepository.findById(id))
                 .thenReturn(Optional.of(licitacion));
 
         when(licitacionMapper.licitacionToLicitacionDTO(licitacion))
@@ -155,7 +156,7 @@ class LicitacionServiceTest {
         assertNotNull(resultado);
         assertEquals(id, resultado.getIdLicitacion());
 
-        verify(licitacionRepository).getLicitacionById(id);
+        verify(licitacionRepository).findById(id);
         verify(licitacionMapper).licitacionToLicitacionDTO(licitacion);
     }
 
@@ -164,17 +165,18 @@ class LicitacionServiceTest {
 
         Integer id = 1;
 
-        when(licitacionRepository.getLicitacionById(id))
+        when(licitacionRepository.findById(id))
                 .thenReturn(Optional.empty());
 
-        RuntimeException exception = assertThrows(
-                RuntimeException.class,
+        ResponseStatusException exception = assertThrows(
+                ResponseStatusException.class,
                 () -> licitacionService.getLicitacionById(id)
         );
 
-        assertEquals("No existe licitación con id: " + id, exception.getMessage());
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
+        assertEquals("No existe licitación con id: " + id, exception.getReason());
 
-        verify(licitacionRepository).getLicitacionById(id);
+        verify(licitacionRepository).findById(id);
         verify(licitacionMapper, never()).licitacionToLicitacionDTO(any());
     }
 
