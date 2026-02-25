@@ -25,6 +25,9 @@ public class Licitacion {
     @Column(name = "descripcion", columnDefinition = "TEXT")
     private String descripcion;
 
+    @Column(name = "enviado", nullable = false)
+    private boolean enviado = false;
+
     @JsonFormat(pattern = "EEE, dd MMM yyyy HH:mm:ss Z", locale = "en")
     @Column(name = "fecha_publicacion")
     private OffsetDateTime fechaPublicacion;
@@ -50,12 +53,13 @@ public class Licitacion {
     public Licitacion() {
     }
 
-    public Licitacion(Integer idLicitacion, String titulo, String tipoLicitacion, String descripcion, OffsetDateTime fechaPublicacion, LocalDateTime fechaCierre,
+    public Licitacion(Integer idLicitacion, String titulo, String tipoLicitacion, String descripcion, boolean enviado, OffsetDateTime fechaPublicacion, LocalDateTime fechaCierre,
                       String link, Familia familia, Subfamilia subfamilia) {
         this.idLicitacion = idLicitacion;
         this.titulo = titulo;
         this.tipoLicitacion = tipoLicitacion;
         this.descripcion = descripcion;
+        this.enviado = enviado;
         this.fechaPublicacion = fechaPublicacion;
         this.fechaCierre = fechaCierre;
         this.link = link;
@@ -130,4 +134,8 @@ public class Licitacion {
     public String getTipoLicitacion() { return tipoLicitacion; }
 
     public void setTipoLicitacion(String tipoLicitacion) { this.tipoLicitacion = tipoLicitacion; }
+
+    public boolean isEnviado() { return enviado; }
+
+    public void setEnviado(boolean enviado) { this.enviado = enviado; }
 }
