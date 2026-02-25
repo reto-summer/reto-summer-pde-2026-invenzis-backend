@@ -12,6 +12,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.Mockito.*;
@@ -56,7 +57,7 @@ class LicitacionServiceTest {
                 .thenReturn(Optional.of(1));
 
         when(licitacionRepository.getLicitacionById(1))
-                .thenReturn(null);
+                .thenReturn(Optional.empty());
 
         LicitacionDTO dto = new LicitacionDTO();
         Licitacion licitacion = new Licitacion();
@@ -113,7 +114,7 @@ class LicitacionServiceTest {
         LicitacionDTO dtoExistente = new LicitacionDTO();
 
         when(licitacionRepository.getLicitacionById(1))
-                .thenReturn(existente);
+                .thenReturn(Optional.of(existente));
 
         when(licitacionMapper.licitacionToLicitacionDTO(existente))
                 .thenReturn(dtoExistente);
@@ -132,4 +133,93 @@ class LicitacionServiceTest {
         verify(subfamiliaService, never()).findById(any(), any());
     }
 
+    @Test
+    void getByIdLicitacionExistente() {
+
+        Integer id = 1;
+
+        Licitacion licitacion = new Licitacion();
+        licitacion.setIdLicitacion(id);
+
+        LicitacionDTO dto = new LicitacionDTO();
+        dto.setIdLicitacion(id);
+
+        when(licitacionRepository.getLicitacionById(id))
+                .thenReturn(Optional.of(licitacion));
+
+        when(licitacionMapper.licitacionToLicitacionDTO(licitacion))
+                .thenReturn(dto);
+
+        LicitacionDTO resultado = licitacionService.getLicitacionById(id);
+
+        assertNotNull(resultado);
+        assertEquals(id, resultado.getIdLicitacion());
+
+        verify(licitacionRepository).getLicitacionById(id);
+        verify(licitacionMapper).licitacionToLicitacionDTO(licitacion);
+    }
+
+    @Test
+    void getByIdLicitacionNoExistente() {
+
+        Integer id = 1;
+
+        when(licitacionRepository.getLicitacionById(id))
+                .thenReturn(Optional.empty());
+
+        RuntimeException exception = assertThrows(
+                RuntimeException.class,
+                () -> licitacionService.getLicitacionById(id)
+        );
+
+        assertEquals("No existe licitación con id: " + id, exception.getMessage());
+
+        verify(licitacionRepository).getLicitacionById(id);
+        verify(licitacionMapper, never()).licitacionToLicitacionDTO(any());
+    }
+
+    @Test
+    void findAllLicitacionVacio() {
+
+        when(licitacionRepository.findAll())
+                .thenReturn(List.of());
+
+        List<LicitacionDTO> resultado = licitacionService.findAll();
+
+        assertNotNull(resultado);
+        assertTrue(resultado.isEmpty());
+
+        verify(licitacionRepository).findAll();
+        verify(licitacionMapper, never()).licitacionToLicitacionDTO(any());
+    }
+
+    @Test
+    void findAllLicitacionConDatos() {
+
+        Licitacion lic1 = new Licitacion();
+        Licitacion lic2 = new Licitacion();
+
+        LicitacionDTO dto1 = new LicitacionDTO();
+        LicitacionDTO dto2 = new LicitacionDTO();
+
+        when(licitacionRepository.findAll())
+                .thenReturn(List.of(lic1, lic2));
+
+        when(licitacionMapper.licitacionToLicitacionDTO(lic1))
+                .thenReturn(dto1);
+
+        when(licitacionMapper.licitacionToLicitacionDTO(lic2))
+                .thenReturn(dto2);
+
+        List<LicitacionDTO> resultado = licitacionService.findAll();
+
+        assertNotNull(resultado);
+        assertEquals(2, resultado.size());
+        assertEquals(dto1, resultado.get(0));
+        assertEquals(dto2, resultado.get(1));
+
+        verify(licitacionRepository).findAll();
+        verify(licitacionMapper, times(2))
+                .licitacionToLicitacionDTO(any());
+    }
 }
