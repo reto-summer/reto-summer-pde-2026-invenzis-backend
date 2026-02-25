@@ -27,7 +27,7 @@ public class FamiliaController {
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     public String handleIllegalArgument(IllegalArgumentException ex) {
         return ex.getMessage();
     }
