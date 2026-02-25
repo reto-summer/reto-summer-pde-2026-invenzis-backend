@@ -1,19 +1,21 @@
 package com.example.reto_backend_febrero2026.licitacion;
 
-import com.example.reto_backend_febrero2026.audit.Auditable;
-import com.example.reto_backend_febrero2026.familia.*;
-import com.example.reto_backend_febrero2026.integration.servlet.dto.LicitacionItemRecord;
-import com.example.reto_backend_febrero2026.subfamilia.*;
-import org.springframework.http.HttpStatus;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.server.ResponseStatusException;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
+
+import com.example.reto_backend_febrero2026.audit.Auditable;
+import com.example.reto_backend_febrero2026.familia.FamiliaDTO;
+import com.example.reto_backend_febrero2026.familia.IFamiliaService;
+import com.example.reto_backend_febrero2026.integration.servlet.dto.LicitacionItemRecord;
+import com.example.reto_backend_febrero2026.subfamilia.ISubfamiliaService;
+import com.example.reto_backend_febrero2026.subfamilia.SubfamiliaDTO;
 
 @Service
 public class LicitacionService implements ILicitacionService {
@@ -85,7 +87,7 @@ public class LicitacionService implements ILicitacionService {
     @Transactional(readOnly = true)
     public LicitacionDTO getLicitacionByTitulo(String titulo){
         return licitacionRepository
-                .findByTitulo(titulo)
+                .getLicitacionByTitulo(titulo)
                 .map(licitacionMapper::licitacionToLicitacionDTO)
                 .orElseThrow(() ->
                 new ResponseStatusException(

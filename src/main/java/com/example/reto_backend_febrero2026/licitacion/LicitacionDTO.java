@@ -5,6 +5,7 @@ import java.time.OffsetDateTime;
 
 import com.example.reto_backend_febrero2026.familia.FamiliaDTO;
 import com.example.reto_backend_febrero2026.subfamilia.SubfamiliaDTO;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class LicitacionDTO {
 
@@ -16,6 +17,10 @@ public class LicitacionDTO {
 
     private String descripcion;
 
+    @JsonProperty("enviado")
+    private boolean enviado = false;
+
+    @JsonProperty("fecha_publicacion")
     private OffsetDateTime fechaPublicacion;
 
     private LocalDateTime fechaCierre;
@@ -29,7 +34,7 @@ public class LicitacionDTO {
     public LicitacionDTO() {
     }
 
-    public LicitacionDTO(Integer idLicitacion, String titulo, String tipoLicitacion, String descripcion,
+    public LicitacionDTO(Integer idLicitacion, String titulo, String tipoLicitacion, String descripcion, boolean enviado,
                          OffsetDateTime fechaPublicacion, LocalDateTime fechaCierre,
                          String link, FamiliaDTO familia,
                          SubfamiliaDTO subfamilia) {
@@ -37,6 +42,7 @@ public class LicitacionDTO {
         this.titulo = titulo;
         this.tipoLicitacion = tipoLicitacion;
         this.descripcion = descripcion;
+        this.enviado = enviado;
         this.fechaPublicacion = fechaPublicacion;
         this.fechaCierre = fechaCierre;
         this.link = link;
@@ -111,4 +117,8 @@ public class LicitacionDTO {
     public String getTipoLicitacion() { return tipoLicitacion; }
 
     public void setTipoLicitacion(String tipoLicitacion) { this.tipoLicitacion = tipoLicitacion; }
+
+    public boolean isEnviado() { return enviado; }
+
+    public void setEnviado(boolean enviado) { this.enviado = enviado; }
 }
