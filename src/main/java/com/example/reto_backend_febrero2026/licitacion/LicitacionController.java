@@ -33,7 +33,6 @@ import java.util.List;
             return licitacionService.getLicitacionesByFamiliaAndSubfamilia(familiaCod, subfamiliaCod);
         }
 }
-
         /*
         @PostMapping("/save") // TESTING
         public ResponseEntity<LicitacionModelDTO> savelicitacion(@RequestBody LicitacionModelDTO licitacionDTO) {
