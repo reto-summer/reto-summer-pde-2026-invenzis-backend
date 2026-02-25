@@ -70,7 +70,8 @@ public class ArceClientService {
                                 item.fechaPublicacion(),
                                 null,
                                 familyCod,
-                                subFamilyCod
+                                subFamilyCod,
+                                null
                         );
                         return licitacionService.cleanSave(record);
                     })

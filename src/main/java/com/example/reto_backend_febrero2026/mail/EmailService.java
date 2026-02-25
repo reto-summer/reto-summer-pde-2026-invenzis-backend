@@ -119,7 +119,11 @@ public class EmailService implements IEmailService {
 
         // Set notification context for AuditAspect
         MDC.put("notificationTitle", subject);
-        MDC.put("notificationContent", htmlContent);
+        String idsContenido = safeItems.stream()
+                .filter(item -> item.idLicitacion() != null)
+                .map(item -> String.valueOf(item.idLicitacion()))
+                .collect(java.util.stream.Collectors.joining(", "));
+        MDC.put("notificationContent", idsContenido.isBlank() ? "sin IDs" : "IDs: " + idsContenido);
 
         String[] recipients = getEmailRecipients();
 
