@@ -6,57 +6,60 @@ import java.time.OffsetDateTime;
 import com.example.reto_backend_febrero2026.familia.Familia;
 import com.example.reto_backend_febrero2026.subfamilia.Subfamilia;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "LICITACION")
+@Table(name = "licitacion")
 public class Licitacion {
 
     @Id
-    @JsonProperty("ID_LICITACION")
-    @Column(name = "ID_LICITACION")
+    @Column(name = "id_licitacion")
     private Integer idLicitacion;
-    @Column(name = "TITULO", columnDefinition = "TEXT")
+
+    @Column(name = "titulo", columnDefinition = "TEXT")
     private String titulo;
-    @Column(name = "TIPO_LICITACION", columnDefinition = "TEXT")
+
+    @Column(name = "tipo_licitacion", columnDefinition = "TEXT")
     private String tipoLicitacion;
-    @Column(name = "DESCRIPCION", columnDefinition = "TEXT")
+
+    @Column(name = "descripcion", columnDefinition = "TEXT")
     private String descripcion;
 
-    @JsonProperty("fecha_publicacion")
+    @Column(name = "enviado", nullable = false)
+    private boolean enviado = false;
+
     @JsonFormat(pattern = "EEE, dd MMM yyyy HH:mm:ss Z", locale = "en")
-    @Column(name = "FECHA_PUBLICACION")
+    @Column(name = "fecha_publicacion")
     private OffsetDateTime fechaPublicacion;
 
-    @JsonProperty("fecha_cierre")
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm")
-    @Column(name = "FECHA_CIERRE")
+    @Column(name = "fecha_cierre")
     private LocalDateTime fechaCierre;
 
-    @Column(name = "LINK")
+    @Column(name = "link")
     private String link;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "FAMILIA_COD", referencedColumnName = "COD")
+    @JoinColumn(name = "familia_cod", referencedColumnName = "cod")
     private Familia familia;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumns({
-            @JoinColumn(name = "SUBFAMI_FAMI_COD", referencedColumnName = "FAMI_COD"),
-            @JoinColumn(name = "SUBFAMI_COD", referencedColumnName = "COD")
+            @JoinColumn(name = "subfami_fami_cod", referencedColumnName = "fami_cod"),
+            @JoinColumn(name = "subfami_cod", referencedColumnName = "cod")
     })
     private Subfamilia subfamilia;
 
     public Licitacion() {
     }
 
-    public Licitacion(Integer idLicitacion, String titulo, String tipoLicitacion, String descripcion, OffsetDateTime fechaPublicacion, LocalDateTime fechaCierre,
+    public Licitacion(Integer idLicitacion, String titulo, String tipoLicitacion, String descripcion, boolean enviado, OffsetDateTime fechaPublicacion, LocalDateTime fechaCierre,
                       String link, Familia familia, Subfamilia subfamilia) {
         this.idLicitacion = idLicitacion;
         this.titulo = titulo;
         this.tipoLicitacion = tipoLicitacion;
         this.descripcion = descripcion;
+        this.enviado = enviado;
         this.fechaPublicacion = fechaPublicacion;
         this.fechaCierre = fechaCierre;
         this.link = link;
@@ -131,4 +134,8 @@ public class Licitacion {
     public String getTipoLicitacion() { return tipoLicitacion; }
 
     public void setTipoLicitacion(String tipoLicitacion) { this.tipoLicitacion = tipoLicitacion; }
+
+    public boolean isEnviado() { return enviado; }
+
+    public void setEnviado(boolean enviado) { this.enviado = enviado; }
 }
