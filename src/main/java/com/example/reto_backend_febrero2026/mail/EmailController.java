@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/email-destinations")
+@RequestMapping("/mail")
 @CrossOrigin(origins = "*")
 public class EmailController {
 
@@ -24,19 +24,19 @@ public class EmailController {
         this.emailService = emailService;
     }
 
-    @GetMapping
+    @GetMapping("")
     public ResponseEntity<List<Email>> getAllActiveDestinations() {
         return ResponseEntity.ok(emailService.findAllActive());
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Email> getDestinationById(@PathVariable Integer id) {
-        Optional<Email> destination = emailService.findById(id);
+    @GetMapping("/{emailAddress}")
+    public ResponseEntity<Email> getDestinationById(@PathVariable String emailAddress) {
+        Optional<Email> destination = emailService.findById(emailAddress);
         return destination.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @PostMapping
+    @PostMapping("/save")
     public ResponseEntity<Map<String, Object>> createDestination(@RequestBody Map<String, String> body) {
         Map<String, Object> response = new HashMap<>();
         String email = body.get("email");
@@ -49,8 +49,7 @@ public class EmailController {
         try {
             Email saved = emailService.create(email);
             response.put("mensaje", "Email registrado exitosamente");
-            response.put("id", saved.getId());
-            response.put("email", saved.getEmail());
+            response.put("emailAddress", saved.getEmailAddress());
             response.put("fechaCreacion", saved.getFechaCreacion());
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch (IllegalArgumentException e) {
@@ -66,29 +65,24 @@ public class EmailController {
         }
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/update/{emailAddress}")
     public ResponseEntity<Map<String, Object>> updateDestination(
-            @PathVariable Integer id,
+            @PathVariable String emailAddress,
             @RequestBody Map<String, Object> body) {
         Map<String, Object> response = new HashMap<>();
 
-        String email = (String) body.get("email");
         Boolean activo = body.get("activo") != null ? (Boolean) body.get("activo") : null;
 
         try {
-            Email updated = emailService.update(id, email, activo);
+            Email updated = emailService.update(emailAddress, activo);
             response.put("mensaje", "Email actualizado exitosamente");
-            response.put("id", updated.getId());
-            response.put("email", updated.getEmail());
+            response.put("emailAddress", updated.getEmailAddress());
             response.put("activo", updated.getActivo());
             response.put("fechaActualizacion", updated.getFechaActualizacion());
             return ResponseEntity.ok(response);
         } catch (IllegalArgumentException e) {
             response.put("error", e.getMessage());
             return ResponseEntity.badRequest().body(response);
-        } catch (IllegalStateException e) {
-            response.put("error", e.getMessage());
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
         } catch (RuntimeException e) {
             if (e.getMessage().contains("no encontrado")) {
                 response.put("error", e.getMessage());
@@ -100,14 +94,14 @@ public class EmailController {
         }
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Map<String, Object>> deleteDestination(@PathVariable Integer id) {
+    @DeleteMapping("/delete/{emailAddress}")
+    public ResponseEntity<Map<String, Object>> deleteDestination(@PathVariable String emailAddress) {
         Map<String, Object> response = new HashMap<>();
 
         try {
-            emailService.deactivate(id);
+            emailService.deactivate(emailAddress);
             response.put("mensaje", "Email eliminado exitosamente");
-            response.put("id", id);
+            response.put("emailAddress", emailAddress);
             return ResponseEntity.ok(response);
         } catch (RuntimeException e) {
             if (e.getMessage().contains("no encontrado")) {

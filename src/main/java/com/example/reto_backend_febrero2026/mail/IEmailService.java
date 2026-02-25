@@ -9,13 +9,13 @@ public interface IEmailService {
 
     List<Email> findAllActive();
 
-    Optional<Email> findById(Integer id);
+    Optional<Email> findById(String emailAddress);
 
     Email create(String email);
 
-    Email update(Integer id, String email, Boolean activo);
+    Email update(String emailAddress, Boolean activo);
 
-    void deactivate(Integer id);
+    void deactivate(String emailAddress);
 
     List<String> findAllActiveEmails();
 

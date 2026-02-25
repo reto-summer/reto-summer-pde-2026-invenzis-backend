@@ -49,8 +49,8 @@ public class EmailService implements IEmailService {
     }
 
     @Override
-    public Optional<Email> findById(Integer id) {
-        return emailRepository.findById(id);
+    public Optional<Email> findById(String emailAddress) {
+        return emailRepository.findById(emailAddress);
     }
 
     @Override
@@ -59,27 +59,16 @@ public class EmailService implements IEmailService {
         if (!normalizedEmail.matches(EMAIL_REGEX)) {
             throw new IllegalArgumentException("El formato del email no es válido");
         }
-        if (emailRepository.existsByEmail(normalizedEmail)) {
+        if (emailRepository.existsById(normalizedEmail)) {
             throw new IllegalStateException("El email ya existe en la base de datos");
         }
         return emailRepository.save(new Email(normalizedEmail));
     }
 
     @Override
-    public Email update(Integer id, String email, Boolean activo) {
-        Email destination = emailRepository.findById(id)
+    public Email update(String emailAddress, Boolean activo) {
+        Email destination = emailRepository.findById(emailAddress)
                 .orElseThrow(() -> new RuntimeException("Destino de email no encontrado"));
-
-        if (email != null && !email.trim().isEmpty()) {
-            String normalizedEmail = email.trim().toLowerCase();
-            if (!normalizedEmail.matches(EMAIL_REGEX)) {
-                throw new IllegalArgumentException("El formato del email no es válido");
-            }
-            if (!destination.getEmail().equals(normalizedEmail) && emailRepository.existsByEmail(normalizedEmail)) {
-                throw new IllegalStateException("El email ya existe en la base de datos");
-            }
-            destination.setEmail(normalizedEmail);
-        }
 
         if (activo != null) {
             destination.setActivo(activo);
@@ -89,8 +78,8 @@ public class EmailService implements IEmailService {
     }
 
     @Override
-    public void deactivate(Integer id) {
-        Email destination = emailRepository.findById(id)
+    public void deactivate(String emailAddress) {
+        Email destination = emailRepository.findById(emailAddress)
                 .orElseThrow(() -> new RuntimeException("Destino de email no encontrado"));
         destination.setActivo(false);
         emailRepository.save(destination);
@@ -119,13 +108,29 @@ public class EmailService implements IEmailService {
 
         // Set notification context for AuditAspect
         MDC.put("notificationTitle", subject);
-        String idsContenido = safeItems.stream()
+
+        String licitacionIds = safeItems.stream()
                 .filter(item -> item.idLicitacion() != null)
                 .map(item -> String.valueOf(item.idLicitacion()))
                 .collect(java.util.stream.Collectors.joining(", "));
-        MDC.put("notificationContent", idsContenido.isBlank() ? "sin IDs" : "IDs: " + idsContenido);
 
-        String[] recipients = getEmailRecipients();
+        List<Email> emailsFromDb = emailRepository.findByActivoTrue();
+        String[] recipients;
+        String emailIds;
+
+        if (!emailsFromDb.isEmpty()) {
+            recipients = emailsFromDb.stream().map(Email::getEmailAddress).toArray(String[]::new);
+            emailIds = emailsFromDb.stream()
+                    .map(Email::getEmailAddress)
+                    .collect(java.util.stream.Collectors.joining(", "));
+            log.info("Usando {} emails de la base de datos", emailsFromDb.size());
+        } else {
+            recipients = parseEmailList(mailTo);
+            emailIds = "mailTo";
+            log.info("Usando emails de application.properties");
+        }
+
+        MDC.put("notificationContent", emailIds);
 
         if (recipients.length == 0) {
             MDC.put("notificationSuccess", "false");
@@ -135,8 +140,7 @@ public class EmailService implements IEmailService {
         }
 
         try {
-            String recipientsList = String.join(", ", recipients);
-            MDC.put("notificationDetail", "Enviado a: " + recipientsList);
+            MDC.put("notificationDetail", licitacionIds.isBlank() ? "sin IDs" : licitacionIds);
             MDC.put("notificationSuccess", "true");
 
             MimeMessage message = mailSender.createMimeMessage();
