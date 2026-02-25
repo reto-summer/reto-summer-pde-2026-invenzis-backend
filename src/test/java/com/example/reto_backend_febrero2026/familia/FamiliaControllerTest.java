@@ -9,8 +9,6 @@ package com.example.reto_backend_febrero2026.familia;
   import static org.mockito.Mockito.*;
   import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
   import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-  import static org.junit.jupiter.api.Assertions.assertThrows;
-
   @WebMvcTest(FamiliaController.class)
   class FamiliaControllerTest {
 
@@ -73,15 +71,15 @@ package com.example.reto_backend_febrero2026.familia;
                   .andExpect(jsonPath("$.descripcion").value("MAQUINAS, EQUIPOS Y MOBILIARIOS NUEVOS"));
       }
 
-      // testea que el controlador llama al servicio y retorna 400
+      // testea que el controlador llama al servicio y retorna 404
       @Test
-      void findById_codigoInexistente_deberiaRetornar400() throws Exception {
+      void findById_codigoInexistente_deberiaRetornar404() throws Exception {
           // Arrange
           when(familiaService.findById(999))
-                  .thenThrow(new IllegalArgumentException("No se encontró la familia con COD=999"));
+                  .thenThrow(new IllegalArgumentException("No se encontró la familia con cod=999"));
 
           // Act & Assert
           mockMvc.perform(get("/familias/999"))
-                  .andExpect(status().is(400));
+                  .andExpect(status().is(404));
       }
   }

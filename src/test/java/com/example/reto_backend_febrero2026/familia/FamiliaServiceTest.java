@@ -7,6 +7,7 @@ package com.example.reto_backend_febrero2026.familia;
   import org.mockito.junit.jupiter.MockitoExtension;
 
   import java.util.List;
+  import java.util.Optional;
 
   import static org.junit.jupiter.api.Assertions.*;
   import static org.mockito.Mockito.*;
@@ -72,7 +73,7 @@ package com.example.reto_backend_febrero2026.familia;
           Familia familia = new Familia(3, "SERVICIOS NO PERSONALES");
           FamiliaDTO dto = new FamiliaDTO(3, "SERVICIOS NO PERSONALES");
 
-          when(familiaRepository.findById(3)).thenReturn(familia);
+          when(familiaRepository.findById(3)).thenReturn(Optional.of(familia));
           when(familiaMapper.familyToFamilyDTO(familia)).thenReturn(dto);
 
           // Act
@@ -89,16 +90,16 @@ package com.example.reto_backend_febrero2026.familia;
       @Test
       void findById_codigoInexistente_deberiaLanzarIllegalArgument() {
           // Arrange
-          when(familiaRepository.findById(999)).thenReturn(null);
-          when(familiaMapper.familyToFamilyDTO(null)).thenThrow(new RuntimeException("null input"));
+          when(familiaRepository.findById(999)).thenReturn(Optional.empty());
 
           // Act & Assert
           IllegalArgumentException ex = assertThrows(
                   IllegalArgumentException.class,
                   () -> familiaService.findById(999)
           );
-          assertTrue(ex.getMessage().contains("No se encontró la familia con COD=999"));
+          assertTrue(ex.getMessage().contains("No se encontró la familia con cod=999"));
           verify(familiaRepository).findById(999);
+          verifyNoInteractions(familiaMapper);
       }
 
          // ===== saveFamily =====   
@@ -131,16 +132,14 @@ package com.example.reto_backend_febrero2026.familia;
       void saveFamily_codNull_deberiaLanzarIllegalArgument() {
           // Arrange
           FamiliaDTO inputDto = new FamiliaDTO(null, "SIN CODIGO");
-          Familia familia = new Familia(null, "SIN CODIGO");
-
-          when(familiaMapper.familyDTOtoFamily(inputDto)).thenReturn(familia);
 
           // Act & Assert
           IllegalArgumentException ex = assertThrows(
                   IllegalArgumentException.class,
                   () -> familiaService.saveFamily(inputDto)
           );
-          assertEquals("COD no puede ser null", ex.getMessage());
+          assertEquals("cod no puede ser null", ex.getMessage());
+          verifyNoInteractions(familiaMapper);
           verify(familiaRepository, never()).save(any());
       }
 
@@ -150,10 +149,11 @@ package com.example.reto_backend_febrero2026.familia;
       void saveFamily_descripcionNull_deberiaSetearDescripcionVacia() {
           // Arrange
           FamiliaDTO inputDto = new FamiliaDTO(11, null);
-          Familia familia = new Familia(11, null);
+          Familia familia = new Familia(11, "");
           Familia familiaSaved = new Familia(11, "");
           FamiliaDTO outputDto = new FamiliaDTO(11, "");
 
+          // el servicio setea descripcion="" en el DTO antes de mapear
           when(familiaMapper.familyDTOtoFamily(inputDto)).thenReturn(familia);
           when(familiaRepository.save(familia)).thenReturn(familiaSaved);
           when(familiaMapper.familyToFamilyDTO(familiaSaved)).thenReturn(outputDto);
