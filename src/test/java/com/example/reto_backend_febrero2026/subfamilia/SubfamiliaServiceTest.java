@@ -96,9 +96,10 @@ class SubfamiliaServiceTest {
 
         RuntimeException ex = assertThrows(RuntimeException.class, () -> subfamiliaService.findById(famiCod, cod));
 
-        assertTrue(ex.getMessage().contains("Subfamilia no encontrada"),
-                "El mensaje de error debería indicar que la subfamilia no existe");
+        assertEquals("Subfamilia no encontrada con famiCod: 999 y cod: 999", ex.getMessage(),
+            "El mensaje de error debería incluir famiCod y cod");
         verify(subfamiliaRepository).findById(id);
+        verify(subfamiliaMapper, never()).subFamilyToSubfamilyDTO(any(Subfamilia.class));
     }
 
     // findByFamiCod 
