@@ -1,7 +1,7 @@
 package com.example.reto_backend_febrero2026.licitacion;
 
 import com.example.reto_backend_febrero2026.integration.servlet.service.ArceClientService;
-import com.example.reto_backend_febrero2026.mail.service.interfaces.IMailService;
+import com.example.reto_backend_febrero2026.mail.IEmailService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -12,9 +12,9 @@ public class LicitacionScheduler {
     private static final Logger log = LoggerFactory.getLogger(LicitacionScheduler.class);
 
     private final ArceClientService arceClientService;
-    private final IMailService mailService;
+    private final IEmailService mailService;
 
-    public LicitacionScheduler(ArceClientService arceClientService, IMailService mailService) {
+    public LicitacionScheduler(ArceClientService arceClientService, IEmailService mailService) {
         this.arceClientService = arceClientService;
         this.mailService = mailService;
     }

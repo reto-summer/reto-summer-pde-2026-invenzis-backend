@@ -1,7 +1,5 @@
-package com.example.reto_backend_febrero2026.mail.controller;
+package com.example.reto_backend_febrero2026.mail;
 
-import com.example.reto_backend_febrero2026.mail.MailModel;
-import com.example.reto_backend_febrero2026.mail.service.interfaces.IMailService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -16,24 +14,24 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/mail-destinations")
 @CrossOrigin(origins = "*")
-public class MailController {
+public class EmailController {
 
-    private static final Logger log = LoggerFactory.getLogger(MailController.class);
+    private static final Logger log = LoggerFactory.getLogger(EmailController.class);
 
-    private final IMailService mailService;
+    private final IEmailService emailService;
 
-    public MailController(IMailService mailService) {
-        this.mailService = mailService;
+    public EmailController(IEmailService emailService) {
+        this.emailService = emailService;
     }
 
     @GetMapping
-    public ResponseEntity<List<MailModel>> getAllActiveDestinations() {
-        return ResponseEntity.ok(mailService.findAllActive());
+    public ResponseEntity<List<Email>> getAllActiveDestinations() {
+        return ResponseEntity.ok(emailService.findAllActive());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<MailModel> getDestinationById(@PathVariable Long id) {
-        Optional<MailModel> destination = mailService.findById(id);
+    public ResponseEntity<Email> getDestinationById(@PathVariable Integer id) {
+        Optional<Email> destination = emailService.findById(id);
         return destination.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -49,7 +47,7 @@ public class MailController {
         }
 
         try {
-            MailModel saved = mailService.create(email);
+            Email saved = emailService.create(email);
             response.put("mensaje", "Email registrado exitosamente");
             response.put("id", saved.getId());
             response.put("email", saved.getEmail());
@@ -70,7 +68,7 @@ public class MailController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Map<String, Object>> updateDestination(
-            @PathVariable Long id,
+            @PathVariable Integer id,
             @RequestBody Map<String, Object> body) {
         Map<String, Object> response = new HashMap<>();
 
@@ -78,7 +76,7 @@ public class MailController {
         Boolean activo = body.get("activo") != null ? (Boolean) body.get("activo") : null;
 
         try {
-            MailModel updated = mailService.update(id, email, activo);
+            Email updated = emailService.update(id, email, activo);
             response.put("mensaje", "Email actualizado exitosamente");
             response.put("id", updated.getId());
             response.put("email", updated.getEmail());
@@ -103,11 +101,11 @@ public class MailController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Map<String, Object>> deleteDestination(@PathVariable Long id) {
+    public ResponseEntity<Map<String, Object>> deleteDestination(@PathVariable Integer id) {
         Map<String, Object> response = new HashMap<>();
 
         try {
-            mailService.deactivate(id);
+            emailService.deactivate(id);
             response.put("mensaje", "Email eliminado exitosamente");
             response.put("id", id);
             return ResponseEntity.ok(response);
@@ -124,6 +122,6 @@ public class MailController {
 
     @GetMapping("/active/emails")
     public ResponseEntity<List<String>> getAllActiveEmails() {
-        return ResponseEntity.ok(mailService.findAllActiveEmails());
+        return ResponseEntity.ok(emailService.findAllActiveEmails());
     }
 }

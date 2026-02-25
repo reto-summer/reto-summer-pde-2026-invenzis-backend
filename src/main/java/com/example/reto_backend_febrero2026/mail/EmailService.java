@@ -1,10 +1,7 @@
-package com.example.reto_backend_febrero2026.mail.service.implementation;
+package com.example.reto_backend_febrero2026.mail;
 
 import com.example.reto_backend_febrero2026.audit.Auditable;
 import com.example.reto_backend_febrero2026.integration.servlet.dto.LicitacionItemRecord;
-import com.example.reto_backend_febrero2026.mail.MailModel;
-import com.example.reto_backend_febrero2026.mail.repository.interfaces.IMailRepository;
-import com.example.reto_backend_febrero2026.mail.service.interfaces.IMailService;
 import jakarta.mail.internet.MimeMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,14 +22,14 @@ import java.util.Optional;
 import org.slf4j.MDC;
 
 @Service
-public class MailService implements IMailService {
+public class EmailService implements IEmailService {
 
-    private static final Logger log = LoggerFactory.getLogger(MailService.class);
+    private static final Logger log = LoggerFactory.getLogger(EmailService.class);
     private static final String EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@(.+)$";
 
     private final JavaMailSender mailSender;
     private final TemplateEngine templateEngine;
-    private final IMailRepository mailRepository;
+    private final IEmailRepository emailRepository;
 
     @Value("${mail.to}")
     private String mailTo;
@@ -40,37 +37,37 @@ public class MailService implements IMailService {
     @Value("${spring.mail.username}")
     private String mailFrom;
 
-    public MailService(JavaMailSender mailSender, TemplateEngine templateEngine, IMailRepository mailRepository) {
+    public EmailService(JavaMailSender mailSender, TemplateEngine templateEngine, IEmailRepository emailRepository) {
         this.mailSender = mailSender;
         this.templateEngine = templateEngine;
-        this.mailRepository = mailRepository;
+        this.emailRepository = emailRepository;
     }
 
     @Override
-    public List<MailModel> findAllActive() {
-        return mailRepository.findByActivoTrue();
+    public List<Email> findAllActive() {
+        return emailRepository.findByActivoTrue();
     }
 
     @Override
-    public Optional<MailModel> findById(Long id) {
-        return mailRepository.findById(id);
+    public Optional<Email> findById(Integer id) {
+        return emailRepository.findById(id);
     }
 
     @Override
-    public MailModel create(String email) {
+    public Email create(String email) {
         String normalizedEmail = email.trim().toLowerCase();
         if (!normalizedEmail.matches(EMAIL_REGEX)) {
             throw new IllegalArgumentException("El formato del email no es válido");
         }
-        if (mailRepository.existsByEmail(normalizedEmail)) {
+        if (emailRepository.existsByEmail(normalizedEmail)) {
             throw new IllegalStateException("El email ya existe en la base de datos");
         }
-        return mailRepository.save(new MailModel(normalizedEmail));
+        return emailRepository.save(new Email(normalizedEmail));
     }
 
     @Override
-    public MailModel update(Long id, String email, Boolean activo) {
-        MailModel destination = mailRepository.findById(id)
+    public Email update(Integer id, String email, Boolean activo) {
+        Email destination = emailRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Destino de email no encontrado"));
 
         if (email != null && !email.trim().isEmpty()) {
@@ -78,7 +75,7 @@ public class MailService implements IMailService {
             if (!normalizedEmail.matches(EMAIL_REGEX)) {
                 throw new IllegalArgumentException("El formato del email no es válido");
             }
-            if (!destination.getEmail().equals(normalizedEmail) && mailRepository.existsByEmail(normalizedEmail)) {
+            if (!destination.getEmail().equals(normalizedEmail) && emailRepository.existsByEmail(normalizedEmail)) {
                 throw new IllegalStateException("El email ya existe en la base de datos");
             }
             destination.setEmail(normalizedEmail);
@@ -88,20 +85,20 @@ public class MailService implements IMailService {
             destination.setActivo(activo);
         }
 
-        return mailRepository.save(destination);
+        return emailRepository.save(destination);
     }
 
     @Override
-    public void deactivate(Long id) {
-        MailModel destination = mailRepository.findById(id)
+    public void deactivate(Integer id) {
+        Email destination = emailRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Destino de email no encontrado"));
         destination.setActivo(false);
-        mailRepository.save(destination);
+        emailRepository.save(destination);
     }
 
     @Override
     public List<String> findAllActiveEmails() {
-        return mailRepository.findAllActiveEmails();
+        return emailRepository.findAllActiveEmails();
     }
 
     @Async
@@ -156,7 +153,7 @@ public class MailService implements IMailService {
     }
 
     private String[] getEmailRecipients() {
-        List<String> emailsFromDb = mailRepository.findAllActiveEmails();
+        List<String> emailsFromDb = emailRepository.findAllActiveEmails();
         if (!emailsFromDb.isEmpty()) {
             log.info("Usando {} emails de la base de datos", emailsFromDb.size());
             return emailsFromDb.toArray(new String[0]);
