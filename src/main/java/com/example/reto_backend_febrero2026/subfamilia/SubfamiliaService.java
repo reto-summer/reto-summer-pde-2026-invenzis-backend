@@ -6,6 +6,10 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+
 @Service
 public class SubfamiliaService implements ISubfamiliaService {
 
@@ -33,7 +37,8 @@ public class SubfamiliaService implements ISubfamiliaService {
                 new Subfamilia.SubfamiliaId(famiCod, cod);
 
         Subfamilia subfamilia = subfamiliaRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException(
+            .orElseThrow(() -> new ResponseStatusException(
+                HttpStatus.NOT_FOUND,
                         "Subfamilia no encontrada con famiCod: "
                                 + famiCod + " y cod: " + cod
                 ));
