@@ -1,11 +1,10 @@
 package com.example.reto_backend_febrero2026.licitacion;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
 
 import com.example.reto_backend_febrero2026.familia.FamiliaDTO;
 import com.example.reto_backend_febrero2026.subfamilia.SubfamiliaDTO;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class LicitacionDTO {
 
@@ -17,11 +16,7 @@ public class LicitacionDTO {
 
     private String descripcion;
 
-    @JsonProperty("enviado")
-    private boolean enviado = false;
-
-    @JsonProperty("fecha_publicacion")
-    private OffsetDateTime fechaPublicacion;
+    private LocalDate fechaPublicacion;
 
     private LocalDateTime fechaCierre;
 
@@ -34,15 +29,14 @@ public class LicitacionDTO {
     public LicitacionDTO() {
     }
 
-    public LicitacionDTO(Integer idLicitacion, String titulo, String tipoLicitacion, String descripcion, boolean enviado,
-                         OffsetDateTime fechaPublicacion, LocalDateTime fechaCierre,
+    public LicitacionDTO(Integer idLicitacion, String titulo, String tipoLicitacion, String descripcion,
+                         LocalDate fechaPublicacion, LocalDateTime fechaCierre,
                          String link, FamiliaDTO familia,
                          SubfamiliaDTO subfamilia) {
         this.idLicitacion = idLicitacion;
         this.titulo = titulo;
         this.tipoLicitacion = tipoLicitacion;
         this.descripcion = descripcion;
-        this.enviado = enviado;
         this.fechaPublicacion = fechaPublicacion;
         this.fechaCierre = fechaCierre;
         this.link = link;
@@ -74,11 +68,11 @@ public class LicitacionDTO {
         this.descripcion = descripcion;
     }
 
-    public OffsetDateTime getFechaPublicacion() {
+    public LocalDate getFechaPublicacion() {
         return fechaPublicacion;
     }
 
-    public void setFechaPublicacion(OffsetDateTime fechaPublicacion) {
+    public void setFechaPublicacion(LocalDate fechaPublicacion) {
         this.fechaPublicacion = fechaPublicacion;
     }
 
@@ -117,8 +111,4 @@ public class LicitacionDTO {
     public String getTipoLicitacion() { return tipoLicitacion; }
 
     public void setTipoLicitacion(String tipoLicitacion) { this.tipoLicitacion = tipoLicitacion; }
-
-    public boolean isEnviado() { return enviado; }
-
-    public void setEnviado(boolean enviado) { this.enviado = enviado; }
 }

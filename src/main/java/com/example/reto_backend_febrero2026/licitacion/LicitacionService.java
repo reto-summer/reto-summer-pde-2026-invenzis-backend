@@ -1,5 +1,7 @@
 package com.example.reto_backend_febrero2026.licitacion;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -37,10 +39,22 @@ public class LicitacionService implements ILicitacionService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<LicitacionDTO> findAll() {
-        return licitacionRepository.findAll().stream()
+    public List<LicitacionDTO> findAll(
+            LocalDate fechaPublicacionDesde,
+            LocalDate fechaPublicacionHasta,
+            LocalDate fechaCierreDesde,
+            LocalDate fechaCierreHasta,
+            Integer familiaCod,
+            Integer subfamiliaCod)
+    {
+        LocalDateTime cierreDesde = licitacionUtility.toStartOfDay(fechaCierreDesde);
+        LocalDateTime cierreHasta = licitacionUtility.toEndOfDay(fechaCierreHasta);
+
+        return licitacionRepository
+                .getLicitacionesByFechas(fechaPublicacionDesde, fechaPublicacionHasta, cierreDesde, cierreHasta, familiaCod, subfamiliaCod)
+                .stream()
                 .map(licitacionMapper::licitacionToLicitacionDTO)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
