@@ -151,6 +151,8 @@ class SubfamiliaServiceTest {
         assertEquals(Integer.valueOf(43), result.getCod());
         verify(subfamiliaRepository).save(mapped);
     }
+    
+    // saveFamily null cody fami 
 
     @Test
     void saveFamily_famiCodNull() {
@@ -165,7 +167,7 @@ class SubfamiliaServiceTest {
         assertEquals("fami_cod y cod son obligatorios", ex.getReason());
         verify(subfamiliaRepository, never()).save(any(Subfamilia.class));
     }
-
+    // saveFamily null cod 
     @Test
     void saveFamily_codNull() {
         SubfamiliaDTO input = new SubfamiliaDTO(10, null, "Descripcion");
@@ -179,7 +181,7 @@ class SubfamiliaServiceTest {
         assertEquals("fami_cod y cod son obligatorios", ex.getReason());
         verify(subfamiliaRepository, never()).save(any(Subfamilia.class));
     }
-
+    //saveFamily descripcion null
     @Test
     void saveFamily_descripcionNull() {
         SubfamiliaDTO input = new SubfamiliaDTO(10, 43, null);
@@ -201,7 +203,7 @@ class SubfamiliaServiceTest {
                 "El DTO resultante debería tener descripción vacía");
     }
 
-    // ===== getOrCreateSubFamily =====
+    // getOrCreate_existe
 
     @Test
     void getOrCreate_existe() {
@@ -216,6 +218,7 @@ class SubfamiliaServiceTest {
         verify(subfamiliaRepository).findByFamiCodAndCod(10, 43);
         verify(subfamiliaRepository, never()).save(any(Subfamilia.class));
     }
+    // getOrCreate no existe
 
     @Test
     void getOrCreate() {
@@ -232,6 +235,7 @@ class SubfamiliaServiceTest {
         verify(subfamiliaRepository).save(any(Subfamilia.class));
     }
 
+    // getOrCreate_famCodNull
     @Test
     void getOrCreate_famCodNull() {
         SubfamiliaDTO result = subfamiliaService.getOrCreateSubFamily(null, 10);
@@ -240,7 +244,7 @@ class SubfamiliaServiceTest {
         verify(subfamiliaRepository, never()).findByFamiCodAndCod(any(), any());
         verify(subfamiliaRepository, never()).save(any(Subfamilia.class));
     }
-
+    // getOrCreate_famCodNull
     @Test
     void getOrCreate_subCodNull() {
         SubfamiliaDTO result = subfamiliaService.getOrCreateSubFamily(10, null);
