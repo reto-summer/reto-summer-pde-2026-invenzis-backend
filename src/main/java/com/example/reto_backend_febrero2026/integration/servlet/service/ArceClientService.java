@@ -1,14 +1,10 @@
 package com.example.reto_backend_febrero2026.integration.servlet.service;
 
-import com.example.reto_backend_febrero2026.audit.AuditService;
-import com.example.reto_backend_febrero2026.audit.Auditable;
-import com.example.reto_backend_febrero2026.integration.servlet.dto.LicitacionItemRecord;
-import com.example.reto_backend_febrero2026.integration.servlet.dto.RssResponseDTO;
-import com.example.reto_backend_febrero2026.licitacion.LicitacionDTO;
-import com.example.reto_backend_febrero2026.licitacion.ILicitacionService;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.xml.MappingJackson2XmlHttpMessageConverter;
 import org.springframework.retry.annotation.Backoff;
@@ -17,13 +13,30 @@ import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
+import com.example.reto_backend_febrero2026.audit.AuditService;
+import com.example.reto_backend_febrero2026.audit.Auditable;
+import com.example.reto_backend_febrero2026.integration.servlet.dto.LicitacionItemRecord;
+import com.example.reto_backend_febrero2026.integration.servlet.dto.RssResponseDTO;
+import com.example.reto_backend_febrero2026.integration.servlet.service.strategy.ArceRssFilters;
+import com.example.reto_backend_febrero2026.integration.servlet.service.strategy.ArceRssUrlStrategyResolver;
+import com.example.reto_backend_febrero2026.licitacion.ILicitacionService;
+import com.example.reto_backend_febrero2026.licitacion.LicitacionDTO;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
 @Service
 public class ArceClientService {
 
+    private static final String ARCE_BASE_URL = "https://www.comprasestatales.gub.uy";
+
     private final RestClient restClient;
+    private final ArceRssUrlStrategyResolver urlStrategyResolver;
+
+    @Value("${arce.rss.default.family-cod:0}")
+    private Integer defaultFamilyCod;
+
+    @Value("${arce.rss.default.subfamily-cod:0}")
+    private Integer defaultSubFamilyCod;
 
     @Autowired
     AuditService auditService;
@@ -31,12 +44,13 @@ public class ArceClientService {
     @Autowired
     ILicitacionService licitacionService;
 
-    public ArceClientService(RestClient.Builder builder) {
+    public ArceClientService(RestClient.Builder builder, ArceRssUrlStrategyResolver urlStrategyResolver) {
+        this.urlStrategyResolver = urlStrategyResolver;
         XmlMapper xmlMapper = new XmlMapper();
         xmlMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         MappingJackson2XmlHttpMessageConverter converter = new MappingJackson2XmlHttpMessageConverter(xmlMapper);
         this.restClient = builder
-                .baseUrl("https://www.comprasestatales.gub.uy")
+                .baseUrl(ARCE_BASE_URL)
                 .messageConverters(converters -> converters.add(converter))
                 .build();
     }
@@ -46,12 +60,26 @@ public class ArceClientService {
             maxAttempts = 5,
             backoff = @Backoff(delay = 2000, multiplier = 3)
     )
-
-    @Auditable(module = "ARCE_CLIENTE_SERVICE", action = "GET_LICITACIONES_FROM_ARCE")
     public CompletableFuture<List<LicitacionDTO>> obtenerLicitaciones(Integer familyCod, Integer subFamilyCod) {
+        ArceRssFilters filters = new ArceRssFilters(familyCod, subFamilyCod);
+        return obtenerLicitaciones(filters);
+    }
+
+        @Retryable(
+            retryFor = {Exception.class},
+            maxAttempts = 5,
+            backoff = @Backoff(delay = 2000, multiplier = 3)
+        )
+    @Auditable(module = "ARCE_CLIENTE_SERVICE", action = "GET_LICITACIONES_FROM_ARCE")
+    public CompletableFuture<List<LicitacionDTO>> obtenerLicitaciones(ArceRssFilters filters) {
+        ArceRssFilters safeFilters = filters == null ? ArceRssFilters.empty() : filters;
         try {
+            String rssPath = urlStrategyResolver.buildPath(safeFilters);
+            Integer resolvedFamilyCod = safeFilters.familyCod() != null ? safeFilters.familyCod() : defaultFamilyCod;
+            Integer resolvedSubFamilyCod = safeFilters.subFamilyCod() != null ? safeFilters.subFamilyCod() : defaultSubFamilyCod;
+
             RssResponseDTO response = restClient.get()
-                    .uri("/consultas/rss/tipo-pub/VIG/tipo-doc/C/filtro-cat/CAT/familia/{familyCod}/sub-familia/{subFamilyCod}", familyCod, subFamilyCod)
+                    .uri(rssPath)
                     .accept(MediaType.APPLICATION_XML)
                     .retrieve()
                     .body(RssResponseDTO.class);
@@ -69,8 +97,8 @@ public class ArceClientService {
                                 item.link(),
                                 item.fechaPublicacion(),
                                 null,
-                                familyCod,
-                                subFamilyCod
+                                resolvedFamilyCod,
+                                resolvedSubFamilyCod
                         );
                         return licitacionService.cleanSave(record);
                     })
@@ -81,6 +109,11 @@ public class ArceClientService {
         } catch (Exception e) {
             throw new RuntimeException("Error al conectar con ARCE RSS: " + e.getMessage(), e);
         }
+    }
+
+    public String obtenerUrlConsulta(ArceRssFilters filters) {
+        ArceRssFilters safeFilters = filters == null ? ArceRssFilters.empty() : filters;
+        return ARCE_BASE_URL + urlStrategyResolver.buildPath(safeFilters);
     }
 
     @Recover
@@ -94,6 +127,26 @@ public class ArceClientService {
                 traceId, "ARCE_CLIENT_SERVICE", "RECOVER_MODE",
                 errorMessage, e.getMessage(), "FATAL"
         );
+
+        return CompletableFuture.completedFuture(List.of());
+    }
+
+    @Recover
+    public CompletableFuture<List<LicitacionDTO>> recover(Exception e, ArceRssFilters filters) {
+        Integer familyCod = filters != null ? filters.familyCod() : null;
+        String traceId = org.slf4j.MDC.get("traceId");
+        String errorMessage = "FALTA: Se agotaron los 5 reintentos para filtros RSS";
+
+        System.err.println(errorMessage + " | Detalle: " + e.getMessage());
+
+        auditService.saveAuditLog(
+                traceId, "ARCE_CLIENT_SERVICE", "RECOVER_MODE",
+                errorMessage, e.getMessage(), "FATAL"
+        );
+
+        if (familyCod != null) {
+            System.err.println("Familia asociada al recover: " + familyCod);
+        }
 
         return CompletableFuture.completedFuture(List.of());
     }
