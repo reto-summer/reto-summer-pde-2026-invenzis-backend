@@ -6,10 +6,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class ArceRssDefaultUrlStrategy implements IArceRssUrlStrategy {
 
-    @Value("${arce.rss.default.family-cod:0}")
+    @Value("${arce.rss.default.family-cod:3}")
     private Integer defaultFamilyCod;
 
-    @Value("${arce.rss.default.subfamily-cod:0}")
+    @Value("${arce.rss.default.subfamily-cod:10}")
     private Integer defaultSubFamilyCod;
 
     @Override
