@@ -79,6 +79,17 @@ public class LicitacionService implements ILicitacionService {
                 .map(licitacionMapper::licitacionToLicitacionDTO)
                 .orElseThrow(() -> new RuntimeException("No existe licitación con titulo: " + titulo));
     }
+
+    @Transactional
+    public LicitacionDTO updateEnviadoFlag(Integer id, boolean flag) {
+
+        Licitacion licitacion = licitacionRepository.getLicitacionById(id)
+                .orElseThrow(() -> new RuntimeException("No existe licitación con id: " + id));
+
+        licitacion.setEnviado(flag);
+
+        return licitacionMapper.licitacionToLicitacionDTO(licitacion);
+    }
 }
 
 
