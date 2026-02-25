@@ -57,7 +57,7 @@ public class SubfamiliaService implements ISubfamiliaService {
         Subfamilia subfamilia = subfamiliaMapper.subFamilyDTOtoSubfamily(dto);
 
         if (subfamilia.getFamiCod() == null || subfamilia.getCod() == null) {
-            throw new IllegalArgumentException("fami_cod y cod son obligatorios");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "fami_cod y cod son obligatorios");
         }
 
         if (subfamilia.getDescripcion() == null) {
