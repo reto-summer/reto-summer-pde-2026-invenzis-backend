@@ -6,7 +6,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/subfamilias")
-@CrossOrigin(origins = "*")
 public class SubfamiliaController {
 
     private final ISubfamiliaService subfamiliaService;
