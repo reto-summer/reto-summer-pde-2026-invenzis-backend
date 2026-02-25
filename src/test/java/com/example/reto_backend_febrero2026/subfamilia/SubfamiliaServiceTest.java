@@ -7,6 +7,8 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -94,9 +96,12 @@ class SubfamiliaServiceTest {
         Subfamilia.SubfamiliaId id = new Subfamilia.SubfamiliaId(famiCod, cod);
         when(subfamiliaRepository.findById(id)).thenReturn(Optional.empty());
 
-        RuntimeException ex = assertThrows(RuntimeException.class, () -> subfamiliaService.findById(famiCod, cod));
+        ResponseStatusException ex = assertThrows(ResponseStatusException.class,
+                () -> subfamiliaService.findById(famiCod, cod));
 
-        assertEquals("Subfamilia no encontrada con famiCod: 999 y cod: 999", ex.getMessage(),
+        assertEquals(HttpStatus.NOT_FOUND, ex.getStatusCode(),
+                "El status debería ser 404 NOT_FOUND");
+        assertEquals("Subfamilia no encontrada con famiCod: 999 y cod: 999", ex.getReason(),
             "El mensaje de error debería incluir famiCod y cod");
         verify(subfamiliaRepository).findById(id);
         verify(subfamiliaMapper, never()).subFamilyToSubfamilyDTO(any(Subfamilia.class));
@@ -152,9 +157,12 @@ class SubfamiliaServiceTest {
         SubfamiliaDTO input = new SubfamiliaDTO(null, 43, "Descripcion");
         when(subfamiliaMapper.subFamilyDTOtoSubfamily(input)).thenReturn(new Subfamilia(null, 43, "Descripcion"));
 
-        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> subfamiliaService.saveFamily(input));
+        ResponseStatusException ex = assertThrows(ResponseStatusException.class,
+            () -> subfamiliaService.saveFamily(input));
 
-        assertTrue(ex.getMessage().contains("FAMI_COD y COD son obligatorios"));
+        assertEquals(HttpStatus.BAD_REQUEST, ex.getStatusCode(),
+            "El status debería ser 400 BAD_REQUEST");
+        assertEquals("fami_cod y cod son obligatorios", ex.getReason());
         verify(subfamiliaRepository, never()).save(any(Subfamilia.class));
     }
 
@@ -163,9 +171,12 @@ class SubfamiliaServiceTest {
         SubfamiliaDTO input = new SubfamiliaDTO(10, null, "Descripcion");
         when(subfamiliaMapper.subFamilyDTOtoSubfamily(input)).thenReturn(new Subfamilia(10, null, "Descripcion"));
 
-        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> subfamiliaService.saveFamily(input));
+        ResponseStatusException ex = assertThrows(ResponseStatusException.class,
+            () -> subfamiliaService.saveFamily(input));
 
-        assertTrue(ex.getMessage().contains("FAMI_COD y COD son obligatorios"));
+        assertEquals(HttpStatus.BAD_REQUEST, ex.getStatusCode(),
+            "El status debería ser 400 BAD_REQUEST");
+        assertEquals("fami_cod y cod son obligatorios", ex.getReason());
         verify(subfamiliaRepository, never()).save(any(Subfamilia.class));
     }
 
