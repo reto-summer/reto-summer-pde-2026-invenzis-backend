@@ -23,6 +23,8 @@ package com.example.reto_backend_febrero2026.familia;
       @InjectMocks
       private FamiliaService familiaService;
 
+      // testea que el servicio llama al repository y al mapper correctamente
+      // findAll llama a familiaRepository.findAll() y familiaMapper.familyToFamilyDTO()
       @Test
       void findAll_deberiaRetornarListaDeDTOs() {
           // Arrange
@@ -47,6 +49,8 @@ package com.example.reto_backend_febrero2026.familia;
           verify(familiaRepository).findAll();
       }
        
+      // testea que el servicio llama al repository y al mapper correctamente
+      // findAll llama a familiaRepository.findAll() y familiaMapper.familyToFamilyDTO()
       @Test                                                                                                              void findAll_listaVacia_deberiaRetornarListaVacia() {
         // Arrange                                                                                                   
         when(familiaRepository.findAll()).thenReturn(List.of());
@@ -60,6 +64,8 @@ package com.example.reto_backend_febrero2026.familia;
         verifyNoInteractions(familiaMapper);
     }
     // ===== findById =====                                                                                         
+    // testea que el servicio llama al repository y al mapper correctamente
+    // findById llama a familiaRepository.findById() y familiaMapper.familyToFamilyDTO()
     @Test                                                                                                        
     void findById_codigoExistente_deberiaRetornarDTO() {
           // Arrange
@@ -78,6 +84,8 @@ package com.example.reto_backend_febrero2026.familia;
           verify(familiaRepository).findById(3);
       }
 
+      // testea que el servicio llama al repository y al mapper correctamente
+      // findById llama a familiaRepository.findById() y lanza IllegalArgumentException
       @Test
       void findById_codigoInexistente_deberiaLanzarIllegalArgument() {
           // Arrange
@@ -93,7 +101,9 @@ package com.example.reto_backend_febrero2026.familia;
           verify(familiaRepository).findById(999);
       }
 
-         // ===== saveFamily =====                                                                                                                                                                                                       
+         // ===== saveFamily =====   
+         // testea que el servicio llama al repository y al mapper correctamente
+         // saveFamily llama a familiaRepository.save() y familiaMapper.familyToFamilyDTO()
       @Test                                                                                                        
       void saveFamily_dtoValido_deberiaGuardarYRetornarDTO() {
           // Arrange
@@ -115,6 +125,8 @@ package com.example.reto_backend_febrero2026.familia;
           verify(familiaRepository).save(familia);
       }
 
+      // testea que el servicio llama al repository y al mapper correctamente
+      // saveFamily llama a familiaRepository.save() y lanza IllegalArgumentException
       @Test
       void saveFamily_codNull_deberiaLanzarIllegalArgument() {
           // Arrange
@@ -132,6 +144,8 @@ package com.example.reto_backend_febrero2026.familia;
           verify(familiaRepository, never()).save(any());
       }
 
+      // testea que el servicio llama al repository y al mapper correctamente
+      // saveFamily llama a familiaRepository.save() y familiaMapper.familyToFamilyDTO()
       @Test
       void saveFamily_descripcionNull_deberiaSetearDescripcionVacia() {
           // Arrange

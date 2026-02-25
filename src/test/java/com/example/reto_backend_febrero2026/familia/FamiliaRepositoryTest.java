@@ -25,7 +25,8 @@ class FamiliaRepositoryTest {
     private FamiliaRepository familiaRepository;
 
     // ===== findAll =====
-
+    // testea que las queries SQL se ejecutan correctamente
+    // findAll llama a jdbcTemplate.query() con el SQL correcto
     @Test
     void findAll_deberiaRetornarListaDeFamilias() {
         // Arrange
@@ -46,7 +47,8 @@ class FamiliaRepositoryTest {
     }
 
     // ===== findById =====
-
+    // testea que las queries SQL se ejecutan correctamente
+    // findById llama a jdbcTemplate.queryForObject() y retorna la entidad
     @Test
     void findById_codigoExistente_deberiaRetornarFamilia() {
         // Arrange
@@ -63,6 +65,8 @@ class FamiliaRepositoryTest {
         assertEquals("MAQUINAS, EQUIPOS Y MOBILIARIOS NUEVOS", resultado.getDescripcion());
     }
 
+    // testea que las queries SQL se ejecutan correctamente
+    // findById llama a jdbcTemplate.queryForObject() y retorna null
     @Test
     void findById_codigoInexistente_deberiaRetornarNull() {
         // Arrange
@@ -77,7 +81,8 @@ class FamiliaRepositoryTest {
     }
 
     // ===== save =====
-
+    // testea que las queries SQL se ejecutan correctamente
+    // save llama a jdbcTemplate.update() y retorna la entidad
     @Test
     void save_familiaNueva_deberiaEjecutarInsert() {
         // Arrange
@@ -95,6 +100,8 @@ class FamiliaRepositoryTest {
         verify(jdbcTemplate).update(anyString(), eq(12), eq("PRODUCTOS EXCLUIDOS DEL CATALOGO UNICO DE BIENES Y SERVICIOS"));
     }
 
+    // testea que las queries SQL se ejecutan correctamente
+    // save llama a jdbcTemplate.update() y retorna la entidad
     @Test
     void save_familiaExistente_deberiaEjecutarUpdate() {
         // Arrange

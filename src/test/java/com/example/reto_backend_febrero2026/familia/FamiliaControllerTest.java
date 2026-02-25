@@ -22,6 +22,8 @@ package com.example.reto_backend_febrero2026.familia;
 
       // ===== GET /familias =====
 
+      // testea que el controlador llama al servicio y retorna la lista de DTOs
+      // devuelve status 200 y la lista de DTOs
       @Test
       void findAll_deberiaRetornar200ConListaDeFamilias() throws Exception {
           // Arrange
@@ -32,14 +34,16 @@ package com.example.reto_backend_febrero2026.familia;
 
           // Act & Assert
           mockMvc.perform(get("/familias"))
-                  .andExpect(status().isOk())
+                  .andExpect(status().is(200))
                   .andExpect(jsonPath("$.length()").value(2))
                   .andExpect(jsonPath("$[0].cod").value(1))
                   .andExpect(jsonPath("$[0].descripcion").value("SERVICIOS PERSONALES"))
                   .andExpect(jsonPath("$[1].cod").value(2))
                   .andExpect(jsonPath("$[1].descripcion").value("MATERIALES Y SUMINISTROS"));
       }
-
+      
+      // testea que el controlador llama al servicio y retorna la lista de DTOs
+      // devuelve status 200 y la lista de DTOs vacía
       @Test
       void findAll_sinDatos_deberiaRetornar200ConListaVacia() throws Exception {
           // Arrange
@@ -47,12 +51,14 @@ package com.example.reto_backend_febrero2026.familia;
 
           // Act & Assert
           mockMvc.perform(get("/familias"))
-                  .andExpect(status().isOk())
+                  .andExpect(status().is(200))
                   .andExpect(jsonPath("$.length()").value(0));
       }
 
       // ===== GET /familias/{cod} =====
 
+      // testea que el controlador llama al servicio y retorna el DTO
+      // devuelve status 200 y el DTO
       @Test
       void findById_codigoExistente_deberiaRetornar200ConFamilia() throws Exception {
           // Arrange
@@ -62,19 +68,20 @@ package com.example.reto_backend_febrero2026.familia;
 
           // Act & Assert
           mockMvc.perform(get("/familias/4"))
-                  .andExpect(status().isOk())
+                  .andExpect(status().is(200))
                   .andExpect(jsonPath("$.cod").value(4))
                   .andExpect(jsonPath("$.descripcion").value("MAQUINAS, EQUIPOS Y MOBILIARIOS NUEVOS"));
       }
 
-       @Test       
-      void findById_codigoInexistente_deberiaLanzarExcepcion() {
+      // testea que el controlador llama al servicio y retorna 400
+      @Test
+      void findById_codigoInexistente_deberiaRetornar400() throws Exception {
           // Arrange
           when(familiaService.findById(999))
                   .thenThrow(new IllegalArgumentException("No se encontró la familia con COD=999"));
 
           // Act & Assert
-          assertThrows(Exception.class,
-                  () -> mockMvc.perform(get("/familias/999")));
+          mockMvc.perform(get("/familias/999"))
+                  .andExpect(status().is(400));
       }
   }
