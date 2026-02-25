@@ -7,23 +7,23 @@ import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
-@Table(name = "SUBFLIAS")
+@Table(name = "subflias")
 @IdClass(Subfamilia.SubfamiliaId.class)
 public class Subfamilia {
 
     @Id
-    @Column(name = "FAMI_COD")
+    @Column(name = "fami_cod")
     private Integer famiCod;
 
     @Id
-    @Column(name = "COD")
+    @Column(name = "cod")
     private Integer cod;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "FAMI_COD", insertable = false, updatable = false)
+    @JoinColumn(name = "fami_cod", insertable = false, updatable = false)
     private Familia familia;
 
-    @Column(name = "DESCRIPCION", nullable = false)
+    @Column(name = "descripcion", nullable = false)
     private String descripcion;
 
     public Subfamilia() {}
