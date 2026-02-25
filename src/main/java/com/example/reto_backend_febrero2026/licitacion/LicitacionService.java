@@ -4,9 +4,12 @@ import com.example.reto_backend_febrero2026.audit.Auditable;
 import com.example.reto_backend_febrero2026.familia.*;
 import com.example.reto_backend_febrero2026.integration.servlet.dto.LicitacionItemRecord;
 import com.example.reto_backend_febrero2026.subfamilia.*;
+import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
@@ -44,7 +47,11 @@ public class LicitacionService implements ILicitacionService {
         return licitacionRepository
                 .findById(id)
                 .map(licitacionMapper::licitacionToLicitacionDTO)
-                .orElseThrow(() -> new RuntimeException("No existe licitación con id: " + id));
+                .orElseThrow(() ->
+                new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "No existe licitación con id: " + id
+                ));
     }
 
     @Auditable(module = "LICITACION_SERVICE", action = "CLEAN_SAVE")
@@ -80,13 +87,24 @@ public class LicitacionService implements ILicitacionService {
         return licitacionRepository
                 .findByTitulo(titulo)
                 .map(licitacionMapper::licitacionToLicitacionDTO)
-                .orElseThrow(() -> new RuntimeException("No existe licitación con titulo: " + titulo));
+                .orElseThrow(() ->
+                new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "No existe licitación con titulo: " + titulo
+                ));
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<LicitacionDTO> getLicitacionesByFamiliaAndSubfamilia(Integer familiaCod, Integer subfamiliaCod) {
-        return licitacionRepository.findByFamilia_CodAndSubfamilia_Cod(familiaCod,subfamiliaCod).stream()
+        List<Licitacion> licitaciones = licitacionRepository.findByFamilia_CodAndSubfamilia_Cod(familiaCod,subfamiliaCod);
+
+        if(licitaciones.isEmpty()){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No existen licitaciones para familia " + familiaCod
+            + " y subfamilia " + subfamiliaCod);
+        }
+
+        return licitaciones.stream()
                 .map(licitacionMapper::licitacionToLicitacionDTO).collect(Collectors.toList());
     }
 
@@ -94,8 +112,12 @@ public class LicitacionService implements ILicitacionService {
     public LicitacionDTO updateEnviadoFlag(Integer id, boolean flag) {
 
         Licitacion licitacion = licitacionRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("No existe licitación con id: " + id));
-
+                .orElseThrow(() ->
+                        new ResponseStatusException(
+                                HttpStatus.NOT_FOUND,
+                                "No existe licitación con id: " + id
+                        )
+                );
         licitacion.setEnviado(flag);
 
         return licitacionMapper.licitacionToLicitacionDTO(licitacion);
