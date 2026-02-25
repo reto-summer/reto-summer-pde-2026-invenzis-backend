@@ -1,5 +1,6 @@
 package com.example.reto_backend_febrero2026.subfamilia;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -80,5 +81,13 @@ public class SubfamiliaService implements ISubfamiliaService {
         }
 
         return subfamiliaMapper.subFamilyToSubfamilyDTO(subfamilia);
+    }
+
+    public Subfamilia getEntityById(Integer famiCod, Integer cod)
+    {
+        Subfamilia.SubfamiliaId id =
+                new Subfamilia.SubfamiliaId(famiCod, cod);
+
+        return this.subfamiliaRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Subfamilia no encontrada"));
     }
 }
