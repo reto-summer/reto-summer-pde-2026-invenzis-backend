@@ -17,7 +17,6 @@ public interface LicitacionMapper {
     @Mapping(target = "familia", ignore = true)
     @Mapping(target = "subfamilia", ignore = true)
     @Mapping(source = "titulo", target = "tipoLicitacion", qualifiedByName = "extraerTipoLicitacion")
-    @Mapping(target = "enviado", ignore = true)
 
     LicitacionDTO itemRecordToDTO(LicitacionItemRecord itemRecord);
 }
