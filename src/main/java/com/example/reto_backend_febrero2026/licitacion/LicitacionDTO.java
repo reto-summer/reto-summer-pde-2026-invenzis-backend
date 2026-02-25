@@ -16,8 +16,6 @@ public class LicitacionDTO {
 
     private String descripcion;
 
-    private boolean enviado = false;
-
     private OffsetDateTime fechaPublicacion;
 
     private LocalDateTime fechaCierre;
@@ -31,7 +29,7 @@ public class LicitacionDTO {
     public LicitacionDTO() {
     }
 
-    public LicitacionDTO(Integer idLicitacion, String titulo, String tipoLicitacion, String descripcion, boolean enviado,
+    public LicitacionDTO(Integer idLicitacion, String titulo, String tipoLicitacion, String descripcion,
                          OffsetDateTime fechaPublicacion, LocalDateTime fechaCierre,
                          String link, FamiliaDTO familia,
                          SubfamiliaDTO subfamilia) {
@@ -39,7 +37,6 @@ public class LicitacionDTO {
         this.titulo = titulo;
         this.tipoLicitacion = tipoLicitacion;
         this.descripcion = descripcion;
-        this.enviado = enviado;
         this.fechaPublicacion = fechaPublicacion;
         this.fechaCierre = fechaCierre;
         this.link = link;
@@ -114,8 +111,4 @@ public class LicitacionDTO {
     public String getTipoLicitacion() { return tipoLicitacion; }
 
     public void setTipoLicitacion(String tipoLicitacion) { this.tipoLicitacion = tipoLicitacion; }
-
-    public boolean isEnviado() { return enviado; }
-
-    public void setEnviado(boolean enviado) { this.enviado = enviado; }
 }
