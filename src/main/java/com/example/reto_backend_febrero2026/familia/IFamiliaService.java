@@ -6,5 +6,6 @@ public interface IFamiliaService {
     List<FamiliaDTO> findAll();
     FamiliaDTO findById(Integer cod);
     FamiliaDTO saveFamily(FamiliaDTO familia);
+    Familia getEntityById(Integer cod);
 }
  

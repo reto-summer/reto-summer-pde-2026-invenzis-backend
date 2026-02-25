@@ -18,37 +18,21 @@ import java.util.List;
             return licitacionService.findAll();
         }
 
-        @GetMapping("/ById/{id}")
-        public ResponseEntity<LicitacionDTO> getLicitacionById(@PathVariable int id) {
-
-            LicitacionDTO licitacion = licitacionService.getLicitacionById(id);
-
-            if (licitacion == null) {
-                return ResponseEntity.notFound().build();
-            }
-
-            return ResponseEntity.ok(licitacion);
+        @GetMapping("/{id}")
+        public ResponseEntity<LicitacionDTO> getLicitacionById(@PathVariable Integer id) {
+            return ResponseEntity.ok(licitacionService.getLicitacionById(id));
         }
 
-        @GetMapping("/title/{titulo}")
+        @GetMapping("/titulo/{titulo}")
         public ResponseEntity<LicitacionDTO> getLicitacionByTitle(@PathVariable String titulo) {
-
-            LicitacionDTO licitacion = licitacionService.getLicitacionByTitulo(titulo);
-
-            if (licitacion == null) {
-                return ResponseEntity.notFound().build();
-            }
-
-            return ResponseEntity.ok(licitacion);
+            return ResponseEntity.ok(licitacionService.getLicitacionByTitulo(titulo));
         }
 
-        @GetMapping("/ById/{id}/enviado")
-        public ResponseEntity<LicitacionDTO> updateLicitacionFlag(@PathVariable int id, @RequestParam boolean flag) {
-
-            LicitacionDTO updated = licitacionService.updateEnviadoFlag(id, flag);
-
-            return ResponseEntity.ok(updated);
+        @GetMapping("/familia/{familiaCod}/subfamilia/{subfamiliaCod}")
+        public List<LicitacionDTO> getLicitacionesByFamiliaAndSubfamilia(@PathVariable Integer familiaCod, @PathVariable Integer subfamiliaCod) {
+            return licitacionService.getLicitacionesByFamiliaAndSubfamilia(familiaCod, subfamiliaCod);
         }
+}
 
         /*
         @PostMapping("/save") // TESTING
@@ -74,4 +58,3 @@ import java.util.List;
             return ResponseEntity.ok(licitacion);
         }
         */
-    }
