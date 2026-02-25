@@ -1,7 +1,7 @@
 package com.example.reto_backend_febrero2026.licitacion;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
 
 import com.example.reto_backend_febrero2026.familia.Familia;
 import com.example.reto_backend_febrero2026.subfamilia.Subfamilia;
@@ -30,7 +30,7 @@ public class Licitacion {
 
     @JsonFormat(pattern = "EEE, dd MMM yyyy HH:mm:ss Z", locale = "en")
     @Column(name = "fecha_publicacion")
-    private OffsetDateTime fechaPublicacion;
+    private LocalDate fechaPublicacion;
 
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm")
     @Column(name = "fecha_cierre")
@@ -53,7 +53,7 @@ public class Licitacion {
     public Licitacion() {
     }
 
-    public Licitacion(Integer idLicitacion, String titulo, String tipoLicitacion, String descripcion, boolean enviado, OffsetDateTime fechaPublicacion, LocalDateTime fechaCierre,
+    public Licitacion(Integer idLicitacion, String titulo, String tipoLicitacion, String descripcion, boolean enviado, LocalDate fechaPublicacion, LocalDateTime fechaCierre,
                       String link, Familia familia, Subfamilia subfamilia) {
         this.idLicitacion = idLicitacion;
         this.titulo = titulo;
@@ -91,11 +91,11 @@ public class Licitacion {
         this.descripcion = descripcion;
     }
 
-    public OffsetDateTime getFechaPublicacion() {
+    public LocalDate getFechaPublicacion() {
         return fechaPublicacion;
     }
 
-    public void setFechaPublicacion(OffsetDateTime fechaPublicacion) {
+    public void setFechaPublicacion(LocalDate fechaPublicacion) {
         this.fechaPublicacion = fechaPublicacion;
     }
 
