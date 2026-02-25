@@ -26,7 +26,7 @@ public class Licitacion {
     @Column(name = "descripcion", columnDefinition = "TEXT")
     private String descripcion;
 
-    @Column(name = "ENVIADO", nullable = false, columnDefinition = "BOOLEAN DEFAULT FALSE")
+    @Column(name = "enviado", nullable = false)
     private boolean enviado = false;
 
     @JsonProperty("fecha_publicacion")
@@ -55,7 +55,7 @@ public class Licitacion {
     public Licitacion() {
     }
 
-    public Licitacion(Integer idLicitacion, String titulo, String tipoLicitacion, String descripcion, boolean enviado,OffsetDateTime fechaPublicacion, LocalDateTime fechaCierre,
+    public Licitacion(Integer idLicitacion, String titulo, String tipoLicitacion, String descripcion, boolean enviado, OffsetDateTime fechaPublicacion, LocalDateTime fechaCierre,
                       String link, Familia familia, Subfamilia subfamilia) {
         this.idLicitacion = idLicitacion;
         this.titulo = titulo;
@@ -137,7 +137,7 @@ public class Licitacion {
 
     public void setTipoLicitacion(String tipoLicitacion) { this.tipoLicitacion = tipoLicitacion; }
 
-    public boolean getEnviado() { return enviado; }
+    public boolean isEnviado() { return enviado; }
 
     public void setEnviado(boolean enviado) { this.enviado = enviado; }
 }
