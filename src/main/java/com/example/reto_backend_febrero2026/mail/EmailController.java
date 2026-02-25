@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/mail-destinations")
+@RequestMapping("/email-destinations")
 @CrossOrigin(origins = "*")
 public class EmailController {
 
