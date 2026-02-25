@@ -1,8 +1,5 @@
-package com.example.reto_backend_febrero2026;
+package com.example.reto_backend_febrero2026.licitacion;
 
-import com.example.reto_backend_febrero2026.licitacion.ILicitacionService;
-import com.example.reto_backend_febrero2026.licitacion.LicitacionController;
-import com.example.reto_backend_febrero2026.licitacion.LicitacionDTO;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -10,7 +7,6 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
-import java.util.Optional;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
