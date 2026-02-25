@@ -67,9 +67,9 @@ class LicitacionControllerTest {
         when(licitacionService.getLicitacionById(1))
                 .thenReturn(dto);
 
-        mockMvc.perform(get("/licitaciones/ById/1"))
+        mockMvc.perform(get("/licitaciones/1"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id_licitacion").value(1))
+                .andExpect(jsonPath("$.idLicitacion").value(1))
                 .andExpect(jsonPath("$.titulo").value("Titulo"));
     }
 
