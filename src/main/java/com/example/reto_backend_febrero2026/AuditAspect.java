@@ -108,7 +108,7 @@ public class AuditAspect {
 
     private String resolveContent(JoinPoint joinPoint) {
         String content = MDC.get(NOTIF_CONTENT_KEY);
-        return (content == null || content.isBlank()) ? Arrays.toString(joinPoint.getArgs()) : content;
+        return (content == null || content.isBlank()) ? null : content;
     }
 
     private void clearNotificationContext() {

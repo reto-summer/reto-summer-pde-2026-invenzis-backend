@@ -67,8 +67,8 @@
     </thead>
     <tbody>
     <tr th:each="item : ${items}">
-        <td><a th:href="${item.link}" th:text="${item.description}"></a></td>
-        <td th:text="${#dates.format(item.fechaCierre, 'dd/MM/yy')}"></td>
+        <td><a th:href="${item.link}" th:text="${item.descripcion}"></a></td>
+        <td th:text="${item.fechaCierre != null ? item.fechaCierre : '-'}"></td>
     </tr>
     </tbody>
 </table>

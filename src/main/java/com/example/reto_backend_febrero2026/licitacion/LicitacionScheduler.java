@@ -28,8 +28,8 @@ public class LicitacionScheduler {
         this.configService = configService;
     }
 
-    @Scheduled(cron = "0 */2 * * * *")
-    public void enviarResumenDiario() {
+    @Scheduled(cron = "0 * * * * *", zone = "America/Montevideo")
+    public void getLicitacionesByConfig() {
         log.info("Iniciando envío diario de licitaciones ARCE");
         try {
             Config config = configService.getConfig();

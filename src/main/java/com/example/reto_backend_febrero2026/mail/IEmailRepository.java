@@ -4,16 +4,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
-import java.util.Optional;
 
-public interface IEmailRepository extends JpaRepository<Email, Integer> {
+public interface IEmailRepository extends JpaRepository<Email, String> {
 
-    Optional<Email> findByEmail(String email);
-
-    @Query("SELECT m.email FROM Email m WHERE m.activo = true")
+    @Query("SELECT m.emailAddress FROM Email m WHERE m.activo = true")
     List<String> findAllActiveEmails();
 
     List<Email> findByActivoTrue();
-
-    boolean existsByEmail(String email);
 }

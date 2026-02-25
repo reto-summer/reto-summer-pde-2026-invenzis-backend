@@ -1,6 +1,11 @@
 package com.example.reto_backend_febrero2026.mail;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
+import jakarta.persistence.Table;
 
 import java.time.LocalDateTime;
 
@@ -9,11 +14,8 @@ import java.time.LocalDateTime;
 public class Email {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-
     @Column(name = "email", nullable = false, unique = true)
-    private String email;
+    private String emailAddress;
 
     @Column(name = "activo", nullable = false)
     private Boolean activo = true;
@@ -37,21 +39,17 @@ public class Email {
 
     public Email() {}
 
-    public Email(String email) {
-        this.email = email;
+    public Email(String emailAddress) {
+        this.emailAddress = emailAddress;
         this.activo = true;
     }
 
-    public Integer getId() {
-        return id;
+    public String getEmailAddress() {
+        return emailAddress;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
+    public void setEmailAddress(String emailAddress) {
+        this.emailAddress = emailAddress;
     }
 
     public Boolean getActivo() {
