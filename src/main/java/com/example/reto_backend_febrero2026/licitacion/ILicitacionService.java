@@ -9,6 +9,7 @@ public interface ILicitacionService {
     LicitacionDTO getLicitacionById(int id);
     LicitacionDTO getLicitacionByTitulo(String titulo);
     LicitacionDTO cleanSave(LicitacionItemRecord itemRecord);
+    LicitacionDTO updateEnviadoFlag(Integer id, boolean flag);
     //LicitacionModelDTO getlicitacionByfecha_publicacion(LocalDate fecha);
     //LicitacionModelDTO getlicitacionByfecha_cierre(LocalDateTime fecha);
     //LicitacionModelDTO getlicitacionByfecha_inicio_fin(LocalDate fecha_inicio, LocalDate fecha_fin);

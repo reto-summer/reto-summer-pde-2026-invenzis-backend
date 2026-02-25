@@ -42,6 +42,14 @@ import java.util.List;
             return ResponseEntity.ok(licitacion);
         }
 
+        @GetMapping("/ById/{id}/enviado")
+        public ResponseEntity<LicitacionDTO> updateLicitacionFlag(@PathVariable int id, @RequestParam boolean flag) {
+
+            LicitacionDTO updated = licitacionService.updateEnviadoFlag(id, flag);
+
+            return ResponseEntity.ok(updated);
+        }
+
         /*
         @PostMapping("/save") // TESTING
         public ResponseEntity<LicitacionModelDTO> savelicitacion(@RequestBody LicitacionModelDTO licitacionDTO) {
