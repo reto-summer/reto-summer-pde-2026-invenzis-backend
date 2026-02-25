@@ -5,12 +5,12 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "destinos_email")
-public class MailModel {
+@Table(name = "email")
+public class Email {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     @Column(name = "email", nullable = false, unique = true)
     private String email;
@@ -35,14 +35,14 @@ public class MailModel {
         fechaActualizacion = LocalDateTime.now();
     }
 
-    public MailModel() {}
+    public Email() {}
 
-    public MailModel(String email) {
+    public Email(String email) {
         this.email = email;
         this.activo = true;
     }
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
