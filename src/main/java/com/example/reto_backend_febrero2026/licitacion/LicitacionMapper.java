@@ -10,12 +10,14 @@ public interface LicitacionMapper {
     LicitacionDTO licitacionToLicitacionDTO(Licitacion licitacion);
     Licitacion licitacionDTOtoLicitacion(LicitacionDTO licitacionDTO);
 
-
     @Mapping(source = "link", target = "idLicitacion", qualifiedByName = "extraerId")
     @Mapping(source = "descripcion", target = "descripcion", qualifiedByName = "limpiarHTML")
     @Mapping(source = "fechaPublicacion", target = "fechaPublicacion", qualifiedByName = "parsearFechaPublicacion")
     @Mapping(source = "descripcion", target = "fechaCierre", qualifiedByName = "extraerFechaCierre")
     @Mapping(target = "familia", ignore = true)
     @Mapping(target = "subfamilia", ignore = true)
+    @Mapping(source = "titulo", target = "tipoLicitacion", qualifiedByName = "extraerTipoLicitacion")
+    @Mapping(target = "enviado", ignore = true)
+
     LicitacionDTO itemRecordToDTO(LicitacionItemRecord itemRecord);
 }

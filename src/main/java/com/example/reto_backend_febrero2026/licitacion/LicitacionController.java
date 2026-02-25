@@ -4,12 +4,19 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 
+import java.util.List;
+
 @RestController
     @RequestMapping("/licitaciones")
     public class LicitacionController {
 
         @Autowired
         private ILicitacionService licitacionService;
+
+        @GetMapping
+        public List<LicitacionDTO> getAllLicitaciones(){
+            return licitacionService.findAll();
+        }
 
         @GetMapping("/ById/{id}")
         public ResponseEntity<LicitacionDTO> getLicitacionById(@PathVariable int id) {
@@ -33,6 +40,14 @@ import org.springframework.http.ResponseEntity;
             }
 
             return ResponseEntity.ok(licitacion);
+        }
+
+        @GetMapping("/ById/{id}/enviado")
+        public ResponseEntity<LicitacionDTO> updateLicitacionFlag(@PathVariable int id, @RequestParam boolean flag) {
+
+            LicitacionDTO updated = licitacionService.updateEnviadoFlag(id, flag);
+
+            return ResponseEntity.ok(updated);
         }
 
         /*
