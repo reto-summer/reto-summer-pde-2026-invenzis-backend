@@ -55,15 +55,6 @@ public class ArceClientService {
                 .build();
     }
 
-    @Retryable(
-            retryFor = {Exception.class},
-            maxAttempts = 5,
-            backoff = @Backoff(delay = 2000, multiplier = 3)
-    )
-    public CompletableFuture<List<LicitacionDTO>> obtenerLicitaciones(Integer familyCod, Integer subFamilyCod) {
-        ArceRssFilters filters = new ArceRssFilters(familyCod, subFamilyCod);
-        return obtenerLicitaciones(filters);
-    }
 
         @Retryable(
             retryFor = {Exception.class},
@@ -72,11 +63,10 @@ public class ArceClientService {
         )
     @Auditable(module = "ARCE_CLIENTE_SERVICE", action = "GET_LICITACIONES_FROM_ARCE")
     public CompletableFuture<List<LicitacionDTO>> obtenerLicitaciones(ArceRssFilters filters) {
-        ArceRssFilters safeFilters = filters == null ? ArceRssFilters.empty() : filters;
         try {
-            String rssPath = urlStrategyResolver.buildPath(safeFilters);
-            Integer resolvedFamilyCod = safeFilters.familyCod() != null ? safeFilters.familyCod() : defaultFamilyCod;
-            Integer resolvedSubFamilyCod = safeFilters.subFamilyCod() != null ? safeFilters.subFamilyCod() : defaultSubFamilyCod;
+            String rssPath = urlStrategyResolver.buildPath(filters);
+            Integer resolvedFamilyCod = filters.familyCod() != null ? filters.familyCod() : defaultFamilyCod;
+            Integer resolvedSubFamilyCod = filters.subFamilyCod() != null ? filters.subFamilyCod() : defaultSubFamilyCod;
 
             RssResponseDTO response = restClient.get()
                     .uri(rssPath)
