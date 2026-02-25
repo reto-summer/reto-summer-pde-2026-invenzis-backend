@@ -13,4 +13,6 @@ public interface ISubfamiliaService {
     SubfamiliaDTO saveFamily(SubfamiliaDTO subFamilia);
 
     SubfamiliaDTO getOrCreateSubFamily(Integer famCod, Integer subCod);
+
+    Subfamilia getEntityById(Integer famiCod, Integer cod);
 }

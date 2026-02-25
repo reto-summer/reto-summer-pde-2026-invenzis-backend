@@ -6,7 +6,6 @@ import java.time.OffsetDateTime;
 import com.example.reto_backend_febrero2026.familia.Familia;
 import com.example.reto_backend_febrero2026.subfamilia.Subfamilia;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
 @Entity
@@ -29,7 +28,6 @@ public class Licitacion {
     @Column(name = "enviado", nullable = false)
     private boolean enviado = false;
 
-    @JsonProperty("fecha_publicacion")
     @JsonFormat(pattern = "EEE, dd MMM yyyy HH:mm:ss Z", locale = "en")
     @Column(name = "fecha_publicacion")
     private OffsetDateTime fechaPublicacion;

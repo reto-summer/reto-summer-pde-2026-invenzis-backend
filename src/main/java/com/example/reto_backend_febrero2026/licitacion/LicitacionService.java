@@ -4,7 +4,7 @@ import com.example.reto_backend_febrero2026.audit.Auditable;
 import com.example.reto_backend_febrero2026.familia.*;
 import com.example.reto_backend_febrero2026.integration.servlet.dto.LicitacionItemRecord;
 import com.example.reto_backend_febrero2026.subfamilia.*;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +31,7 @@ public class LicitacionService implements ILicitacionService {
     LicitacionMapper licitacionMapper;
 
     @Override
+    @Transactional(readOnly = true)
     public List<LicitacionDTO> findAll() {
         return licitacionRepository.findAll().stream()
                 .map(licitacionMapper::licitacionToLicitacionDTO)
@@ -38,6 +39,7 @@ public class LicitacionService implements ILicitacionService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public LicitacionDTO getLicitacionById(int id) {
         return licitacionRepository
                 .getLicitacionById(id)
@@ -73,6 +75,8 @@ public class LicitacionService implements ILicitacionService {
         return licitacionDTO;
     }
 
+    @Override
+    @Transactional(readOnly = true)
     public LicitacionDTO getLicitacionByTitulo(String titulo){
         return licitacionRepository
                 .getLicitacionByTitulo(titulo)
@@ -80,6 +84,15 @@ public class LicitacionService implements ILicitacionService {
                 .orElseThrow(() -> new RuntimeException("No existe licitación con titulo: " + titulo));
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public List<LicitacionDTO> getLicitacionesByFamiliaAndSubfamilia(Integer familiaCod, Integer subfamiliaCod) {
+        return licitacionRepository.findByFamilia_CodAndSubfamilia_Cod(familiaCod, subfamiliaCod).stream()
+                .map(licitacionMapper::licitacionToLicitacionDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     @Transactional
     public LicitacionDTO updateEnviadoFlag(Integer id, boolean flag) {
 
