@@ -7,35 +7,53 @@ import org.springframework.http.ResponseEntity;
 import java.util.List;
 
 @RestController
-@RequestMapping("/licitaciones")
-public class LicitacionController {
+    @RequestMapping("/licitaciones")
+    public class LicitacionController {
 
-    @Autowired
-    private ILicitacionService licitacionService;
+        @Autowired
+        private ILicitacionService licitacionService;
 
-    @GetMapping
-    public List<LicitacionDTO> getAllLicitaciones(){
-        return licitacionService.findAll();
-    }
+        @GetMapping
+        public List<LicitacionDTO> getAllLicitaciones(){
+            return licitacionService.findAll();
+        }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<LicitacionDTO> getLicitacionById(@PathVariable Integer id) {
-        return ResponseEntity.ok(licitacionService.getLicitacionById(id));
-    }
+        @GetMapping("/{id}")
+        public ResponseEntity<LicitacionDTO> getLicitacionById(@PathVariable Integer id) {
+            return ResponseEntity.ok(licitacionService.getLicitacionById(id));
+        }
 
-    @GetMapping("/titulo/{titulo}")
-    public ResponseEntity<LicitacionDTO> getLicitacionByTitle(@PathVariable String titulo) {
-        return ResponseEntity.ok(licitacionService.getLicitacionByTitulo(titulo));
-    }
+        @GetMapping("/titulo/{titulo}")
+        public ResponseEntity<LicitacionDTO> getLicitacionByTitle(@PathVariable String titulo) {
+            return ResponseEntity.ok(licitacionService.getLicitacionByTitulo(titulo));
+        }
 
-    @GetMapping("/{id}/enviado")
-    public ResponseEntity<LicitacionDTO> updateLicitacionFlag(@PathVariable Integer id, @RequestParam boolean flag) {
-        LicitacionDTO updated = licitacionService.updateEnviadoFlag(id, flag);
-        return ResponseEntity.ok(updated);
-    }
-
-    @GetMapping("/familia/{familiaCod}/subfamilia/{subfamiliaCod}")
-    public List<LicitacionDTO> getLicitacionesByFamiliaAndSubfamilia(@PathVariable Integer familiaCod, @PathVariable Integer subfamiliaCod) {
-        return licitacionService.getLicitacionesByFamiliaAndSubfamilia(familiaCod, subfamiliaCod);
-    }
+        @GetMapping("/familia/{familiaCod}/subfamilia/{subfamiliaCod}")
+        public List<LicitacionDTO> getLicitacionesByFamiliaAndSubfamilia(@PathVariable Integer familiaCod, @PathVariable Integer subfamiliaCod) {
+            return licitacionService.getLicitacionesByFamiliaAndSubfamilia(familiaCod, subfamiliaCod);
+        }
 }
+        /*
+        @PostMapping("/save") // TESTING
+        public ResponseEntity<LicitacionModelDTO> savelicitacion(@RequestBody LicitacionModelDTO licitacionDTO) {
+            return ResponseEntity.ok(licitacionService.savelicitacion(licitacionDTO));
+        }
+
+        @GetMapping("/fecha_publicacion/{YYYY-MM-DD}")
+        public ResponseEntity<LicitacionModelDTO> getlicitacionByfecha_publicacion(@PathVariable LocalDate fecha) {
+            LicitacionModelDTO licitacion = licitacionService.getlicitacionByfecha_publicacion(fecha);
+            return ResponseEntity.ok(licitacion);
+        }
+
+        @GetMapping("/fecha_cierre/{YYYY-MM-DDTHH:MM:SS}")
+        public ResponseEntity<LicitacionModelDTO> getlicitacionByfecha_cierre(@PathVariable LocalDateTime fecha) {
+            LicitacionModelDTO licitacion = licitacionService.getlicitacionByfecha_cierre(fecha);
+            return ResponseEntity.ok(licitacion);
+        }
+
+        @GetMapping("/fecha_publicacion/desde/{YYYY-MM-DD}/hasta/{YYYY-MM-SS}")
+        public ResponseEntity<LicitacionModelDTO> getlicitacionByfecha_inicio_fin(@PathVariable LocalDate fecha_inicio, @PathVariable LocalDate fecha_fin) {
+            LicitacionModelDTO licitacion = licitacionService.getlicitacionByfecha_inicio_fin(fecha_inicio, fecha_fin);
+            return ResponseEntity.ok(licitacion);
+        }
+        */
