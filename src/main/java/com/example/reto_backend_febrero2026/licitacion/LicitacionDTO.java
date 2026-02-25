@@ -118,7 +118,7 @@ public class LicitacionDTO {
 
     public void setTipoLicitacion(String tipoLicitacion) { this.tipoLicitacion = tipoLicitacion; }
 
-    public boolean getEnviado() { return enviado; }
+    public boolean isEnviado() { return enviado; }
 
     public void setEnviado(boolean enviado) { this.enviado = enviado; }
 }
