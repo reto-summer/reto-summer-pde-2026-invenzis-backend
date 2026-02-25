@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import jakarta.persistence.EntityNotFoundException;
+
 @Service
 public class SubfamiliaService implements ISubfamiliaService {
 
@@ -83,5 +85,13 @@ public class SubfamiliaService implements ISubfamiliaService {
         }
 
         return subfamiliaMapper.subFamilyToSubfamilyDTO(subfamilia);
+    }
+
+    public Subfamilia getEntityById(Integer famiCod, Integer cod)
+    {
+        Subfamilia.SubfamiliaId id =
+                new Subfamilia.SubfamiliaId(famiCod, cod);
+
+        return this.subfamiliaRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Subfamilia no encontrada"));
     }
 }

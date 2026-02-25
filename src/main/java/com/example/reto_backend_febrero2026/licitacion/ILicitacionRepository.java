@@ -33,4 +33,6 @@ public interface ILicitacionRepository extends JpaRepository<Licitacion, Integer
         WHERE l.titulo = :titulo
     """)
     Optional<Licitacion> getLicitacionByTitulo(String titulo);
+    
+    List<Licitacion> findByFamilia_CodAndSubfamilia_Cod(Integer familiaCod, Integer subfamiliaCod);
 }
