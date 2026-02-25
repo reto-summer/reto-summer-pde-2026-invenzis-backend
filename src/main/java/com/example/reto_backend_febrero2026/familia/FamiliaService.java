@@ -1,5 +1,6 @@
 package com.example.reto_backend_febrero2026.familia;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -53,6 +54,11 @@ public class FamiliaService implements IFamiliaService {
         FamiliaDTO savedDTO = familiaMapper.familyToFamilyDTO(saved);
 
         return savedDTO;
+    }
+
+    public Familia getEntityById(Integer cod)
+    {
+        return this.familiaRepository.findById(cod).orElseThrow(() -> new EntityNotFoundException("Familia no encontrada"));
     }
 
     private Familia getOrCreateFamily(Integer cod) {
