@@ -37,7 +37,7 @@ package com.example.reto_backend_febrero2026.familia;
           FamiliaDTO dto2 = new FamiliaDTO(2, "MATERIALES Y SUMINISTROS");
 
           when(familiaRepository.findAll()).thenReturn(familias);
-          when(familiaMapper.familyToFamilyDTO(familia1)).thenReturn(dto1);
+          when(familiaMappere.familyToFamilyDTO(familia1)).thenReturn(dto1);
           when(familiaMapper.familyToFamilyDTO(familia2)).thenReturn(dto2);
 
           // Act

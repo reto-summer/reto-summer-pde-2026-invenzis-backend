@@ -8,10 +8,9 @@ public interface FamiliaMapper {
 
     @Mapping(source = "cod", target = "cod")
     @Mapping(source = "descripcion", target = "descripcion")
-    FamiliaDTO familyToFamilyDTO(Familia family);
+    FamiliaDTO familiaToFamiliaDTO(Familia family);
 
     @Mapping(source = "cod", target = "cod")
     @Mapping(source = "descripcion", target = "descripcion")
-    Familia familyDTOtoFamily (FamiliaDTO familyDTO);
-
+    Familia familiaDTOtoFamilia(FamiliaDTO familyDTO);
 }
