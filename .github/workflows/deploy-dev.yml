@@ -57,5 +57,5 @@ jobs:
             --region ${{ env.REGION }} \
             --platform managed \
             --project ${{ secrets.GCP_PROJECT_ID }} \
-            --port 8000
+            --port 8000 \
             --allow-unauthenticated
