@@ -1,6 +1,6 @@
 package com.example.reto_backend_febrero2026.mail;
 
-import com.example.reto_backend_febrero2026.integration.servlet.dto.LicitacionItemRecord;
+import com.example.reto_backend_febrero2026.licitacion.LicitacionDTO;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,5 +19,5 @@ public interface IEmailService {
 
     List<String> findAllActiveEmails();
 
-    void sendLicitacionesEmail(List<LicitacionItemRecord> items);
+    void sendLicitacionesEmail(List<LicitacionDTO> licitaciones);
 }

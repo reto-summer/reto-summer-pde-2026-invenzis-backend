@@ -6,11 +6,13 @@ import java.util.Optional;
 
 public interface INotificacionService {
 
-    Notificacion create(Integer id, String titulo, boolean exito, String detalle, String contenido, LocalDateTime fechaEjecucion);
+    Notificacion create(String titulo, boolean exito, String detalle, String contenido, LocalDateTime fechaEjecucion);
 
     List<NotificacionResumenDTO> findAllResumen();
 
     Optional<NotificacionDetalleDTO> findById(Integer id);
-    
-    Integer getNextId();
+
+    List<NotificacionResumenDTO> findExitosas();
+
+    List<NotificacionResumenDTO> findFallidas();
 }

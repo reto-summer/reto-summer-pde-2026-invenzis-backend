@@ -63,9 +63,8 @@ public class AuditAspect {
             String title = resolveTitle(auditable);
             String notifDetail = MDC.get(NOTIF_DETAIL_KEY);
             String content = resolveContent(joinPoint);
-            
-            Integer nextId = notificacionService.getNextId();
-            notificacionService.create(nextId, title, success, notifDetail, content, LocalDateTime.now());
+
+            notificacionService.create(title, success, notifDetail, content, LocalDateTime.now());
             clearNotificationContext();
         }
     }
@@ -90,9 +89,8 @@ public class AuditAspect {
             String notifDetail = MDC.get(NOTIF_DETAIL_KEY);
             String content = resolveContent(joinPoint);
             String resolvedDetail = (notifDetail == null || notifDetail.isBlank()) ? ex.getMessage() : notifDetail;
-            
-            Integer nextId = notificacionService.getNextId();
-            notificacionService.create(nextId, title, false, resolvedDetail, content, LocalDateTime.now());
+
+            notificacionService.create(title, false, resolvedDetail, content, LocalDateTime.now());
             clearNotificationContext();
         }
     }
@@ -116,7 +114,6 @@ public class AuditAspect {
         MDC.remove(NOTIF_CONTENT_KEY);
         MDC.remove(NOTIF_DETAIL_KEY);
         MDC.remove(NOTIF_SUCCESS_KEY);
-        MDC.remove("notificationRecipients");
     }
 
 }

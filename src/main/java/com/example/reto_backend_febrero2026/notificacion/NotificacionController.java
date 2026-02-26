@@ -24,18 +24,12 @@ public class NotificacionController {
 
     @GetMapping("/exitosas")
     public ResponseEntity<List<NotificacionResumenDTO>> getExitosas() {
-        return ResponseEntity.ok(notificacionService.findAllResumen()
-                .stream()
-                .filter(NotificacionResumenDTO::getExito)
-                .toList());
+        return ResponseEntity.ok(notificacionService.findExitosas());
     }
 
     @GetMapping("/fallidas")
     public ResponseEntity<List<NotificacionResumenDTO>> getFallidas() {
-        return ResponseEntity.ok(notificacionService.findAllResumen()
-                .stream()
-                .filter(n -> !n.getExito())
-                .toList());
+        return ResponseEntity.ok(notificacionService.findFallidas());
     }
 
     @GetMapping("/{id}")

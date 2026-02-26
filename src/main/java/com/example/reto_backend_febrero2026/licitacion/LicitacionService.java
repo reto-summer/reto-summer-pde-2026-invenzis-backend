@@ -90,6 +90,13 @@ public class LicitacionService implements ILicitacionService {
                 .map(licitacionMapper::licitacionToLicitacionDTO).collect(Collectors.toList());
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public List<LicitacionDTO> getLicitacionesNoEnviadasByFamiliaAndSubfamilia(Integer familiaCod, Integer subfamiliaCod) {
+        return licitacionRepository.findByFamilia_CodAndSubfamilia_CodAndEnviadoFalse(familiaCod, subfamiliaCod).stream()
+                .map(licitacionMapper::licitacionToLicitacionDTO).collect(Collectors.toList());
+    }
+
     @Transactional
     public LicitacionDTO updateEnviadoFlag(Integer id, boolean flag) {
 
