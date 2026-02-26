@@ -13,8 +13,8 @@ permissions:
 env:
   REGION: us-east1
   AR_REPO: reto-summer-pde-2026
-  SERVICE_NAME: qa-reto-summer-pde-2026-backend
-  IMAGE_NAME: qa-reto-summer-pde-2026-backend
+  SERVICE_NAME: qa-reto-summer-pde-2026-invenzis-backend
+  IMAGE_NAME: qa-reto-summer-pde-2026-invenzis-backend
 
 jobs:
   deploy:
@@ -50,12 +50,3 @@ jobs:
         run: |
           docker push ${{ env.REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ env.AR_REPO }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
 
-      - name: Deploy to Cloud Run (DEV)
-        run: |
-          gcloud run deploy ${{ env.SERVICE_NAME }} \
-            --image ${{ env.REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ env.AR_REPO }}/${{ env.IMAGE_NAME }}:${{ github.sha }} \
-            --region ${{ env.REGION }} \
-            --platform managed \
-            --project ${{ secrets.GCP_PROJECT_ID }} \
-            --port 8000
-            --allow-unauthenticated
