@@ -13,7 +13,7 @@ permissions:
 env:
   REGION: us-east1
   AR_REPO: reto-summer-pde-2026
-  SERVICE_NAME: qa-reto-summer-pde-2026-backend
+  SERVICE_NAME: qa-reto-summer-pde-2026-invenzis-backend
   IMAGE_NAME: qa-reto-summer-pde-2026-backend
 
 jobs:
