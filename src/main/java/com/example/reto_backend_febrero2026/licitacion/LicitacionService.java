@@ -23,19 +23,19 @@ import com.example.reto_backend_febrero2026.subfamilia.SubfamiliaDTO;
 public class LicitacionService implements ILicitacionService {
 
     @Autowired
-    LicitacionUtility licitacionUtility;
+    private LicitacionUtility licitacionUtility;
 
     @Autowired
-    ISubfamiliaService iSubfamiliaService;
+    private ISubfamiliaService iSubfamiliaService;
 
     @Autowired
-    IFamiliaService iFamiliaService;
+    private IFamiliaService iFamiliaService;
 
     @Autowired
-    ILicitacionRepository licitacionRepository;
+    private ILicitacionRepository licitacionRepository;
 
     @Autowired
-    LicitacionMapper licitacionMapper;
+    private LicitacionMapper licitacionMapper;
 
     @Override
     @Transactional(readOnly = true)
@@ -47,6 +47,13 @@ public class LicitacionService implements ILicitacionService {
             Integer familiaCod,
             Integer subfamiliaCod)
     {
+        if (subfamiliaCod != null && familiaCod == null) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "No se puede filtrar por subfamilia sin especificar la familia correspondiente."
+            );
+        }
+
         LocalDateTime cierreDesde = licitacionUtility.toStartOfDay(fechaCierreDesde);
         LocalDateTime cierreHasta = licitacionUtility.toEndOfDay(fechaCierreHasta);
 
