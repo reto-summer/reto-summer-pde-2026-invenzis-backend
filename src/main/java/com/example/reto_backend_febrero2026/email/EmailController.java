@@ -28,7 +28,7 @@ public class EmailController {
     }
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseStatus(HttpStatus.OK)
     public EmailDTO createDestination(@RequestBody EmailDTO body) {
         return emailService.create(body.getEmail());
     }
@@ -51,11 +51,12 @@ public class EmailController {
         return ex.getMessage();
     }
 
-    @ExceptionHandler(IllegalStateException.class)
+    // Ya no se usa el HttpStatus.CREATED (201), ahora se usa HttpStatus.OK (200)
+    /*@ExceptionHandler(IllegalStateException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public String handleConflict(IllegalStateException ex) {
         return ex.getMessage();
-    }
+    }*/
 
     @ExceptionHandler(RuntimeException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)

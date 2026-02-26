@@ -65,9 +65,22 @@ public class EmailService implements IEmailService {
         if (!normalizedEmail.matches(EMAIL_REGEX)) {
             throw new IllegalArgumentException("El formato del email no es válido");
         }
-        if (emailRepository.existsById(normalizedEmail)) {
-            throw new IllegalStateException("El email ya existe en la base de datos");
+        Optional<Email> existingEmail = emailRepository.findById(normalizedEmail);
+        
+        if (existingEmail.isPresent()) {
+            Email emailEntity = existingEmail.get();
+
+            if (emailEntity.getActivo()) {
+                log.info("El email {} ya existe y está activo", normalizedEmail);
+                return emailMapper.emailToEmailDTO(emailEntity);
+            }
+
+            log.info("Reactivando email {}", normalizedEmail);
+            emailEntity.setActivo(true);
+            return emailMapper.emailToEmailDTO(emailRepository.save(emailEntity));
         }
+
+        log.info("Creando nuevo email {}", normalizedEmail);
         return emailMapper.emailToEmailDTO(emailRepository.save(new Email(normalizedEmail)));
     }
 
