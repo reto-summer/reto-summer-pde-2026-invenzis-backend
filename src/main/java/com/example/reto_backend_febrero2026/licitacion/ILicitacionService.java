@@ -14,7 +14,6 @@ public interface ILicitacionService {
     LicitacionDTO save(LicitacionItemRecord itemRecord);
     List<LicitacionDTO> getLicitacionesByFamiliaAndSubfamilia(Integer familia_cod, Integer subfamilia_cod);
     List<LicitacionDTO> getLicitacionesNoEnviadasByFamiliaAndSubfamilia(Integer familiaCod, Integer subfamiliaCod);
-    LicitacionDTO updateEnviadoFlag(Integer id, boolean flag);
     //LicitacionModelDTO getlicitacionByfecha_publicacion(LocalDate fecha);
     //LicitacionModelDTO getlicitacionByfecha_cierre(LocalDateTime fecha);
     //LicitacionModelDTO getlicitacionByfecha_inicio_fin(LocalDate fecha_inicio, LocalDate fecha_fin);

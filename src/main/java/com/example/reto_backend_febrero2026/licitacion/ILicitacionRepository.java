@@ -24,7 +24,18 @@ public interface ILicitacionRepository extends JpaRepository<Licitacion, Integer
     
     List<Licitacion> findByFamilia_CodAndSubfamilia_Cod(Integer familiaCod, Integer subfamiliaCod);
 
-    List<Licitacion> findByFamilia_CodAndSubfamilia_CodAndEnviadoFalse(Integer familiaCod, Integer subfamiliaCod);
+    @Query("""
+        SELECT l FROM Licitacion l
+        LEFT JOIN FETCH l.familia
+        LEFT JOIN FETCH l.subfamilia
+        WHERE l.familia.cod = :familiaCod
+        AND l.subfamilia.cod = :subfamiliaCod
+        AND NOT EXISTS (SELECT e FROM LicitacionEmail e WHERE e.id.idLicitacion = l.idLicitacion)
+    """)
+    List<Licitacion> findNoEnviadasByFamiliaAndSubfamilia(
+        @Param("familiaCod") Integer familiaCod,
+        @Param("subfamiliaCod") Integer subfamiliaCod
+    );
 
     @Query("""
         SELECT l FROM Licitacion l

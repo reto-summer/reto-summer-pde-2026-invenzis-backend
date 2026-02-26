@@ -132,23 +132,8 @@ public class LicitacionService implements ILicitacionService {
     @Override
     @Transactional(readOnly = true)
     public List<LicitacionDTO> getLicitacionesNoEnviadasByFamiliaAndSubfamilia(Integer familiaCod, Integer subfamiliaCod) {
-        return licitacionRepository.findByFamilia_CodAndSubfamilia_CodAndEnviadoFalse(familiaCod, subfamiliaCod).stream()
+        return licitacionRepository.findNoEnviadasByFamiliaAndSubfamilia(familiaCod, subfamiliaCod).stream()
                 .map(licitacionMapper::licitacionToLicitacionDTO).collect(Collectors.toList());
-    }
-
-    @Transactional
-    public LicitacionDTO updateEnviadoFlag(Integer id, boolean flag) {
-
-        Licitacion licitacion = licitacionRepository.findById(id)
-                .orElseThrow(() ->
-                        new ResponseStatusException(
-                                HttpStatus.NOT_FOUND,
-                                "No existe licitación con id: " + id
-                        )
-                );
-        licitacion.setEnviado(flag);
-
-        return licitacionMapper.licitacionToLicitacionDTO(licitacion);
     }
 }
 

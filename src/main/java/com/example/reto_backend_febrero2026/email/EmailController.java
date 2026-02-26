@@ -1,4 +1,4 @@
-package com.example.reto_backend_febrero2026.mail;
+package com.example.reto_backend_febrero2026.email;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
