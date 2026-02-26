@@ -76,8 +76,11 @@ public class EmailService implements IEmailService {
             }
 
             log.info("Reactivando email {}", normalizedEmail);
-            emailEntity.setActivo(true);
-            return emailMapper.emailToEmailDTO(emailRepository.save(emailEntity));
+            emailRepository.updateActivo(normalizedEmail, true);
+
+            return emailRepository.findById(normalizedEmail)
+                    .map(emailMapper::emailToEmailDTO)
+                    .orElseThrow(() -> new RuntimeException("Error al recuperar email reactivado"));
         }
 
         log.info("Creando nuevo email {}", normalizedEmail);
@@ -86,22 +89,27 @@ public class EmailService implements IEmailService {
 
     @Override
     public EmailDTO update(String emailAddress, Boolean activo) {
-        Email destination = emailRepository.findById(emailAddress)
-                .orElseThrow(() -> new RuntimeException("Destino de email no encontrado"));
-
-        if (activo != null) {
-            destination.setActivo(activo);
+        if (!emailRepository.existsById(emailAddress)) {
+            throw new RuntimeException("Destino de email no encontrado");
         }
 
-        return emailMapper.emailToEmailDTO(emailRepository.save(destination));
+        if (activo != null) {
+            emailRepository.updateActivo(emailAddress, activo);
+        }
+
+        return emailRepository.findById(emailAddress)
+                .map(emailMapper::emailToEmailDTO)
+                .orElseThrow(() -> new RuntimeException("Error al recuperar email actualizado"));
     }
 
     @Override
     public void deactivate(String emailAddress) {
-        Email destination = emailRepository.findById(emailAddress)
-                .orElseThrow(() -> new RuntimeException("Destino de email no encontrado"));
-        destination.setActivo(false);
-        emailRepository.save(destination);
+        // Verificar que el email existe
+        if (!emailRepository.existsById(emailAddress)) {
+            throw new RuntimeException("Destino de email no encontrado");
+        }
+
+        emailRepository.updateActivo(emailAddress, false);
     }
 
     @Override
