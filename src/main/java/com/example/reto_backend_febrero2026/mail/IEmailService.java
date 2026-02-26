@@ -15,7 +15,7 @@ public interface IEmailService {
 
     EmailDTO update(String emailAddress, Boolean activo);
 
-    void delete(String emailAddress);
+    void deactivate(String emailAddress);
 
     List<String> findAllActiveEmails();
 
