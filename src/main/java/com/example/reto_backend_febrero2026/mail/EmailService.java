@@ -116,21 +116,16 @@ public class EmailService implements IEmailService {
 
         List<Email> emailsFromDb = emailRepository.findByActivoTrue();
         String[] recipients;
-        String emailIds;
 
         if (!emailsFromDb.isEmpty()) {
             recipients = emailsFromDb.stream().map(Email::getEmailAddress).toArray(String[]::new);
-            emailIds = emailsFromDb.stream()
-                    .map(Email::getEmailAddress)
-                    .collect(java.util.stream.Collectors.joining(", "));
             log.info("Usando {} emails de la base de datos", emailsFromDb.size());
         } else {
             recipients = parseEmailList(mailTo);
-            emailIds = "mailTo";
             log.info("Usando emails de application.properties");
         }
 
-        MDC.put("notificationContent", emailIds);
+        MDC.put("notificationContent", licitacionIds.isBlank() ? "sin IDs" : licitacionIds);
 
         if (recipients.length == 0) {
             MDC.put("notificationSuccess", "false");
@@ -140,7 +135,7 @@ public class EmailService implements IEmailService {
         }
 
         try {
-            MDC.put("notificationDetail", licitacionIds.isBlank() ? "sin IDs" : licitacionIds);
+            MDC.put("notificationDetail", "Envío exitoso");
             MDC.put("notificationSuccess", "true");
 
             MimeMessage message = mailSender.createMimeMessage();
