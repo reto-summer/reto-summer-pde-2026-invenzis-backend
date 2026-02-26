@@ -19,4 +19,4 @@ COPY --from=build /app/target/*.jar app.jar
 
 # Cloud Run inyecta la variable $PORT. 
 # Este comando obliga a Spring Boot a usar ese puerto específico.
-ENTRYPOINT ["java", "-Dserver.port=${PORT:8080}", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-Dserver.port=8000", "-jar", "app.jar"]

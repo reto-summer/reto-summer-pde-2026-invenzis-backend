@@ -15,8 +15,7 @@ public class SubfamiliaService implements ISubfamiliaService {
     private final ISubfamiliaRepository subfamiliaRepository;
     private final SubfamiliaMapper subfamiliaMapper;
 
-    public SubfamiliaService(ISubfamiliaRepository subfamiliaRepository,
-                             SubfamiliaMapper subfamiliaMapper) {
+    public SubfamiliaService(ISubfamiliaRepository subfamiliaRepository, SubfamiliaMapper subfamiliaMapper) {
         this.subfamiliaRepository = subfamiliaRepository;
         this.subfamiliaMapper = subfamiliaMapper;
     }

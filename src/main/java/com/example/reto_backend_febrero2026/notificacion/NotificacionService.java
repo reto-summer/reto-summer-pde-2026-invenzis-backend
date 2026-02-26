@@ -11,8 +11,11 @@ import java.util.stream.Collectors;
 @Service
 public class NotificacionService implements INotificacionService {
 
-    @Autowired
-    private INotificacionRepository notificacionRepository;
+    private final INotificacionRepository notificacionRepository;
+
+    public NotificacionService(INotificacionRepository notificacionRepository) {
+        this.notificacionRepository = notificacionRepository;
+    }
 
     @Override
     public Notificacion create(String titulo, boolean exito, String detalle, String contenido, LocalDateTime fechaEjecucion) {
