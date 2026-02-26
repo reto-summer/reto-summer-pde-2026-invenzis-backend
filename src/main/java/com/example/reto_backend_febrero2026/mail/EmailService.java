@@ -84,11 +84,11 @@ public class EmailService implements IEmailService {
     }
 
     @Override
-    public void deactivate(String emailAddress) {
-        Email destination = emailRepository.findById(emailAddress)
-                .orElseThrow(() -> new RuntimeException("Destino de email no encontrado"));
-        destination.setActivo(false);
-        emailRepository.save(destination);
+    public void delete(String emailAddress) {
+        if (!emailRepository.existsById(emailAddress)) {
+            throw new RuntimeException("Destino de email no encontrado");
+        }
+        emailRepository.deleteById(emailAddress);
     }
 
     @Override
