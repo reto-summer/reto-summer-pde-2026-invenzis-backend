@@ -9,7 +9,7 @@ public class Notificacion {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "notificacion_gen")
-    @SequenceGenerator(name = "notificacion_gen", sequenceName = "notificacion_id_seq", allocationSize = 1, initialValue = 1000)
+    @SequenceGenerator(name = "notificacion_gen", sequenceName = "notificacion_id_seq", allocationSize = 1)
     @Column(name = "id_notificaciones", nullable = false)
     private Integer id;
 
