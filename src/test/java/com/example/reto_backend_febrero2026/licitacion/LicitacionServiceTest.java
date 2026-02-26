@@ -1,4 +1,3 @@
-/*
 package com.example.reto_backend_febrero2026.licitacion;
 
 import com.example.reto_backend_febrero2026.familia.FamiliaDTO;
@@ -226,4 +225,3 @@ class LicitacionServiceTest {
                 .licitacionToLicitacionDTO(any());
     }
 }
-*/

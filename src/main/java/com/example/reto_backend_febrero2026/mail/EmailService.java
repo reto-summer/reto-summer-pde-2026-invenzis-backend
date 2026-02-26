@@ -30,6 +30,7 @@ public class EmailService implements IEmailService {
     private final JavaMailSender mailSender;
     private final TemplateEngine templateEngine;
     private final IEmailRepository emailRepository;
+    private final EmailMapper emailMapper;
 
     @Value("${mail.to}")
     private String mailTo;
@@ -37,24 +38,29 @@ public class EmailService implements IEmailService {
     @Value("${spring.mail.username}")
     private String mailFrom;
 
-    public EmailService(JavaMailSender mailSender, TemplateEngine templateEngine, IEmailRepository emailRepository) {
+    public EmailService(JavaMailSender mailSender, TemplateEngine templateEngine,
+                        IEmailRepository emailRepository, EmailMapper emailMapper) {
         this.mailSender = mailSender;
         this.templateEngine = templateEngine;
         this.emailRepository = emailRepository;
+        this.emailMapper = emailMapper;
     }
 
     @Override
-    public List<Email> findAllActive() {
-        return emailRepository.findByActivoTrue();
+    public List<EmailDTO> findAllActive() {
+        return emailRepository.findByActivoTrue().stream()
+                .map(emailMapper::emailToEmailDTO)
+                .toList();
     }
 
     @Override
-    public Optional<Email> findById(String emailAddress) {
-        return emailRepository.findById(emailAddress);
+    public Optional<EmailDTO> findById(String emailAddress) {
+        return emailRepository.findById(emailAddress)
+                .map(emailMapper::emailToEmailDTO);
     }
 
     @Override
-    public Email create(String email) {
+    public EmailDTO create(String email) {
         String normalizedEmail = email.trim().toLowerCase();
         if (!normalizedEmail.matches(EMAIL_REGEX)) {
             throw new IllegalArgumentException("El formato del email no es válido");
@@ -62,11 +68,11 @@ public class EmailService implements IEmailService {
         if (emailRepository.existsById(normalizedEmail)) {
             throw new IllegalStateException("El email ya existe en la base de datos");
         }
-        return emailRepository.save(new Email(normalizedEmail));
+        return emailMapper.emailToEmailDTO(emailRepository.save(new Email(normalizedEmail)));
     }
 
     @Override
-    public Email update(String emailAddress, Boolean activo) {
+    public EmailDTO update(String emailAddress, Boolean activo) {
         Email destination = emailRepository.findById(emailAddress)
                 .orElseThrow(() -> new RuntimeException("Destino de email no encontrado"));
 
@@ -74,15 +80,15 @@ public class EmailService implements IEmailService {
             destination.setActivo(activo);
         }
 
-        return emailRepository.save(destination);
+        return emailMapper.emailToEmailDTO(emailRepository.save(destination));
     }
 
     @Override
-    public void deactivate(String emailAddress) {
-        Email destination = emailRepository.findById(emailAddress)
-                .orElseThrow(() -> new RuntimeException("Destino de email no encontrado"));
-        destination.setActivo(false);
-        emailRepository.save(destination);
+    public void delete(String emailAddress) {
+        if (!emailRepository.existsById(emailAddress)) {
+            throw new RuntimeException("Destino de email no encontrado");
+        }
+        emailRepository.deleteById(emailAddress);
     }
 
     @Override

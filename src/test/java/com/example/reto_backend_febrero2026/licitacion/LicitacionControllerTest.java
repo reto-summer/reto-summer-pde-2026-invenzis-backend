@@ -1,4 +1,3 @@
-/*
 package com.example.reto_backend_febrero2026.licitacion;
 
 import org.junit.jupiter.api.Test;
@@ -84,4 +83,3 @@ class LicitacionControllerTest {
                 .andExpect(status().isNotFound());
     }
 }
-*/

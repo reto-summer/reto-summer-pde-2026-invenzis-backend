@@ -22,15 +22,6 @@ public class NotificacionController {
         return ResponseEntity.ok(notificacionService.findAllResumen());
     }
 
-    @GetMapping("/exitosas")
-    public ResponseEntity<List<NotificacionResumenDTO>> getExitosas() {
-        return ResponseEntity.ok(notificacionService.findExitosas());
-    }
-
-    @GetMapping("/fallidas")
-    public ResponseEntity<List<NotificacionResumenDTO>> getFallidas() {
-        return ResponseEntity.ok(notificacionService.findFallidas());
-    }
 
     @GetMapping("/{id}")
     public ResponseEntity<NotificacionDetalleDTO> getById(@PathVariable Integer id) {
