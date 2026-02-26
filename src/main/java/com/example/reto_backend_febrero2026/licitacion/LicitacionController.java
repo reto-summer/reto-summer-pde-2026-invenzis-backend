@@ -1,5 +1,6 @@
 package com.example.reto_backend_febrero2026.licitacion;
 
+import com.example.reto_backend_febrero2026.familia.IFamiliaService;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,11 +13,14 @@ import java.util.List;
     @RequestMapping("/licitaciones")
     public class LicitacionController {
 
-        @Autowired
-        private ILicitacionService licitacionService;
+        private final ILicitacionService licitacionService;
+
+        public LicitacionController(ILicitacionService licitacionService) {
+        this.licitacionService = licitacionService;
+        }
 
         @GetMapping
-        public ResponseEntity<List<LicitacionDTO>> getAllLicitaciones(@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaPublicacionDesde,
+        public ResponseEntity<List<LicitacionDTO>> findByFilters(@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaPublicacionDesde,
                   @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaPublicacionHasta,
                   @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaCierreDesde,
                   @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaCierreHasta,
@@ -24,7 +28,7 @@ import java.util.List;
                   @RequestParam(required = false) Integer subfamiliaCod)
         {
             return ResponseEntity.ok(
-                    licitacionService.findAll(
+                    licitacionService.findByFilters(
                             fechaPublicacionDesde,
                             fechaPublicacionHasta,
                             fechaCierreDesde,

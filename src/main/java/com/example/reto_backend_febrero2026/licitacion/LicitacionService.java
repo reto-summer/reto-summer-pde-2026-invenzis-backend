@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,24 +21,23 @@ import com.example.reto_backend_febrero2026.subfamilia.SubfamiliaDTO;
 @Service
 public class LicitacionService implements ILicitacionService {
 
-    @Autowired
-    private LicitacionUtility licitacionUtility;
+    private final LicitacionUtility licitacionUtility;
+    private final ISubfamiliaService iSubfamiliaService;
+    private final IFamiliaService iFamiliaService;
+    private final ILicitacionRepository licitacionRepository;
+    private final LicitacionMapper licitacionMapper;
 
-    @Autowired
-    private ISubfamiliaService iSubfamiliaService;
-
-    @Autowired
-    private IFamiliaService iFamiliaService;
-
-    @Autowired
-    private ILicitacionRepository licitacionRepository;
-
-    @Autowired
-    private LicitacionMapper licitacionMapper;
+    public LicitacionService(LicitacionUtility licitacionUtility, ISubfamiliaService subfamiliaService, IFamiliaService familiaService, ILicitacionRepository licitacionRepository, LicitacionMapper licitacionMapper ) {
+        this.licitacionUtility = licitacionUtility;
+        this.iSubfamiliaService = subfamiliaService;
+        this.iFamiliaService = familiaService;
+        this.licitacionRepository = licitacionRepository;
+        this.licitacionMapper = licitacionMapper;
+    }
 
     @Override
     @Transactional(readOnly = true)
-    public List<LicitacionDTO> findAll(
+    public List<LicitacionDTO> findByFilters(
             LocalDate fechaPublicacionDesde,
             LocalDate fechaPublicacionHasta,
             LocalDate fechaCierreDesde,
@@ -58,7 +56,7 @@ public class LicitacionService implements ILicitacionService {
         LocalDateTime cierreHasta = licitacionUtility.toEndOfDay(fechaCierreHasta);
 
         return licitacionRepository
-                .getLicitacionesByFechas(fechaPublicacionDesde, fechaPublicacionHasta, cierreDesde, cierreHasta, familiaCod, subfamiliaCod)
+                .findByFilters(fechaPublicacionDesde, fechaPublicacionHasta, cierreDesde, cierreHasta, familiaCod, subfamiliaCod)
                 .stream()
                 .map(licitacionMapper::licitacionToLicitacionDTO)
                 .toList();
@@ -79,7 +77,7 @@ public class LicitacionService implements ILicitacionService {
 
     @Auditable(module = "LICITACION_SERVICE", action = "CLEAN_SAVE")
     @Transactional
-    public LicitacionDTO cleanSave(LicitacionItemRecord itemRecord){
+    public LicitacionDTO save(LicitacionItemRecord itemRecord){
 
         Integer id = licitacionUtility.extraerIdDelLink(itemRecord.link()).orElse(null);
 

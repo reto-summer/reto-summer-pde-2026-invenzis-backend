@@ -90,7 +90,7 @@ public class ArceClientService {
                                 resolvedFamilyCod,
                                 resolvedSubFamilyCod
                         );
-                        return licitacionService.cleanSave(record);
+                        return licitacionService.save(record);
                     })
                     .toList();
 
