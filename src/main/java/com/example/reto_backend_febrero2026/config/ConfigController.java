@@ -15,13 +15,13 @@ public class ConfigController
     }
 
     @GetMapping
-    public Config getConfig()
+    public ConfigDTO getConfig()
     {
         return this.configService.getConfig();
     }
 
     @PutMapping()
-    public Config updateConfig(@RequestBody ConfigUpdateDTO configUpdate)
+    public ConfigDTO updateConfig(@RequestBody ConfigUpdateDTO configUpdate)
     {
         return this.configService.updateConfig(configUpdate);
     }

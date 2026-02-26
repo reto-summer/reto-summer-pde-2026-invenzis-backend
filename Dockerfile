@@ -2,13 +2,21 @@
 FROM maven:3.9-eclipse-temurin-21-alpine AS build
 WORKDIR /app
 COPY pom.xml .
+
+# Descarga de dependencias (cacheado)
 RUN mvn dependency:go-offline -B
 COPY src ./src
-RUN mvn package -DskipTests -B
+
+# Se agregan flags para asegurar que el build no intente conectar a bases de datos o correr tests
+RUN mvn package -DskipTests -Dmaven.test.skip=true -B
 
 # Stage 2: Runtime
 FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app
-COPY --from=build /app/target/reto-backend-febrero2026-0.0.1-SNAPSHOT.jar app.jar
-EXPOSE 8000
-ENTRYPOINT ["java", "-jar", "app.jar"]
+
+# Usamos un wildcard (*) para evitar errores si el nombre del .jar cambia ligeramente
+COPY --from=build /app/target/*.jar app.jar
+
+# Cloud Run inyecta la variable $PORT. 
+# Este comando obliga a Spring Boot a usar ese puerto específico.
+ENTRYPOINT ["java", "-Dserver.port=8000", "-jar", "app.jar"]

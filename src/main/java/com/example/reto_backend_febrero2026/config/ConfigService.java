@@ -1,9 +1,11 @@
 package com.example.reto_backend_febrero2026.config;
 
 import com.example.reto_backend_febrero2026.familia.Familia;
+import com.example.reto_backend_febrero2026.familia.FamiliaDTO;
 import com.example.reto_backend_febrero2026.familia.IFamiliaService;
 import com.example.reto_backend_febrero2026.subfamilia.ISubfamiliaService;
 import com.example.reto_backend_febrero2026.subfamilia.Subfamilia;
+import com.example.reto_backend_febrero2026.subfamilia.SubfamiliaDTO;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -20,14 +22,22 @@ public class ConfigService implements IConfigService
         this.subfamiliaService = subfamiliaService;
     }
 
-    public Config getConfig()
+    public ConfigDTO getConfig()
+    {
+        Config config = this.getEntityConfig();
+        SubfamiliaDTO subfamiliaDTO = new SubfamiliaDTO(config.getFamilia().getCod(), config.getSubfamilia().getCod(), config.getSubfamilia().getDescripcion());
+        FamiliaDTO familiaDTO = new FamiliaDTO(config.getFamilia().getCod(), config.getFamilia().getDescripcion());
+        return new ConfigDTO(config.getId(), familiaDTO, subfamiliaDTO);
+    }
+
+    public Config getEntityConfig()
     {
         return this.configRepository.findById(1).orElseThrow(() -> new RuntimeException("NO HAY CONFIG"));
     }
 
-    public Config updateConfig(ConfigUpdateDTO configUpdate)
+    public ConfigDTO updateConfig(ConfigUpdateDTO configUpdate)
     {
-        Config config = this.getConfig();
+        Config config = this.getEntityConfig();
         Familia familia;
         Subfamilia subfamilia;
 
@@ -43,6 +53,7 @@ public class ConfigService implements IConfigService
 
         config.setFamilia(familia);
         config.setSubfamilia(subfamilia);
-        return this.configRepository.save(config);
+        this.configRepository.save(config);
+        return this.getConfig();
     }
 }
