@@ -6,6 +6,8 @@ import com.example.reto_backend_febrero2026.familia.IFamiliaService;
 import com.example.reto_backend_febrero2026.subfamilia.ISubfamiliaService;
 import com.example.reto_backend_febrero2026.subfamilia.Subfamilia;
 import com.example.reto_backend_febrero2026.subfamilia.SubfamiliaDTO;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -32,7 +34,7 @@ public class ConfigService implements IConfigService
 
     public Config getEntityConfig()
     {
-        return this.configRepository.findById(1).orElseThrow(() -> new RuntimeException("NO HAY CONFIG"));
+        return this.configRepository.findById(1).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No hay Configuracion"));
     }
 
     public ConfigDTO updateConfig(ConfigUpdateDTO configUpdate)
@@ -48,7 +50,7 @@ public class ConfigService implements IConfigService
         }
         catch (Exception e)
         {
-            throw new RuntimeException("Codigos de familia/subfamilia incorrectos");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Codigos de familia/subfamilia faltantes o incorrectos");
         }
 
         config.setFamilia(familia);

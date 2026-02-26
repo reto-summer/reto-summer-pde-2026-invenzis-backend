@@ -24,7 +24,7 @@ public class SubfamiliaService implements ISubfamiliaService {
     public List<SubfamiliaDTO> findAll() {
         return subfamiliaRepository.findAll()
                 .stream()
-                .map(subfamiliaMapper::subFamilyToSubfamilyDTO)
+                .map(subfamiliaMapper::subFamiliaToSubfamiliaDTO)
                 .collect(Collectors.toList());
     }
 
@@ -41,21 +41,21 @@ public class SubfamiliaService implements ISubfamiliaService {
                                 + famiCod + " y cod: " + cod
                 ));
 
-        return subfamiliaMapper.subFamilyToSubfamilyDTO(subfamilia);
+        return subfamiliaMapper.subFamiliaToSubfamiliaDTO(subfamilia);
     }
 
     @Override
     public List<SubfamiliaDTO> findByFamiCod(Integer famiCod) {
         return subfamiliaRepository.findByFamiCod(famiCod)
                 .stream()
-                .map(subfamiliaMapper::subFamilyToSubfamilyDTO)
+                .map(subfamiliaMapper::subFamiliaToSubfamiliaDTO)
                 .collect(Collectors.toList());
     }
 
     @Override
     public SubfamiliaDTO saveFamily(SubfamiliaDTO dto) {
 
-        Subfamilia subfamilia = subfamiliaMapper.subFamilyDTOtoSubfamily(dto);
+        Subfamilia subfamilia = subfamiliaMapper.subFamiliaDTOtoSubfamilia(dto);
 
         if (subfamilia.getFamiCod() == null || subfamilia.getCod() == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "fami_cod y cod son obligatorios");
@@ -67,7 +67,7 @@ public class SubfamiliaService implements ISubfamiliaService {
 
         Subfamilia saved = subfamiliaRepository.save(subfamilia);
 
-        return subfamiliaMapper.subFamilyToSubfamilyDTO(saved);
+        return subfamiliaMapper.subFamiliaToSubfamiliaDTO(saved);
     }
 
     public SubfamiliaDTO getOrCreateSubFamily(Integer famCod, Integer subCod) {
@@ -83,7 +83,7 @@ public class SubfamiliaService implements ISubfamiliaService {
             );
         }
 
-        return subfamiliaMapper.subFamilyToSubfamilyDTO(subfamilia);
+        return subfamiliaMapper.subFamiliaToSubfamiliaDTO(subfamilia);
     }
 
     public Subfamilia getEntityById(Integer famiCod, Integer cod)

@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class FamiliaService implements IFamiliaService {
@@ -23,14 +22,14 @@ public class FamiliaService implements IFamiliaService {
     public List<FamiliaDTO> findAll() {
         return familiaRepository.findAll()
                 .stream()
-                .map(familiaMapper::familyToFamilyDTO)
+                .map(familiaMapper::familiaToFamiliaDTO)
                 .toList();
     }
 
     @Override
     public FamiliaDTO findById(Integer cod) {
         return familiaRepository.findById(cod)
-                .map(familiaMapper::familyToFamilyDTO)
+                .map(familiaMapper::familiaToFamiliaDTO)
                 .orElseThrow(() ->
                         new IllegalArgumentException("No se encontró la familia con cod=" + cod)
                 );
@@ -47,11 +46,11 @@ public class FamiliaService implements IFamiliaService {
             dto.setDescripcion("");
         }
 
-        Familia familia = familiaMapper.familyDTOtoFamily(dto);
+        Familia familia = familiaMapper.familiaDTOtoFamilia(dto);
 
         Familia saved = familiaRepository.save(familia);
 
-        FamiliaDTO savedDTO = familiaMapper.familyToFamilyDTO(saved);
+        FamiliaDTO savedDTO = familiaMapper.familiaToFamiliaDTO(saved);
 
         return savedDTO;
     }
