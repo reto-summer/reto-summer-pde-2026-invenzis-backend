@@ -24,8 +24,9 @@ public interface ILicitacionRepository extends JpaRepository<Licitacion, Integer
     
     List<Licitacion> findByFamilia_CodAndSubfamilia_Cod(Integer familiaCod, Integer subfamiliaCod);
 
+<<<<<<< HEAD
     List<Licitacion> findByFamilia_CodAndSubfamilia_CodAndEnviadoFalse(Integer familiaCod, Integer subfamiliaCod);
-
+=======
     @Query("""
         SELECT l FROM Licitacion l
         LEFT JOIN FETCH l.familia f
@@ -46,4 +47,5 @@ public interface ILicitacionRepository extends JpaRepository<Licitacion, Integer
             @Param("familiaCod") Integer familiaCod,
             @Param("subfamiliaCod") Integer subfamiliaCod
     );
+>>>>>>> 95f684f73f8be8e46e26d83640fd29c53071a2a8
 }
