@@ -13,6 +13,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -79,7 +81,7 @@ class LicitacionServiceTest {
         when(licitacionMapper.licitacionDTOtoLicitacion(dto))
                 .thenReturn(licitacion);
 
-        LicitacionDTO resultado = licitacionService.cleanSave(itemRecord);
+        LicitacionDTO resultado = licitacionService.save(itemRecord);
 
         assertNotNull(resultado);
         assertNotNull(resultado.getFamilia());
@@ -120,7 +122,7 @@ class LicitacionServiceTest {
         when(licitacionMapper.licitacionToLicitacionDTO(existente))
                 .thenReturn(dtoExistente);
 
-        LicitacionDTO resultado = licitacionService.cleanSave(itemRecord);
+        LicitacionDTO resultado = licitacionService.save(itemRecord);
 
         assertNotNull(resultado);
         assertSame(dtoExistente, resultado);
@@ -183,20 +185,35 @@ class LicitacionServiceTest {
     @Test
     void findAllLicitacionVacio() {
 
-        when(licitacionRepository.findAll())
+        when(licitacionRepository.findByFilters(null,null,null,null,null,null))
                 .thenReturn(List.of());
 
-        List<LicitacionDTO> resultado = licitacionService.findAll();
+        List<LicitacionDTO> resultado = licitacionService.findByFilters(null,null,null,null,null,null);
 
         assertNotNull(resultado);
         assertTrue(resultado.isEmpty());
 
-        verify(licitacionRepository).findAll();
+        verify(licitacionRepository).findByFilters(
+                null, null, null, null, null, null
+        );
         verify(licitacionMapper, never()).licitacionToLicitacionDTO(any());
     }
 
     @Test
-    void findAllLicitacionConDatos() {
+    void findAllLicitacionConTodosLosFiltros() {
+
+        LocalDate fechaPublicacionDesde = LocalDate.of(2025,1,1);
+        LocalDate fechaPublicacionHasta = LocalDate.of(2025,12,31);
+        LocalDate fechaCierreDesde = LocalDate.of(2025,11,30);
+        LocalDate fechaCierreHasta = LocalDate.of(2025,11,30);
+        Integer familiaCod = 10;
+        Integer subfamiliaCod = 20;
+
+        LocalDateTime fechaCierreDesdeConvertida =
+                fechaCierreDesde.atStartOfDay();
+
+        LocalDateTime fechaCierreHastaConvertida =
+                fechaCierreHasta.atTime(23,59,59,999_999_999);
 
         Licitacion lic1 = new Licitacion();
         Licitacion lic2 = new Licitacion();
@@ -204,8 +221,20 @@ class LicitacionServiceTest {
         LicitacionDTO dto1 = new LicitacionDTO();
         LicitacionDTO dto2 = new LicitacionDTO();
 
-        when(licitacionRepository.findAll())
-                .thenReturn(List.of(lic1, lic2));
+        when(licitacionUtility.toStartOfDay(fechaCierreDesde))
+                .thenReturn(fechaCierreDesdeConvertida);
+
+        when(licitacionUtility.toEndOfDay(fechaCierreHasta))
+                .thenReturn(fechaCierreHastaConvertida);
+
+        when(licitacionRepository.findByFilters(
+                fechaPublicacionDesde,
+                fechaPublicacionHasta,
+                fechaCierreDesdeConvertida,
+                fechaCierreHastaConvertida,
+                familiaCod,
+                subfamiliaCod
+        )).thenReturn(List.of(lic1, lic2));
 
         when(licitacionMapper.licitacionToLicitacionDTO(lic1))
                 .thenReturn(dto1);
@@ -213,14 +242,32 @@ class LicitacionServiceTest {
         when(licitacionMapper.licitacionToLicitacionDTO(lic2))
                 .thenReturn(dto2);
 
-        List<LicitacionDTO> resultado = licitacionService.findAll();
+        List<LicitacionDTO> resultado = licitacionService.findByFilters(
+                fechaPublicacionDesde,
+                fechaPublicacionHasta,
+                fechaCierreDesde,
+                fechaCierreHasta,
+                familiaCod,
+                subfamiliaCod
+        );
 
         assertNotNull(resultado);
         assertEquals(2, resultado.size());
         assertEquals(dto1, resultado.get(0));
         assertEquals(dto2, resultado.get(1));
 
-        verify(licitacionRepository).findAll();
+        verify(licitacionUtility).toStartOfDay(fechaCierreDesde);
+        verify(licitacionUtility).toEndOfDay(fechaCierreHasta);
+
+        verify(licitacionRepository).findByFilters(
+                fechaPublicacionDesde,
+                fechaPublicacionHasta,
+                fechaCierreDesdeConvertida,
+                fechaCierreHastaConvertida,
+                familiaCod,
+                subfamiliaCod
+        );
+
         verify(licitacionMapper, times(2))
                 .licitacionToLicitacionDTO(any());
     }
