@@ -42,7 +42,7 @@ public class EmailController {
     @DeleteMapping("/{emailAddress:.+}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteDestination(@PathVariable String emailAddress) {
-        emailService.delete(emailAddress);
+        emailService.deactivate(emailAddress);
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
