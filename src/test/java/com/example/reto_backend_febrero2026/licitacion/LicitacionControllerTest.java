@@ -6,6 +6,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import static org.mockito.Mockito.when;
@@ -34,7 +35,7 @@ class LicitacionControllerTest {
 
         List<LicitacionDTO> licitaciones = List.of(dto1, dto2);
 
-        when(licitacionService.findAll())
+        when(licitacionService.findByFilters(null,null,null,null, null, null))
                 .thenReturn(licitaciones);
 
         mockMvc.perform(get("/licitaciones"))
@@ -47,9 +48,39 @@ class LicitacionControllerTest {
     }
 
     @Test
+    void findAllLicitacionFiltros() throws Exception {
+
+        LicitacionDTO dto1 = new LicitacionDTO();
+        dto1.setIdLicitacion(1);
+        dto1.setTitulo("Titulo 1");
+
+        LicitacionDTO dto2 = new LicitacionDTO();
+        dto2.setIdLicitacion(2);
+        dto2.setTitulo("Titulo 2");
+
+        List<LicitacionDTO> licitaciones = List.of(dto1, dto2);
+
+        when(licitacionService.findByFilters(
+                LocalDate.of(2025,1,1),
+                LocalDate.of(2025,12,31),
+                LocalDate.of(2025,2,1),
+                LocalDate.of(2025,11,30),
+                10,
+                20)).thenReturn(licitaciones);
+
+        mockMvc.perform(get("/licitaciones")
+                .param("fechaPublicacionDesde","2025-01-01")
+                .param("fechaPublicacionHasta","2025-12-31")
+                .param("fechaCierreDesde","2025-02-01")
+                .param("fechaCierreHasta","2025-11-30")
+                .param("familiaCod","10")
+                .param("subfamiliaCod","20"));
+    }
+
+    @Test
     void findAllLicitacionVacio() throws Exception {
 
-        when(licitacionService.findAll())
+        when(licitacionService.findByFilters(null,null,null,null, null, null))
                 .thenReturn(List.of());
 
         mockMvc.perform(get("/licitaciones"))

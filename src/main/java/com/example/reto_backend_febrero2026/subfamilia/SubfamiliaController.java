@@ -14,16 +14,6 @@ public class SubfamiliaController {
         this.subfamiliaService = subfamiliaService;
     }
 
-    @GetMapping
-    public List<SubfamiliaDTO> findAll() {
-        return subfamiliaService.findAll();
-    }
-
-    @GetMapping("/familia/{famiCod}")
-    public List<SubfamiliaDTO> findByFamiCod(@PathVariable Integer famiCod) {
-        return subfamiliaService.findByFamiCod(famiCod);
-    }
-
     @GetMapping("/familia/{famiCod}/subfamilia/{cod}")
     public SubfamiliaDTO findById(@PathVariable Integer famiCod, @PathVariable Integer cod) {
         return subfamiliaService.findById(famiCod, cod);

@@ -13,47 +13,37 @@ import java.util.List;
     @RequestMapping("/licitaciones")
     public class LicitacionController {
 
-        private final ILicitacionService licitacionService;
+    private final ILicitacionService licitacionService;
 
-        public LicitacionController(ILicitacionService licitacionService) {
+    public LicitacionController(ILicitacionService licitacionService) {
         this.licitacionService = licitacionService;
-        }
+    }
 
-        @GetMapping
-        public ResponseEntity<List<LicitacionDTO>> findByFilters(@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaPublicacionDesde,
-                  @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaPublicacionHasta,
-                  @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaCierreDesde,
-                  @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaCierreHasta,
-                  @RequestParam(required = false) Integer familiaCod,
-                  @RequestParam(required = false) Integer subfamiliaCod)
-        {
-            return ResponseEntity.ok(
-                    licitacionService.findByFilters(
-                            fechaPublicacionDesde,
-                            fechaPublicacionHasta,
-                            fechaCierreDesde,
-                            fechaCierreHasta,
-                            familiaCod,
-                            subfamiliaCod
-                    )
-            );
-        }
+    @GetMapping
+    public ResponseEntity<List<LicitacionDTO>> findByFilters(@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaPublicacionDesde,
+                                                             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaPublicacionHasta,
+                                                             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaCierreDesde,
+                                                             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaCierreHasta,
+                                                             @RequestParam(required = false) Integer familiaCod,
+                                                             @RequestParam(required = false) Integer subfamiliaCod) {
+        return ResponseEntity.ok(
+                licitacionService.findByFilters(
+                        fechaPublicacionDesde,
+                        fechaPublicacionHasta,
+                        fechaCierreDesde,
+                        fechaCierreHasta,
+                        familiaCod,
+                        subfamiliaCod
+                )
+        );
+    }
 
-        @GetMapping("/{id}")
-        public ResponseEntity<LicitacionDTO> getLicitacionById(@PathVariable Integer id) {
-            return ResponseEntity.ok(licitacionService.getLicitacionById(id));
-        }
-
-        @GetMapping("/titulo/{titulo}")
-        public ResponseEntity<LicitacionDTO> getLicitacionByTitle(@PathVariable String titulo) {
-            return ResponseEntity.ok(licitacionService.getLicitacionByTitulo(titulo));
-        }
-
-        @GetMapping("/familia/{familiaCod}/subfamilia/{subfamiliaCod}")
-        public List<LicitacionDTO> getLicitacionesByFamiliaAndSubfamilia(@PathVariable Integer familiaCod, @PathVariable Integer subfamiliaCod) {
-            return licitacionService.getLicitacionesByFamiliaAndSubfamilia(familiaCod, subfamiliaCod);
-        }
+    @GetMapping("/{id}")
+    public ResponseEntity<LicitacionDTO> getLicitacionById(@PathVariable Integer id) {
+        return ResponseEntity.ok(licitacionService.getLicitacionById(id));
+    }
 }
+
         /*
         @PostMapping("/save") // TESTING
         public ResponseEntity<LicitacionModelDTO> savelicitacion(@RequestBody LicitacionModelDTO licitacionDTO) {
