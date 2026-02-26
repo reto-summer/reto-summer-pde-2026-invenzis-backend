@@ -3,6 +3,7 @@ package com.example.reto_backend_febrero2026.licitacion;
 import org.mapstruct.Named;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -24,9 +25,14 @@ public class LicitacionUtility {
 
         return texto
                 .replaceAll("<br\\s*/?>", "\n")
+                .replaceAll("<.*?>", "")
+                .replaceAll("&amp;", "&")
+                .replaceAll("&lt;", "<")
+                .replaceAll("&gt;", ">")
                 .replaceAll("&nbsp;", " ")
                 .replaceAll("&sol;", "/")
-                .replaceAll("<.*?>", "")
+                .replaceAll("&apos;", "'")
+                .replaceAll("&quot;", "\"")
                 .trim();
     }
 
@@ -67,13 +73,14 @@ public class LicitacionUtility {
         return Optional.empty();
     }
 
-    public Optional<OffsetDateTime> parsearFechaPublicacion(String fechaRaw) {
-        if (fechaRaw == null) return Optional.empty();
+    @Named("parsearFechaPublicacion")
+    public LocalDate parsearFechaPublicacion(String fechaRaw) {
+        if (fechaRaw == null || fechaRaw.isEmpty()) return null;
         try {
             OffsetDateTime odt = OffsetDateTime.parse(fechaRaw, DateTimeFormatter.RFC_1123_DATE_TIME);
-            return Optional.of(odt.withOffsetSameInstant(ZoneOffset.of("-03:00")));
+            return odt.withOffsetSameInstant(ZoneOffset.of("-03:00")).toLocalDate();
         } catch (Exception e) {
-            return Optional.empty();
+            return null;
         }
     }
 
@@ -87,9 +94,18 @@ public class LicitacionUtility {
         return extraerFechaCierre(descripcion).orElse(null);
     }
 
-    @Named("parsearFechaPublicacion")
-    public OffsetDateTime parsearFechaPublicacionMapper(String fechaRaw) {
-        return parsearFechaPublicacion(fechaRaw).orElse(null);
+    public LocalDateTime toStartOfDay(LocalDate fecha) {
+        if (fecha == null) {
+            return null;
+        }
+        return fecha.atStartOfDay();
+    }
+
+    public LocalDateTime toEndOfDay(LocalDate fecha) {
+        if (fecha == null) {
+            return null;
+        }
+        return fecha.atTime(23, 59, 59, 999_999_999);
     }
 }
 

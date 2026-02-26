@@ -2,14 +2,20 @@ package com.example.reto_backend_febrero2026.licitacion;
 
 import com.example.reto_backend_febrero2026.integration.servlet.dto.LicitacionItemRecord;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 
 public interface ILicitacionService {
-    List<LicitacionDTO> findAll();
+    List<LicitacionDTO> findAll(LocalDate fechaPublicacionDesde, LocalDate fechaPublicacionHasta,
+                                LocalDate fechaCierreDesde, LocalDate fechaCierreHasta, Integer familiaCod,
+                                Integer subfamiliaCod);
     LicitacionDTO getLicitacionById(int id);
     LicitacionDTO getLicitacionByTitulo(String titulo);
     LicitacionDTO cleanSave(LicitacionItemRecord itemRecord);
     List<LicitacionDTO> getLicitacionesByFamiliaAndSubfamilia(Integer familia_cod, Integer subfamilia_cod);
+    List<LicitacionDTO> getLicitacionesNoEnviadasByFamiliaAndSubfamilia(Integer familiaCod, Integer subfamiliaCod);
     LicitacionDTO updateEnviadoFlag(Integer id, boolean flag);
     //LicitacionModelDTO getlicitacionByfecha_publicacion(LocalDate fecha);
     //LicitacionModelDTO getlicitacionByfecha_cierre(LocalDateTime fecha);

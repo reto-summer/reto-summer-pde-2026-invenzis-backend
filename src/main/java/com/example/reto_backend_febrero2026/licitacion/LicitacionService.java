@@ -1,44 +1,67 @@
 package com.example.reto_backend_febrero2026.licitacion;
 
-import com.example.reto_backend_febrero2026.audit.Auditable;
-import com.example.reto_backend_febrero2026.familia.*;
-import com.example.reto_backend_febrero2026.integration.servlet.dto.LicitacionItemRecord;
-import com.example.reto_backend_febrero2026.subfamilia.*;
-import org.springframework.http.HttpStatus;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.server.ResponseStatusException;
-
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
+
+import com.example.reto_backend_febrero2026.audit.Auditable;
+import com.example.reto_backend_febrero2026.familia.FamiliaDTO;
+import com.example.reto_backend_febrero2026.familia.IFamiliaService;
+import com.example.reto_backend_febrero2026.integration.servlet.dto.LicitacionItemRecord;
+import com.example.reto_backend_febrero2026.subfamilia.ISubfamiliaService;
+import com.example.reto_backend_febrero2026.subfamilia.SubfamiliaDTO;
 
 @Service
 public class LicitacionService implements ILicitacionService {
 
     @Autowired
-    LicitacionUtility licitacionUtility;
+    private LicitacionUtility licitacionUtility;
 
     @Autowired
-    ISubfamiliaService iSubfamiliaService;
+    private ISubfamiliaService iSubfamiliaService;
 
     @Autowired
-    IFamiliaService iFamiliaService;
+    private IFamiliaService iFamiliaService;
 
     @Autowired
-    ILicitacionRepository licitacionRepository;
+    private ILicitacionRepository licitacionRepository;
 
     @Autowired
-    LicitacionMapper licitacionMapper;
+    private LicitacionMapper licitacionMapper;
 
     @Override
     @Transactional(readOnly = true)
-    public List<LicitacionDTO> findAll() {
-        return licitacionRepository.findAll().stream()
+    public List<LicitacionDTO> findAll(
+            LocalDate fechaPublicacionDesde,
+            LocalDate fechaPublicacionHasta,
+            LocalDate fechaCierreDesde,
+            LocalDate fechaCierreHasta,
+            Integer familiaCod,
+            Integer subfamiliaCod)
+    {
+        if (subfamiliaCod != null && familiaCod == null) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "No se puede filtrar por subfamilia sin especificar la familia correspondiente."
+            );
+        }
+
+        LocalDateTime cierreDesde = licitacionUtility.toStartOfDay(fechaCierreDesde);
+        LocalDateTime cierreHasta = licitacionUtility.toEndOfDay(fechaCierreHasta);
+
+        return licitacionRepository
+                .getLicitacionesByFechas(fechaPublicacionDesde, fechaPublicacionHasta, cierreDesde, cierreHasta, familiaCod, subfamiliaCod)
+                .stream()
                 .map(licitacionMapper::licitacionToLicitacionDTO)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
@@ -85,7 +108,7 @@ public class LicitacionService implements ILicitacionService {
     @Transactional(readOnly = true)
     public LicitacionDTO getLicitacionByTitulo(String titulo){
         return licitacionRepository
-                .findByTitulo(titulo)
+                .getLicitacionByTitulo(titulo)
                 .map(licitacionMapper::licitacionToLicitacionDTO)
                 .orElseThrow(() ->
                 new ResponseStatusException(
@@ -105,6 +128,13 @@ public class LicitacionService implements ILicitacionService {
         }
 
         return licitaciones.stream()
+                .map(licitacionMapper::licitacionToLicitacionDTO).collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<LicitacionDTO> getLicitacionesNoEnviadasByFamiliaAndSubfamilia(Integer familiaCod, Integer subfamiliaCod) {
+        return licitacionRepository.findByFamilia_CodAndSubfamilia_CodAndEnviadoFalse(familiaCod, subfamiliaCod).stream()
                 .map(licitacionMapper::licitacionToLicitacionDTO).collect(Collectors.toList());
     }
 
