@@ -13,4 +13,6 @@ public interface ILicitacionRepository extends JpaRepository<Licitacion, Integer
     Optional<Licitacion> findByTitulo(String titulo);
 
     List<Licitacion> findByFamilia_CodAndSubfamilia_Cod(Integer familiaCod, Integer subfamiliaCod);
+
+    List<Licitacion> findByFamilia_CodAndSubfamilia_CodAndEnviadoFalse(Integer familiaCod, Integer subfamiliaCod);
 }

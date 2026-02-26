@@ -8,6 +8,8 @@ import java.time.LocalDateTime;
 public class Notificacion {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "notificacion_gen")
+    @SequenceGenerator(name = "notificacion_gen", sequenceName = "notificacion_id_seq", allocationSize = 1, initialValue = 1000)
     @Column(name = "id_notificaciones", nullable = false)
     private Integer id;
 
@@ -29,8 +31,7 @@ public class Notificacion {
     public Notificacion() {
     }
 
-    public Notificacion(Integer id, String titulo, Boolean exito, String detalle, String contenido, LocalDateTime fechaEjecucion) {
-        this.id = id;
+    public Notificacion(String titulo, Boolean exito, String detalle, String contenido, LocalDateTime fechaEjecucion) {
         this.titulo = titulo;
         this.exito = exito;
         this.detalle = detalle;

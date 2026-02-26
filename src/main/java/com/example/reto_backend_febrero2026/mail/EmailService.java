@@ -1,7 +1,7 @@
 package com.example.reto_backend_febrero2026.mail;
 
 import com.example.reto_backend_febrero2026.audit.Auditable;
-import com.example.reto_backend_febrero2026.integration.servlet.dto.LicitacionItemRecord;
+import com.example.reto_backend_febrero2026.licitacion.LicitacionDTO;
 import jakarta.mail.internet.MimeMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -93,8 +93,8 @@ public class EmailService implements IEmailService {
     @Async
     @Auditable(module = "EMAIL_SERVICE", action = "SEND_MAIL")
     @Override
-    public void sendLicitacionesEmail(List<LicitacionItemRecord> items) {
-        List<LicitacionItemRecord> safeItems = items == null ? List.of() : items;
+    public void sendLicitacionesEmail(List<LicitacionDTO> licitaciones) {
+        List<LicitacionDTO> safeItems = licitaciones == null ? List.of() : licitaciones;
         String fecha = LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy", new Locale("es", "UY")));
         String subject = safeItems.isEmpty()
                 ? "Sin nuevas licitaciones ARCE - " + fecha
@@ -110,8 +110,8 @@ public class EmailService implements IEmailService {
         MDC.put("notificationTitle", subject);
 
         String licitacionIds = safeItems.stream()
-                .filter(item -> item.idLicitacion() != null)
-                .map(item -> String.valueOf(item.idLicitacion()))
+                .filter(dto -> dto.getIdLicitacion() != null)
+                .map(dto -> String.valueOf(dto.getIdLicitacion()))
                 .collect(java.util.stream.Collectors.joining(", "));
 
         List<Email> emailsFromDb = emailRepository.findByActivoTrue();
@@ -151,23 +151,13 @@ public class EmailService implements IEmailService {
             helper.setText(htmlContent, true);
 
             mailSender.send(message);
-            log.info("Email de licitaciones enviado a {} destinatarios con {} ítems", recipients.length, safeItems.size());
+            log.info("Email de licitaciones enviado a {} destinatarios con {} licitaciones", recipients.length, safeItems.size());
         } catch (Exception e) {
             MDC.put("notificationSuccess", "false");
             MDC.put("notificationDetail", e.getMessage());
             log.error("Error al enviar email de licitaciones: {}", e.getMessage(), e);
             throw new RuntimeException("ERROR en envío de mail: " + e);
         }
-    }
-
-    private String[] getEmailRecipients() {
-        List<String> emailsFromDb = emailRepository.findAllActiveEmails();
-        if (!emailsFromDb.isEmpty()) {
-            log.info("Usando {} emails de la base de datos", emailsFromDb.size());
-            return emailsFromDb.toArray(new String[0]);
-        }
-        log.info("Usando emails de application.properties");
-        return parseEmailList(mailTo);
     }
 
     private String[] parseEmailList(String emailString) {

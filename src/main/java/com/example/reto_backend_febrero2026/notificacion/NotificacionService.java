@@ -1,5 +1,6 @@
 package com.example.reto_backend_febrero2026.notificacion;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -10,15 +11,12 @@ import java.util.stream.Collectors;
 @Service
 public class NotificacionService implements INotificacionService {
 
-    private final INotificacionRepository notificacionRepository;
-
-    public NotificacionService(INotificacionRepository notificacionRepository) {
-        this.notificacionRepository = notificacionRepository;
-    }
+    @Autowired
+    private INotificacionRepository notificacionRepository;
 
     @Override
-    public Notificacion create(Integer id, String titulo, boolean exito, String detalle, String contenido, LocalDateTime fechaEjecucion) {
-        Notificacion notificacion = new Notificacion(id, titulo, exito, detalle, contenido, fechaEjecucion);
+    public Notificacion create(String titulo, boolean exito, String detalle, String contenido, LocalDateTime fechaEjecucion) {
+        Notificacion notificacion = new Notificacion(titulo, exito, detalle, contenido, fechaEjecucion);
         return notificacionRepository.save(notificacion);
     }
 
@@ -44,14 +42,18 @@ public class NotificacionService implements INotificacionService {
     }
 
     @Override
-    public Integer getNextId() {
-        List<Notificacion> all = notificacionRepository.findAll();
-        if (all.isEmpty()) {
-            return 1;
-        }
-        return all.stream()
-                .map(Notificacion::getId)
-                .max(Integer::compareTo)
-                .orElse(0) + 1;
+    public List<NotificacionResumenDTO> findExitosas() {
+        return notificacionRepository.findByExitoTrue()
+                .stream()
+                .map(n -> new NotificacionResumenDTO(n.getId(), n.getTitulo(), n.getExito(), n.getFechaEjecucion()))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<NotificacionResumenDTO> findFallidas() {
+        return notificacionRepository.findByExitoFalse()
+                .stream()
+                .map(n -> new NotificacionResumenDTO(n.getId(), n.getTitulo(), n.getExito(), n.getFechaEjecucion()))
+                .collect(Collectors.toList());
     }
 }

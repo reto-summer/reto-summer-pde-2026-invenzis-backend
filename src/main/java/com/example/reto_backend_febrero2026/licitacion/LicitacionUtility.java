@@ -24,9 +24,14 @@ public class LicitacionUtility {
 
         return texto
                 .replaceAll("<br\\s*/?>", "\n")
+                .replaceAll("<.*?>", "")
+                .replaceAll("&amp;", "&")
+                .replaceAll("&lt;", "<")
+                .replaceAll("&gt;", ">")
                 .replaceAll("&nbsp;", " ")
                 .replaceAll("&sol;", "/")
-                .replaceAll("<.*?>", "")
+                .replaceAll("&apos;", "'")
+                .replaceAll("&quot;", "\"")
                 .trim();
     }
 
