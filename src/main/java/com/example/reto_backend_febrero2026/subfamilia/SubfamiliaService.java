@@ -1,14 +1,13 @@
 package com.example.reto_backend_febrero2026.subfamilia;
 
-import jakarta.persistence.EntityNotFoundException;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+
+import jakarta.persistence.EntityNotFoundException;
 
 @Service
 public class SubfamiliaService implements ISubfamiliaService {
@@ -60,7 +59,7 @@ public class SubfamiliaService implements ISubfamiliaService {
         Subfamilia subfamilia = subfamiliaMapper.subFamilyDTOtoSubfamily(dto);
 
         if (subfamilia.getFamiCod() == null || subfamilia.getCod() == null) {
-            throw new IllegalArgumentException("fami_cod y cod son obligatorios");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "fami_cod y cod son obligatorios");
         }
 
         if (subfamilia.getDescripcion() == null) {

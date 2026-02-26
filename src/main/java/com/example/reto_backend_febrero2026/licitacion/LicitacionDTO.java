@@ -1,7 +1,7 @@
 package com.example.reto_backend_febrero2026.licitacion;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
 
 import com.example.reto_backend_febrero2026.familia.FamiliaDTO;
 import com.example.reto_backend_febrero2026.subfamilia.SubfamiliaDTO;
@@ -16,7 +16,7 @@ public class LicitacionDTO {
 
     private String descripcion;
 
-    private OffsetDateTime fechaPublicacion;
+    private LocalDate fechaPublicacion;
 
     private LocalDateTime fechaCierre;
 
@@ -30,7 +30,7 @@ public class LicitacionDTO {
     }
 
     public LicitacionDTO(Integer idLicitacion, String titulo, String tipoLicitacion, String descripcion,
-                         OffsetDateTime fechaPublicacion, LocalDateTime fechaCierre,
+                         LocalDate fechaPublicacion, LocalDateTime fechaCierre,
                          String link, FamiliaDTO familia,
                          SubfamiliaDTO subfamilia) {
         this.idLicitacion = idLicitacion;
@@ -68,11 +68,11 @@ public class LicitacionDTO {
         this.descripcion = descripcion;
     }
 
-    public OffsetDateTime getFechaPublicacion() {
+    public LocalDate getFechaPublicacion() {
         return fechaPublicacion;
     }
 
-    public void setFechaPublicacion(OffsetDateTime fechaPublicacion) {
+    public void setFechaPublicacion(LocalDate fechaPublicacion) {
         this.fechaPublicacion = fechaPublicacion;
     }
 

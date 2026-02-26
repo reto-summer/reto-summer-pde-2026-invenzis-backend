@@ -1,9 +1,11 @@
 package com.example.reto_backend_febrero2026.licitacion;
 
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -14,8 +16,23 @@ import java.util.List;
         private ILicitacionService licitacionService;
 
         @GetMapping
-        public List<LicitacionDTO> getAllLicitaciones(){
-            return licitacionService.findAll();
+        public ResponseEntity<List<LicitacionDTO>> getAllLicitaciones(@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaPublicacionDesde,
+                  @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaPublicacionHasta,
+                  @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaCierreDesde,
+                  @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaCierreHasta,
+                  @RequestParam(required = false) Integer familiaCod,
+                  @RequestParam(required = false) Integer subfamiliaCod)
+        {
+            return ResponseEntity.ok(
+                    licitacionService.findAll(
+                            fechaPublicacionDesde,
+                            fechaPublicacionHasta,
+                            fechaCierreDesde,
+                            fechaCierreHasta,
+                            familiaCod,
+                            subfamiliaCod
+                    )
+            );
         }
 
         @GetMapping("/{id}")
@@ -33,7 +50,6 @@ import java.util.List;
             return licitacionService.getLicitacionesByFamiliaAndSubfamilia(familiaCod, subfamiliaCod);
         }
 }
-
         /*
         @PostMapping("/save") // TESTING
         public ResponseEntity<LicitacionModelDTO> savelicitacion(@RequestBody LicitacionModelDTO licitacionDTO) {
