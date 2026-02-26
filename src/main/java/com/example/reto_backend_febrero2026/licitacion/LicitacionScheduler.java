@@ -34,7 +34,7 @@ public class LicitacionScheduler {
     public void getLicitacionesByConfig() {
         log.info("Iniciando envío diario de licitaciones ARCE");
         try {
-            Config config = configService.getConfig();
+            Config config = configService.getEntityConfig();
             ArceRssFilters filters = new ArceRssFilters(config.getFamilia().getCod(), config.getSubfamilia().getCod());
 
             // 1. Sincronizar RSS → BD

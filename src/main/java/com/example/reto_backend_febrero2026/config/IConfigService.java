@@ -2,7 +2,9 @@ package com.example.reto_backend_febrero2026.config;
 
 public interface IConfigService
 {
-    Config getConfig();
+    ConfigDTO getConfig();
 
-    Config updateConfig(ConfigUpdateDTO configUpdate);
+    Config getEntityConfig();
+
+    ConfigDTO updateConfig(ConfigUpdateDTO configUpdate);
 }
