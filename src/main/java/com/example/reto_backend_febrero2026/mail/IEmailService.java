@@ -7,13 +7,13 @@ import java.util.Optional;
 
 public interface IEmailService {
 
-    List<Email> findAllActive();
+    List<EmailDTO> findAllActive();
 
-    Optional<Email> findById(String emailAddress);
+    Optional<EmailDTO> findById(String emailAddress);
 
-    Email create(String email);
+    EmailDTO create(String email);
 
-    Email update(String emailAddress, Boolean activo);
+    EmailDTO update(String emailAddress, Boolean activo);
 
     void deactivate(String emailAddress);
 
