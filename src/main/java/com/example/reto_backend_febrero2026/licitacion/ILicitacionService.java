@@ -11,11 +11,17 @@ public interface ILicitacionService {
     List<LicitacionDTO> findAll(LocalDate fechaPublicacionDesde, LocalDate fechaPublicacionHasta,
                                 LocalDate fechaCierreDesde, LocalDate fechaCierreHasta, Integer familiaCod,
                                 Integer subfamiliaCod);
+
     LicitacionDTO getLicitacionById(int id);
+
     LicitacionDTO getLicitacionByTitulo(String titulo);
+
     LicitacionDTO cleanSave(LicitacionItemRecord itemRecord);
+
     List<LicitacionDTO> getLicitacionesByFamiliaAndSubfamilia(Integer familia_cod, Integer subfamilia_cod);
+
     LicitacionDTO updateEnviadoFlag(Integer id, boolean flag);
+
     //LicitacionModelDTO getlicitacionByfecha_publicacion(LocalDate fecha);
     //LicitacionModelDTO getlicitacionByfecha_cierre(LocalDateTime fecha);
     //LicitacionModelDTO getlicitacionByfecha_inicio_fin(LocalDate fecha_inicio, LocalDate fecha_fin);
