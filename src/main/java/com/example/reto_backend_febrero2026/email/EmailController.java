@@ -27,7 +27,7 @@ public class EmailController {
     }
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseStatus(HttpStatus.OK)
     public EmailDTO createDestination(@RequestBody EmailDTO body) {
         return emailService.create(body.getEmail());
     }
@@ -50,9 +50,4 @@ public class EmailController {
         return ex.getMessage();
     }
 
-    @ExceptionHandler(IllegalStateException.class)
-    @ResponseStatus(HttpStatus.CONFLICT)
-    public String handleConflict(IllegalStateException ex) {
-        return ex.getMessage();
-    }
 }
