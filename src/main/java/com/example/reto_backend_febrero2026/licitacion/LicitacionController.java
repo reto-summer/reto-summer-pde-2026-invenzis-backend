@@ -44,11 +44,4 @@ import java.util.List;
     public ResponseEntity<LicitacionDTO> getLicitacionById(@PathVariable Integer id) {
         return ResponseEntity.ok(licitacionService.getLicitacionById(id));
     }
-
-    @ExceptionHandler(IllegalArgumentException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public String handleIllegalArgument(IllegalArgumentException ex) {
-        return ex.getMessage();
-    }
-
 }

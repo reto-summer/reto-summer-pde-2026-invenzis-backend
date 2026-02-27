@@ -9,7 +9,7 @@ public interface IEmailService {
 
     List<EmailDTO> findAllActive();
 
-    Optional<EmailDTO> findById(String emailAddress);
+    EmailDTO findById(String emailAddress);
 
     EmailDTO create(String email);
 

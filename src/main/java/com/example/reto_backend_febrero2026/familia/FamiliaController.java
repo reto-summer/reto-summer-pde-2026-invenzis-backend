@@ -1,6 +1,5 @@
 package com.example.reto_backend_febrero2026.familia;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,11 +18,5 @@ public class FamiliaController {
     @GetMapping
     public List<FamiliaDTO> findAll() {
         return familiaService.findAll();
-    }
-
-    @ExceptionHandler(IllegalArgumentException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public String handleIllegalArgument(IllegalArgumentException ex) {
-        return ex.getMessage();
     }
 }

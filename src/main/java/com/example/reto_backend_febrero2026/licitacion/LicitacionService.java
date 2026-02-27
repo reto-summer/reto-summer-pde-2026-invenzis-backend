@@ -63,8 +63,7 @@ public class LicitacionService implements ILicitacionService {
     @Transactional(readOnly = true)
     public LicitacionDTO getLicitacionById(int id) {
         if(id <= 0){
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,"No puede ser negativo el id.");
+            throw new IllegalArgumentException("No puede ser negativo el id.");
         }
         return licitacionRepository
                 .findById(id)

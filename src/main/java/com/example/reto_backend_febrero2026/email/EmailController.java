@@ -1,6 +1,5 @@
 package com.example.reto_backend_febrero2026.email;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,10 +21,8 @@ public class EmailController {
     }
 
     @GetMapping("/{emailAddress:.+}")
-    public ResponseEntity<EmailDTO> getDestinationById(@PathVariable String emailAddress) {
-        return emailService.findById(emailAddress)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public EmailDTO getDestinationById(@PathVariable String emailAddress) {
+        return emailService.findById(emailAddress);
     }
 
     @PostMapping
@@ -41,14 +38,8 @@ public class EmailController {
     }*/
 
     @DeleteMapping("/{emailAddress:.+}")
-    public ResponseEntity<Void> deleteDestination(@PathVariable String emailAddress) {
+    public ResponseEntity<Object> deleteDestination(@PathVariable String emailAddress) {
         emailService.deactivate(emailAddress);
         return ResponseEntity.noContent().build();
     }
-
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<String> handleBadRequest(IllegalArgumentException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
-    }
-
 }
