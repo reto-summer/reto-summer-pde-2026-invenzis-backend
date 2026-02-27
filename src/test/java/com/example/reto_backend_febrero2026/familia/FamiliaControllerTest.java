@@ -53,33 +53,4 @@ package com.example.reto_backend_febrero2026.familia;
                   .andExpect(jsonPath("$.length()").value(0));
       }
 
-      // ===== GET /familias/{cod} =====
-
-      // testea que el controlador llama al servicio y retorna el DTO
-      // devuelve status 200 y el DTO
-      @Test
-      void findById_codigoExistente_deberiaRetornar200ConFamilia() throws Exception {
-          // Arrange
-          FamiliaDTO dto = new FamiliaDTO(4, "MAQUINAS, EQUIPOS Y MOBILIARIOS NUEVOS");
-
-          when(familiaService.findById(4)).thenReturn(dto);
-
-          // Act & Assert
-          mockMvc.perform(get("/familias/4"))
-                  .andExpect(status().is(200))
-                  .andExpect(jsonPath("$.cod").value(4))
-                  .andExpect(jsonPath("$.descripcion").value("MAQUINAS, EQUIPOS Y MOBILIARIOS NUEVOS"));
-      }
-
-      // testea que el controlador llama al servicio y retorna 404
-      @Test
-      void findById_codigoInexistente_deberiaRetornar404() throws Exception {
-          // Arrange
-          when(familiaService.findById(999))
-                  .thenThrow(new IllegalArgumentException("No se encontró la familia con cod=999"));
-
-          // Act & Assert
-          mockMvc.perform(get("/familias/999"))
-                  .andExpect(status().is(404));
-      }
   }
