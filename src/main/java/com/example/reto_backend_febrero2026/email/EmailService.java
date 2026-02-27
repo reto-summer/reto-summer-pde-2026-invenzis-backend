@@ -8,8 +8,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
@@ -74,7 +76,7 @@ public class EmailService implements IEmailService {
     @Override
     public EmailDTO update(String emailAddress, Boolean activo) {
         Email destination = emailRepository.findById(emailAddress)
-                .orElseThrow(() -> new RuntimeException("Destino de email no encontrado"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Destino de email no encontrado: " + emailAddress));
 
         if (activo != null) {
             destination.setActivo(activo);
@@ -86,7 +88,7 @@ public class EmailService implements IEmailService {
     @Override
     public void deactivate(String emailAddress) {
         Email destination = emailRepository.findById(emailAddress)
-                .orElseThrow(() -> new RuntimeException("Destino de email no encontrado"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Destino de email no encontrado: " + emailAddress));
         destination.setActivo(false);
         emailRepository.save(destination);
     }

@@ -7,7 +7,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/email")
-@CrossOrigin(origins = "*")
 public class EmailController {
 
     private final IEmailService emailService;
@@ -54,12 +53,6 @@ public class EmailController {
     @ExceptionHandler(IllegalStateException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public String handleConflict(IllegalStateException ex) {
-        return ex.getMessage();
-    }
-
-    @ExceptionHandler(RuntimeException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public String handleNotFound(RuntimeException ex) {
         return ex.getMessage();
     }
 }

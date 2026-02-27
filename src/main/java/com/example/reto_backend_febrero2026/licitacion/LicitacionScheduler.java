@@ -34,7 +34,7 @@ public class LicitacionScheduler {
         this.licitacionEmailService = licitacionEmailService;
     }
 
-    @Scheduled(cron = "0 * * * * *", zone = "America/Montevideo")
+    @Scheduled(cron = "0 0 0 * * *", zone = "America/Montevideo")
     public void getLicitacionesByConfig() {
         log.info("Iniciando envío diario de licitaciones ARCE");
         try {
@@ -44,15 +44,20 @@ public class LicitacionScheduler {
             // 1. Sincronizar RSS → BD
             arceClientService.obtenerLicitaciones(filters).get();
 
-            // 2. Obtener licitaciones no enviadas desde la BD
-            List<LicitacionDTO> licitaciones = licitacionService
-                    .getLicitacionesNoEnviadasByFamiliaAndSubfamilia(filters.familyCod(), filters.subFamilyCod());
+            // 2. Construir matriz licitacion-email pendiente (enviado=false)
+            List<String> emails = mailService.findAllActiveEmails();
+            List<LicitacionDTO> todas = licitacionService
+                    .getLicitacionesByFamiliaAndSubfamilia(filters.familyCod(), filters.subFamilyCod());
+            licitacionEmailService.registrarPendientes(todas, emails);
 
-            // 3. Enviar email (incluso si la lista está vacía)
+            // 3. Obtener pendientes reales por destinatario
+            List<LicitacionDTO> licitaciones = licitacionService
+                    .getLicitacionesNoEnviadasByFamiliaAndSubfamilia(filters.familyCod(), filters.subFamilyCod(), emails);
+
+            // 4. Enviar email
             mailService.sendLicitacionesEmail(licitaciones);
 
-            // 4. Registrar envíos en tabla intermedia
-            List<String> emails = mailService.findAllActiveEmails();
+            // 5. Registrar envíos en tabla intermedia
             licitacionEmailService.registrarEnvios(licitaciones, emails);
 
             log.info("Envío diario completado con {} licitaciones", licitaciones.size());

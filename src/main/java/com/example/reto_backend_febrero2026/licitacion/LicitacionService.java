@@ -118,23 +118,20 @@ public class LicitacionService implements ILicitacionService {
     @Override
     @Transactional(readOnly = true)
     public List<LicitacionDTO> getLicitacionesByFamiliaAndSubfamilia(Integer familiaCod, Integer subfamiliaCod) {
-        List<Licitacion> licitaciones = licitacionRepository.findByFamilia_CodAndSubfamilia_Cod(familiaCod,subfamiliaCod);
-
-        if(licitaciones.isEmpty()){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No existen licitaciones para familia " + familiaCod
-            + " y subfamilia " + subfamiliaCod);
-        }
-
-        return licitaciones.stream()
-                .map(licitacionMapper::licitacionToLicitacionDTO).collect(Collectors.toList());
+        return licitacionRepository.findByFamilia_CodAndSubfamilia_Cod(familiaCod, subfamiliaCod)
+                .stream()
+                .map(licitacionMapper::licitacionToLicitacionDTO)
+                .collect(Collectors.toList());
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<LicitacionDTO> getLicitacionesNoEnviadasByFamiliaAndSubfamilia(Integer familiaCod, Integer subfamiliaCod) {
-        return licitacionRepository.findNoEnviadasByFamiliaAndSubfamilia(familiaCod, subfamiliaCod).stream()
+    public List<LicitacionDTO> getLicitacionesNoEnviadasByFamiliaAndSubfamilia(Integer familiaCod, Integer subfamiliaCod, List<String> emails) {
+        if (emails == null || emails.isEmpty()) {
+            return List.of();
+        }
+
+        return licitacionRepository.findNoEnviadasByFamiliaAndSubfamiliaAndEmails(familiaCod, subfamiliaCod, emails).stream()
                 .map(licitacionMapper::licitacionToLicitacionDTO).collect(Collectors.toList());
     }
 }
-
-
