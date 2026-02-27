@@ -4,7 +4,8 @@ import com.example.reto_backend_febrero2026.config.Config;
 import com.example.reto_backend_febrero2026.config.IConfigService;
 import com.example.reto_backend_febrero2026.integration.servlet.service.ArceClientService;
 import com.example.reto_backend_febrero2026.integration.servlet.service.strategy.ArceRssFilters;
-import com.example.reto_backend_febrero2026.mail.IEmailService;
+import com.example.reto_backend_febrero2026.email.IEmailService;
+import com.example.reto_backend_febrero2026.licitacion_email.ILicitacionEmailService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -21,13 +22,16 @@ public class LicitacionScheduler {
     private final IEmailService mailService;
     private final IConfigService configService;
     private final ILicitacionService licitacionService;
+    private final ILicitacionEmailService licitacionEmailService;
 
     public LicitacionScheduler(ArceClientService arceClientService, IEmailService mailService,
-                               IConfigService configService, ILicitacionService licitacionService) {
+                               IConfigService configService, ILicitacionService licitacionService,
+                               ILicitacionEmailService licitacionEmailService) {
         this.arceClientService = arceClientService;
         this.mailService = mailService;
         this.configService = configService;
         this.licitacionService = licitacionService;
+        this.licitacionEmailService = licitacionEmailService;
     }
 
     @Scheduled(cron = "0 0 0 * * *", zone = "America/Montevideo")
@@ -40,15 +44,21 @@ public class LicitacionScheduler {
             // 1. Sincronizar RSS → BD
             arceClientService.obtenerLicitaciones(filters).get();
 
-            // 2. Obtener licitaciones no enviadas desde la BD
-            List<LicitacionDTO> licitaciones = licitacionService
-                    .getLicitacionesNoEnviadasByFamiliaAndSubfamilia(filters.familyCod(), filters.subFamilyCod());
+            // 2. Construir matriz licitacion-email pendiente (enviado=false)
+            List<String> emails = mailService.findAllActiveEmails();
+            List<LicitacionDTO> todas = licitacionService
+                    .getLicitacionesByFamiliaAndSubfamilia(filters.familyCod(), filters.subFamilyCod());
+            licitacionEmailService.registrarPendientes(todas, emails);
 
-            // 3. Enviar email (incluso si la lista está vacía)
+            // 3. Obtener pendientes reales por destinatario
+            List<LicitacionDTO> licitaciones = licitacionService
+                    .getLicitacionesNoEnviadasByFamiliaAndSubfamilia(filters.familyCod(), filters.subFamilyCod(), emails);
+
+            // 4. Enviar email
             mailService.sendLicitacionesEmail(licitaciones);
 
-            // 4. Marcar como enviadas
-            licitaciones.forEach(dto -> licitacionService.updateEnviadoFlag(dto.getIdLicitacion(), true));
+            // 5. Registrar envíos en tabla intermedia
+            licitacionEmailService.registrarEnvios(licitaciones, emails);
 
             log.info("Envío diario completado con {} licitaciones", licitaciones.size());
         } catch (Exception e) {

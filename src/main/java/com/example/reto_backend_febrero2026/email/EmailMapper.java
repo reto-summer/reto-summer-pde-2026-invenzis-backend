@@ -1,4 +1,4 @@
-package com.example.reto_backend_febrero2026.mail;
+package com.example.reto_backend_febrero2026.email;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

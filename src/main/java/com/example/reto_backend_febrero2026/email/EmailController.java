@@ -1,4 +1,4 @@
-package com.example.reto_backend_febrero2026.mail;
+package com.example.reto_backend_febrero2026.email;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -7,7 +7,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/email")
-@CrossOrigin(origins = "*")
 public class EmailController {
 
     private final IEmailService emailService;
@@ -28,7 +27,7 @@ public class EmailController {
     }
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseStatus(HttpStatus.OK)
     public EmailDTO createDestination(@RequestBody EmailDTO body) {
         return emailService.create(body.getEmail());
     }
@@ -51,15 +50,4 @@ public class EmailController {
         return ex.getMessage();
     }
 
-    @ExceptionHandler(IllegalStateException.class)
-    @ResponseStatus(HttpStatus.CONFLICT)
-    public String handleConflict(IllegalStateException ex) {
-        return ex.getMessage();
-    }
-
-    @ExceptionHandler(RuntimeException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public String handleNotFound(RuntimeException ex) {
-        return ex.getMessage();
-    }
 }
