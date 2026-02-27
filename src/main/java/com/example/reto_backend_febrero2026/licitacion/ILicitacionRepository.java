@@ -33,9 +33,9 @@ public interface ILicitacionRepository extends JpaRepository<Licitacion, Integer
         AND le.id.email IN :emails
     """)
     List<Licitacion> findNoEnviadasByFamiliaAndSubfamiliaAndEmails(
-        @Param("familiaCod") Integer familiaCod,
-        @Param("subfamiliaCod") Integer subfamiliaCod,
-        @Param("emails") List<String> emails
+            @Param("familiaCod") Integer familiaCod,
+            @Param("subfamiliaCod") Integer subfamiliaCod,
+            @Param("emails") List<String> emails
     );
 
     @Query("""

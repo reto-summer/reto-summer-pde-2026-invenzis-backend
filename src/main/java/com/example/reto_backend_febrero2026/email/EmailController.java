@@ -1,6 +1,7 @@
 package com.example.reto_backend_febrero2026.email;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,38 +17,38 @@ public class EmailController {
     }
 
     @GetMapping
-    public List<String> getAllActiveEmails() {
-        return emailService.findAllActiveEmails();
+    public ResponseEntity<List<String>> getAllActiveEmails() {
+        return ResponseEntity.ok(emailService.findAllActiveEmails());
     }
 
     @GetMapping("/{emailAddress:.+}")
-    public EmailDTO getDestinationById(@PathVariable String emailAddress) {
+    public ResponseEntity<EmailDTO> getDestinationById(@PathVariable String emailAddress) {
         return emailService.findById(emailAddress)
-                .orElseThrow(() -> new IllegalArgumentException("Email no encontrado: " + emailAddress));
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    @ResponseStatus(HttpStatus.OK)
-    public EmailDTO createDestination(@RequestBody EmailDTO body) {
-        return emailService.create(body.getEmail());
+    public ResponseEntity<String> createDestination(@RequestBody EmailDTO body) {
+        emailService.create(body.getEmail());
+        return ResponseEntity.ok("Email creado exitosamente");
     }
 
     // controller para futuras implementaciones de la app
 /*    @PutMapping("/{emailAddress:.+}")
-    public EmailDTO updateDestination(@PathVariable String emailAddress, @RequestBody EmailDTO body) {
-        return emailService.update(emailAddress, body.getActivo());
+    public ResponseEntity<EmailDTO> updateDestination(@PathVariable String emailAddress, @RequestBody EmailDTO body) {
+        return ResponseEntity.ok(emailService.update(emailAddress, body.getActivo()));
     }*/
 
     @DeleteMapping("/{emailAddress:.+}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteDestination(@PathVariable String emailAddress) {
+    public ResponseEntity<Void> deleteDestination(@PathVariable String emailAddress) {
         emailService.deactivate(emailAddress);
+        return ResponseEntity.noContent().build();
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public String handleBadRequest(IllegalArgumentException ex) {
-        return ex.getMessage();
+    public ResponseEntity<String> handleBadRequest(IllegalArgumentException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
 
 }
