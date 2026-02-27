@@ -118,20 +118,38 @@ public class LicitacionService implements ILicitacionService {
     @Override
     @Transactional(readOnly = true)
     public List<LicitacionDTO> getLicitacionesByFamiliaAndSubfamilia(Integer familiaCod, Integer subfamiliaCod) {
-        return licitacionRepository.findByFamilia_CodAndSubfamilia_Cod(familiaCod, subfamiliaCod)
-                .stream()
-                .map(licitacionMapper::licitacionToLicitacionDTO)
-                .collect(Collectors.toList());
+        List<Licitacion> licitaciones = licitacionRepository.findByFamilia_CodAndSubfamilia_Cod(familiaCod,subfamiliaCod);
+
+        if(licitaciones.isEmpty()){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No existen licitaciones para familia " + familiaCod
+            + " y subfamilia " + subfamiliaCod);
+        }
+
+        return licitaciones.stream()
+                .map(licitacionMapper::licitacionToLicitacionDTO).collect(Collectors.toList());
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<LicitacionDTO> getLicitacionesNoEnviadasByFamiliaAndSubfamilia(Integer familiaCod, Integer subfamiliaCod, List<String> emails) {
-        if (emails == null || emails.isEmpty()) {
-            return List.of();
-        }
-
-        return licitacionRepository.findNoEnviadasByFamiliaAndSubfamiliaAndEmails(familiaCod, subfamiliaCod, emails).stream()
+    public List<LicitacionDTO> getLicitacionesNoEnviadasByFamiliaAndSubfamilia(Integer familiaCod, Integer subfamiliaCod) {
+        return licitacionRepository.findByFamilia_CodAndSubfamilia_CodAndEnviadoFalse(familiaCod, subfamiliaCod).stream()
                 .map(licitacionMapper::licitacionToLicitacionDTO).collect(Collectors.toList());
     }
+
+    @Transactional
+    public LicitacionDTO updateEnviadoFlag(Integer id, boolean flag) {
+
+        Licitacion licitacion = licitacionRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResponseStatusException(
+                                HttpStatus.NOT_FOUND,
+                                "No existe licitación con id: " + id
+                        )
+                );
+        licitacion.setEnviado(flag);
+
+        return licitacionMapper.licitacionToLicitacionDTO(licitacion);
+    }
 }
+
+

@@ -1,4 +1,3 @@
-/*
 package com.example.reto_backend_febrero2026.subfamilia;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -255,4 +254,3 @@ class SubfamiliaServiceTest {
         verify(subfamiliaRepository, never()).save(any(Subfamilia.class));
     }
 }
-*/
