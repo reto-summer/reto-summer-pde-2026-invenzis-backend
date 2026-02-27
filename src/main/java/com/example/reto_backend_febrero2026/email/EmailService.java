@@ -55,9 +55,9 @@ public class EmailService implements IEmailService {
     }
 
     @Override
-    public Optional<EmailDTO> findById(String emailAddress) {
+    public EmailDTO findById(String emailAddress) {
         Email email = emailRepository.findById(emailAddress).orElseThrow(() -> new EntityNotFoundException("Subfamilia no encontrada"));
-        return Optional.ofNullable(emailMapper.emailToEmailDTO(email));
+        return emailMapper.emailToEmailDTO(email);
     }
 
     @Override

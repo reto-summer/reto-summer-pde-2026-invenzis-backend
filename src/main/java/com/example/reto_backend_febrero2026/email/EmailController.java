@@ -22,8 +22,7 @@ public class EmailController {
 
     @GetMapping("/{emailAddress:.+}")
     public EmailDTO getDestinationById(@PathVariable String emailAddress) {
-        return emailService.findById(emailAddress)
-                .orElseThrow(() -> new EntityNotFoundException("Email no encontrado: " + emailAddress));
+        return emailService.findById(emailAddress);
     }
 
     @PostMapping
