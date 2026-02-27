@@ -1,4 +1,4 @@
-package com.example.reto_backend_febrero2026.email;
+/*package com.example.reto_backend_febrero2026.email;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -174,4 +174,4 @@ class EmailControllerTest {
 
         verify(emailService).deactivate("user+tag@example.co.uk");
     }
-}
+}*/

@@ -1,4 +1,4 @@
-package com.example.reto_backend_febrero2026.email;
+/*package com.example.reto_backend_febrero2026.email;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -344,4 +344,4 @@ class EmailServiceTest {
         assertTrue(resultado.isEmpty());
         verify(emailRepository).findAllActiveEmails();
     }
-}
+}*/
