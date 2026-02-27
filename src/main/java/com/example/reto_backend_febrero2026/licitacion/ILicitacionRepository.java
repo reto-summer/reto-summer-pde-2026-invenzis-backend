@@ -31,15 +31,11 @@ public interface ILicitacionRepository extends JpaRepository<Licitacion, Integer
         WHERE l.familia.cod = :familiaCod
         AND l.subfamilia.cod = :subfamiliaCod
         AND le.id.email IN :emails
-<<<<<<< HEAD
-        AND le.enviado = false
-=======
->>>>>>> 579e8763d90149673ad9e17aebad3efbc835462c
     """)
     List<Licitacion> findNoEnviadasByFamiliaAndSubfamiliaAndEmails(
-        @Param("familiaCod") Integer familiaCod,
-        @Param("subfamiliaCod") Integer subfamiliaCod,
-        @Param("emails") List<String> emails
+            @Param("familiaCod") Integer familiaCod,
+            @Param("subfamiliaCod") Integer subfamiliaCod,
+            @Param("emails") List<String> emails
     );
 
     @Query("""
