@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,24 +21,10 @@ public interface ILicitacionRepository extends JpaRepository<Licitacion, Integer
         WHERE l.titulo = :titulo
     """)
     Optional<Licitacion> getLicitacionByTitulo(String titulo);
-
+    
     List<Licitacion> findByFamilia_CodAndSubfamilia_Cod(Integer familiaCod, Integer subfamiliaCod);
 
-    @Query("""
-        SELECT DISTINCT l FROM Licitacion l
-        LEFT JOIN FETCH l.familia
-        LEFT JOIN FETCH l.subfamilia
-        JOIN LicitacionEmail le ON le.id.idLicitacion = l.idLicitacion
-        WHERE l.familia.cod = :familiaCod
-        AND l.subfamilia.cod = :subfamiliaCod
-        AND le.id.email IN :emails
-        AND le.enviado = false
-    """)
-    List<Licitacion> findNoEnviadasByFamiliaAndSubfamiliaAndEmails(
-        @Param("familiaCod") Integer familiaCod,
-        @Param("subfamiliaCod") Integer subfamiliaCod,
-        @Param("emails") List<String> emails
-    );
+    List<Licitacion> findByFamilia_CodAndSubfamilia_CodAndEnviadoFalse(Integer familiaCod, Integer subfamiliaCod);
 
     @Query("""
         SELECT l FROM Licitacion l
