@@ -1,4 +1,3 @@
-/*
 package com.example.reto_backend_febrero2026.familia;
 
   import org.junit.jupiter.api.Test;
@@ -38,8 +37,8 @@ package com.example.reto_backend_febrero2026.familia;
           FamiliaDTO dto2 = new FamiliaDTO(2, "MATERIALES Y SUMINISTROS");
 
           when(familiaRepository.findAll()).thenReturn(familias);
-          when(familiaMappere.familyToFamilyDTO(familia1)).thenReturn(dto1);
-          when(familiaMapper.familyToFamilyDTO(familia2)).thenReturn(dto2);
+          when(familiaMapper.familiaToFamiliaDTO(familia1)).thenReturn(dto1);
+          when(familiaMapper.familiaToFamiliaDTO(familia2)).thenReturn(dto2);
 
           // Act
           List<FamiliaDTO> resultado = familiaService.findAll();
@@ -75,7 +74,7 @@ package com.example.reto_backend_febrero2026.familia;
           FamiliaDTO dto = new FamiliaDTO(3, "SERVICIOS NO PERSONALES");
 
           when(familiaRepository.findById(3)).thenReturn(Optional.of(familia));
-          when(familiaMapper.familyToFamilyDTO(familia)).thenReturn(dto);
+          when(familiaMapper.familiaToFamiliaDTO(familia)).thenReturn(dto);
 
           // Act
           FamiliaDTO resultado = familiaService.findById(3);
@@ -114,9 +113,9 @@ package com.example.reto_backend_febrero2026.familia;
           Familia familiaSaved = new Familia(10, "BIENES DE TECNOLOGIAS DE LA INFORMACION Y LA COMUNICACION");     
           FamiliaDTO outputDto = new FamiliaDTO(10, "BIENES DE TECNOLOGIAS DE LA INFORMACION Y LA COMUNICACION");  
 
-          when(familiaMapper.familyDTOtoFamily(inputDto)).thenReturn(familia);
+          when(familiaMapper.familiaDTOtoFamilia(inputDto)).thenReturn(familia);
           when(familiaRepository.save(familia)).thenReturn(familiaSaved);
-          when(familiaMapper.familyToFamilyDTO(familiaSaved)).thenReturn(outputDto);
+          when(familiaMapper.familiaToFamiliaDTO(familiaSaved)).thenReturn(outputDto);
 
           // Act
           FamiliaDTO resultado = familiaService.saveFamily(inputDto);
@@ -155,9 +154,9 @@ package com.example.reto_backend_febrero2026.familia;
           FamiliaDTO outputDto = new FamiliaDTO(11, "");
 
           // el servicio setea descripcion="" en el DTO antes de mapear
-          when(familiaMapper.familyDTOtoFamily(inputDto)).thenReturn(familia);
+          when(familiaMapper.familiaDTOtoFamilia(inputDto)).thenReturn(familia);
           when(familiaRepository.save(familia)).thenReturn(familiaSaved);
-          when(familiaMapper.familyToFamilyDTO(familiaSaved)).thenReturn(outputDto);
+          when(familiaMapper.familiaToFamiliaDTO(familiaSaved)).thenReturn(outputDto);
 
           // Act
           FamiliaDTO resultado = familiaService.saveFamily(inputDto);
@@ -166,7 +165,4 @@ package com.example.reto_backend_febrero2026.familia;
           assertEquals("", resultado.getDescripcion());
           verify(familiaRepository).save(familia);
       }
-
   }
-
-*/
