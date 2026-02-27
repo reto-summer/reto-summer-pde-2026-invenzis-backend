@@ -5,6 +5,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import jakarta.persistence.EntityNotFoundException;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,6 +16,7 @@ import com.example.reto_backend_febrero2026.familia.IFamiliaService;
 import com.example.reto_backend_febrero2026.integration.servlet.dto.LicitacionItemRecord;
 import com.example.reto_backend_febrero2026.subfamilia.ISubfamiliaService;
 import com.example.reto_backend_febrero2026.subfamilia.SubfamiliaDTO;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class LicitacionService implements ILicitacionService {
@@ -59,10 +62,14 @@ public class LicitacionService implements ILicitacionService {
     @Override
     @Transactional(readOnly = true)
     public LicitacionDTO getLicitacionById(int id) {
+        if(id <= 0){
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,"No puede ser negativo el id.");
+        }
         return licitacionRepository
                 .findById(id)
                 .map(licitacionMapper::licitacionToLicitacionDTO)
-                .orElseThrow(() -> new IllegalArgumentException("No existe licitación con id: " + id));
+                .orElseThrow(() -> new EntityNotFoundException("No existe licitación con id: " + id));
     }
 
     @Auditable(module = "LICITACION_SERVICE", action = "CLEAN_SAVE")
@@ -99,7 +106,7 @@ public class LicitacionService implements ILicitacionService {
                 .getLicitacionByTitulo(titulo)
                 .map(licitacionMapper::licitacionToLicitacionDTO)
                 .orElseThrow(() ->
-                        new IllegalArgumentException("No existe licitación con titulo: " + titulo));
+                        new EntityNotFoundException("No existe licitación con titulo: " + titulo));
     }
 
     @Override
