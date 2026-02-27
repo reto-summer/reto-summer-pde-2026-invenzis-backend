@@ -6,7 +6,7 @@ import java.util.Optional;
 
 public interface INotificacionService {
 
-    Notificacion create(String titulo, boolean exito, String detalle, String contenido, LocalDateTime fechaEjecucion);
+    Notificacion create(NotificacionType canal, String titulo, boolean exito, String detalle, String contenido, LocalDateTime fechaEjecucion);
 
     List<NotificacionResumenDTO> findAllResumen();
 
