@@ -45,7 +45,7 @@ class LicitacionEmailServiceTest {
         Email email = new Email("a@b.com");
 
         when(licitacionRepository.getReferenceById(1)).thenReturn(licitacion);
-        when(licitacionEmailRepository.existsById(new LicitacionEmailId(1, "a@b.com"))).thenReturn(false);
+        when(licitacionEmailRepository.findByIdIdLicitacionIn(List.of(1))).thenReturn(List.of());
         when(emailRepository.getReferenceById("a@b.com")).thenReturn(email);
 
         licitacionEmailService.registrarPendientes(List.of(dto), List.of("a@b.com"));

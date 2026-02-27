@@ -1,4 +1,3 @@
-/*
 package com.example.reto_backend_febrero2026.subfamilia;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -49,15 +48,15 @@ class SubfamiliaServiceTest {
         entities.add(otra);
 
         when(subfamiliaRepository.findAll()).thenReturn(entities);
-        when(subfamiliaMapper.subFamilyToSubfamilyDTO(subfamiliaBase)).thenReturn(subfamiliaBaseDTO);
-        when(subfamiliaMapper.subFamilyToSubfamilyDTO(otra)).thenReturn(new SubfamiliaDTO(3, 10, "SERVICIOS DE TECNOLOGIAS DE LA INFORMACION Y COMUNICACION"));
+        when(subfamiliaMapper.subFamiliaToSubfamiliaDTO(subfamiliaBase)).thenReturn(subfamiliaBaseDTO);
+        when(subfamiliaMapper.subFamiliaToSubfamiliaDTO(otra)).thenReturn(new SubfamiliaDTO(3, 10, "SERVICIOS DE TECNOLOGIAS DE LA INFORMACION Y COMUNICACION"));
 
         List<SubfamiliaDTO> result = subfamiliaService.findAll();
 
         assertNotNull(result, "findAll no deberia retornar null");
         assertEquals(2, result.size(), "findAll debería retornar 2 subfamilias");
         verify(subfamiliaRepository).findAll();
-        verify(subfamiliaMapper, times(2)).subFamilyToSubfamilyDTO(any(Subfamilia.class));
+        verify(subfamiliaMapper, times(2)).subFamiliaToSubfamiliaDTO(any(Subfamilia.class));
     }
 
     @Test
@@ -69,7 +68,7 @@ class SubfamiliaServiceTest {
         assertNotNull(result);
         assertTrue(result.isEmpty(), "Cuando el repo no tiene datos, la lista debe estar vacía");
         verify(subfamiliaRepository).findAll();
-        verify(subfamiliaMapper, never()).subFamilyToSubfamilyDTO(any(Subfamilia.class));
+        verify(subfamiliaMapper, never()).subFamiliaToSubfamiliaDTO(any(Subfamilia.class));
     }
 
     //id
@@ -80,7 +79,7 @@ class SubfamiliaServiceTest {
         Integer cod = 43;
         Subfamilia.SubfamiliaId id = new Subfamilia.SubfamiliaId(famiCod, cod);
         when(subfamiliaRepository.findById(id)).thenReturn(Optional.of(subfamiliaBase));
-        when(subfamiliaMapper.subFamilyToSubfamilyDTO(subfamiliaBase)).thenReturn(subfamiliaBaseDTO);
+        when(subfamiliaMapper.subFamiliaToSubfamiliaDTO(subfamiliaBase)).thenReturn(subfamiliaBaseDTO);
 
         SubfamiliaDTO result = subfamiliaService.findById(famiCod, cod);
 
@@ -105,7 +104,7 @@ class SubfamiliaServiceTest {
         assertEquals("Subfamilia no encontrada con famiCod: 999 y cod: 999", ex.getReason(),
             "El mensaje de error debería incluir famiCod y cod");
         verify(subfamiliaRepository).findById(id);
-        verify(subfamiliaMapper, never()).subFamilyToSubfamilyDTO(any(Subfamilia.class));
+        verify(subfamiliaMapper, never()).subFamiliaToSubfamiliaDTO(any(Subfamilia.class));
     }
 
     // findByFamiCod 
@@ -113,7 +112,7 @@ class SubfamiliaServiceTest {
     @Test
     void findByFamiCod_listaDTO() {
         when(subfamiliaRepository.findByFamiCod(10)).thenReturn(List.of(subfamiliaBase));
-        when(subfamiliaMapper.subFamilyToSubfamilyDTO(subfamiliaBase)).thenReturn(subfamiliaBaseDTO);
+        when(subfamiliaMapper.subFamiliaToSubfamiliaDTO(subfamiliaBase)).thenReturn(subfamiliaBaseDTO);
 
         List<SubfamiliaDTO> result = subfamiliaService.findByFamiCod(10);
 
@@ -141,9 +140,9 @@ class SubfamiliaServiceTest {
         SubfamiliaDTO input = new SubfamiliaDTO(10, 43, "INFRAESTRUCTURA TECNOLOGICA");
         Subfamilia mapped = new Subfamilia(10, 43, "INFRAESTRUCTURA TECNOLOGICA");
 
-        when(subfamiliaMapper.subFamilyDTOtoSubfamily(input)).thenReturn(mapped);
+        when(subfamiliaMapper.subFamiliaDTOtoSubfamilia(input)).thenReturn(mapped);
         when(subfamiliaRepository.save(mapped)).thenReturn(mapped);
-        when(subfamiliaMapper.subFamilyToSubfamilyDTO(mapped)).thenReturn(subfamiliaBaseDTO);
+        when(subfamiliaMapper.subFamiliaToSubfamiliaDTO(mapped)).thenReturn(subfamiliaBaseDTO);
 
         SubfamiliaDTO result = subfamiliaService.saveFamily(input);
 
@@ -158,7 +157,7 @@ class SubfamiliaServiceTest {
     @Test
     void saveFamily_famiCodNull() {
         SubfamiliaDTO input = new SubfamiliaDTO(null, 43, "Descripcion");
-        when(subfamiliaMapper.subFamilyDTOtoSubfamily(input)).thenReturn(new Subfamilia(null, 43, "Descripcion"));
+        when(subfamiliaMapper.subFamiliaDTOtoSubfamilia(input)).thenReturn(new Subfamilia(null, 43, "Descripcion"));
 
         ResponseStatusException ex = assertThrows(ResponseStatusException.class,
             () -> subfamiliaService.saveFamily(input));
@@ -172,7 +171,7 @@ class SubfamiliaServiceTest {
     @Test
     void saveFamily_codNull() {
         SubfamiliaDTO input = new SubfamiliaDTO(10, null, "Descripcion");
-        when(subfamiliaMapper.subFamilyDTOtoSubfamily(input)).thenReturn(new Subfamilia(10, null, "Descripcion"));
+        when(subfamiliaMapper.subFamiliaDTOtoSubfamilia(input)).thenReturn(new Subfamilia(10, null, "Descripcion"));
 
         ResponseStatusException ex = assertThrows(ResponseStatusException.class,
             () -> subfamiliaService.saveFamily(input));
@@ -190,9 +189,9 @@ class SubfamiliaServiceTest {
         Subfamilia saved = new Subfamilia(10, 43, "");
         SubfamiliaDTO output = new SubfamiliaDTO(10, 43, "");
 
-        when(subfamiliaMapper.subFamilyDTOtoSubfamily(input)).thenReturn(mapped);
+        when(subfamiliaMapper.subFamiliaDTOtoSubfamilia(input)).thenReturn(mapped);
         when(subfamiliaRepository.save(any(Subfamilia.class))).thenReturn(saved);
-        when(subfamiliaMapper.subFamilyToSubfamilyDTO(saved)).thenReturn(output);
+        when(subfamiliaMapper.subFamiliaToSubfamiliaDTO(saved)).thenReturn(output);
 
         SubfamiliaDTO result = subfamiliaService.saveFamily(input);
 
@@ -209,7 +208,7 @@ class SubfamiliaServiceTest {
     @Test
     void getOrCreate_existe() {
         when(subfamiliaRepository.findByFamiCodAndCod(10, 43)).thenReturn(subfamiliaBase);
-        when(subfamiliaMapper.subFamilyToSubfamilyDTO(subfamiliaBase)).thenReturn(subfamiliaBaseDTO);
+        when(subfamiliaMapper.subFamiliaToSubfamiliaDTO(subfamiliaBase)).thenReturn(subfamiliaBaseDTO);
 
         SubfamiliaDTO result = subfamiliaService.getOrCreateSubFamily(10, 43);
 
@@ -226,7 +225,7 @@ class SubfamiliaServiceTest {
         when(subfamiliaRepository.findByFamiCodAndCod(3, 10)).thenReturn(null);
         Subfamilia creada = new Subfamilia(3, 10, "Subfamilia 10");
         when(subfamiliaRepository.save(any(Subfamilia.class))).thenReturn(creada);
-        when(subfamiliaMapper.subFamilyToSubfamilyDTO(creada)).thenReturn(new SubfamiliaDTO(3, 10, "Subfamilia 10"));
+        when(subfamiliaMapper.subFamiliaToSubfamiliaDTO(creada)).thenReturn(new SubfamiliaDTO(3, 10, "Subfamilia 10"));
 
         SubfamiliaDTO result = subfamiliaService.getOrCreateSubFamily(3, 10);
 
@@ -255,4 +254,3 @@ class SubfamiliaServiceTest {
         verify(subfamiliaRepository, never()).save(any(Subfamilia.class));
     }
 }
-*/

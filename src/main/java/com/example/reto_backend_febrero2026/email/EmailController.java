@@ -1,6 +1,6 @@
 package com.example.reto_backend_febrero2026.email;
 
-import jakarta.persistence.EntityNotFoundException;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,8 +16,8 @@ public class EmailController {
     }
 
     @GetMapping
-    public List<String> getAllActiveEmails() {
-        return emailService.findAllActiveEmails();
+    public ResponseEntity<List<String>> getAllActiveEmails() {
+        return ResponseEntity.ok(emailService.findAllActiveEmails());
     }
 
     @GetMapping("/{emailAddress:.+}")
@@ -26,18 +26,20 @@ public class EmailController {
     }
 
     @PostMapping
-    public EmailDTO createDestination(@RequestBody EmailDTO body) {
-        return emailService.create(body.getEmail());
+    public ResponseEntity<String> createDestination(@RequestBody EmailDTO body) {
+        emailService.create(body.getEmail());
+        return ResponseEntity.ok("Email creado exitosamente");
     }
 
     // controller para futuras implementaciones de la app
 /*    @PutMapping("/{emailAddress:.+}")
-    public EmailDTO updateDestination(@PathVariable String emailAddress, @RequestBody EmailDTO body) {
-        return emailService.update(emailAddress, body.getActivo());
+    public ResponseEntity<EmailDTO> updateDestination(@PathVariable String emailAddress, @RequestBody EmailDTO body) {
+        return ResponseEntity.ok(emailService.update(emailAddress, body.getActivo()));
     }*/
 
     @DeleteMapping("/{emailAddress:.+}")
-    public void deleteDestination(@PathVariable String emailAddress) {
+    public ResponseEntity<Object> deleteDestination(@PathVariable String emailAddress) {
         emailService.deactivate(emailAddress);
+        return ResponseEntity.noContent().build();
     }
 }
