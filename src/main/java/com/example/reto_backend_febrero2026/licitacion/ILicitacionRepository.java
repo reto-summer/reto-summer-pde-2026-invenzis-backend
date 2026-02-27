@@ -36,7 +36,7 @@ public interface ILicitacionRepository extends JpaRepository<Licitacion, Integer
         AND (l.fechaCierre <= COALESCE(:fechaCierreHasta, l.fechaCierre))
         AND (f.cod = COALESCE(:familiaCod, f.cod))
         AND (s.cod = COALESCE(:subfamiliaCod, s.cod))
-        ORDER BY l.fechaPublicacion DESC
+        ORDER BY l.fechaCierre ASC
     """)
     List<Licitacion> findByFilters(
             @Param("fechaPublicacionDesde") LocalDate fechaPublicacionDesde,
