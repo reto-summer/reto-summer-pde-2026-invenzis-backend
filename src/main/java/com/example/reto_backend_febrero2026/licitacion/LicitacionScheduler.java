@@ -44,7 +44,7 @@ public class LicitacionScheduler {
             // 1. Sincronizar RSS → BD
             arceClientService.obtenerLicitaciones(filters).get();
 
-            // 2. Construir matriz licitacion-email pendiente (enviado=false)
+            // 2. Licitacion-email pendiente (enviado=false)
             List<String> emails = mailService.findAllActiveEmails();
             List<LicitacionDTO> todas = licitacionService
                     .getLicitacionesByFamiliaAndSubfamilia(filters.familyCod(), filters.subFamilyCod());
