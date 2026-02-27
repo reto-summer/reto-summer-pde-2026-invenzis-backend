@@ -1,6 +1,7 @@
 package com.example.reto_backend_febrero2026.licitacion;
 
 import com.example.reto_backend_febrero2026.familia.IFamiliaService;
+import jakarta.validation.constraints.Min;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
