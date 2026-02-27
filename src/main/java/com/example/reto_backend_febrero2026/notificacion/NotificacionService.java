@@ -2,34 +2,29 @@ package com.example.reto_backend_febrero2026.notificacion;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
 import com.example.reto_backend_febrero2026.notificacion.strategy.INotificacionStrategy;
+import com.example.reto_backend_febrero2026.notificacion.strategy.NotificacionStrategyResolver;
 
 @Service
 public class NotificacionService implements INotificacionService {
 
     private final INotificacionRepository notificacionRepository;
-    private final Map<NotificacionType, INotificacionStrategy> strategyByCanal;
+    private final NotificacionStrategyResolver strategyResolver;
 
     public NotificacionService(INotificacionRepository notificacionRepository,
-                               List<INotificacionStrategy> strategies) {
+                               NotificacionStrategyResolver strategyResolver) {
         this.notificacionRepository = notificacionRepository;
-        this.strategyByCanal = strategies.stream()
-                .collect(Collectors.toMap(INotificacionStrategy::getNotificacionType, Function.identity()));
+        this.strategyResolver = strategyResolver;
     }
 
     @Override
     public Notificacion create(NotificacionType canal, String titulo, boolean exito, String detalle, String contenido, LocalDateTime fechaEjecucion) {
-        INotificacionStrategy strategy = strategyByCanal.get(canal);
-        if (strategy == null) {
-            throw new IllegalArgumentException("No existe estrategia para el canal: " + canal);
-        }
+        INotificacionStrategy strategy = strategyResolver.resolve(canal);
         Notificacion notificacion = strategy.send(titulo, exito, detalle, contenido, fechaEjecucion);
         return notificacionRepository.save(notificacion);
     }
