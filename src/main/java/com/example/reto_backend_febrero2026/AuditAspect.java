@@ -1,8 +1,11 @@
 package com.example.reto_backend_febrero2026;
 
-import com.example.reto_backend_febrero2026.audit.AuditService;
-import com.example.reto_backend_febrero2026.audit.Auditable;
-import com.example.reto_backend_febrero2026.notificacion.INotificacionService;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.UUID;
+
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
@@ -15,11 +18,10 @@ import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.UUID;
+import com.example.reto_backend_febrero2026.audit.AuditService;
+import com.example.reto_backend_febrero2026.audit.Auditable;
+import com.example.reto_backend_febrero2026.notificacion.INotificacionService;
+import com.example.reto_backend_febrero2026.notificacion.NotificacionType;
 
 @Aspect
 @Component
@@ -62,9 +64,9 @@ public class AuditAspect {
             boolean success = !"false".equalsIgnoreCase(MDC.get(NOTIF_SUCCESS_KEY));
             String title = resolveTitle(auditable);
             String notifDetail = MDC.get(NOTIF_DETAIL_KEY);
-            String content = resolveContent(joinPoint);
+            String content = resolveContent();
 
-            notificacionService.create(title, success, notifDetail, content, LocalDateTime.now());
+            createEmailNotification(title, success, notifDetail, content);
             clearNotificationContext();
         }
     }
@@ -87,12 +89,17 @@ public class AuditAspect {
         if (isMailNotification(auditable)) {
             String title = resolveTitle(auditable);
             String notifDetail = MDC.get(NOTIF_DETAIL_KEY);
-            String content = resolveContent(joinPoint);
+            String content = resolveContent();
             String resolvedDetail = (notifDetail == null || notifDetail.isBlank()) ? ex.getMessage() : notifDetail;
 
-            notificacionService.create(title, false, resolvedDetail, content, LocalDateTime.now());
+            createEmailNotification(title, false, resolvedDetail, content);
             clearNotificationContext();
         }
+    }
+
+    private void createEmailNotification(String title, boolean success, String detail, String content) {
+        LocalDateTime now = LocalDateTime.now();
+        notificacionService.create(NotificacionType.EMAIL, title, success, detail, content, now);
     }
 
     private boolean isMailNotification(Auditable auditable) {
@@ -104,7 +111,7 @@ public class AuditAspect {
         return (title == null || title.isBlank()) ? auditable.action() : title;
     }
 
-    private String resolveContent(JoinPoint joinPoint) {
+    private String resolveContent() {
         String content = MDC.get(NOTIF_CONTENT_KEY);
         return (content == null || content.isBlank()) ? null : content;
     }

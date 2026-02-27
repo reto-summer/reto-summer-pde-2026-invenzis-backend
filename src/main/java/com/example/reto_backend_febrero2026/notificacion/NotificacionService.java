@@ -1,25 +1,31 @@
 package com.example.reto_backend_febrero2026.notificacion;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.springframework.stereotype.Service;
+
+import com.example.reto_backend_febrero2026.notificacion.strategy.INotificacionStrategy;
+import com.example.reto_backend_febrero2026.notificacion.strategy.NotificacionStrategyResolver;
+
 @Service
 public class NotificacionService implements INotificacionService {
 
     private final INotificacionRepository notificacionRepository;
+    private final NotificacionStrategyResolver strategyResolver;
 
-    public NotificacionService(INotificacionRepository notificacionRepository) {
+    public NotificacionService(INotificacionRepository notificacionRepository,
+                               NotificacionStrategyResolver strategyResolver) {
         this.notificacionRepository = notificacionRepository;
+        this.strategyResolver = strategyResolver;
     }
 
     @Override
-    public Notificacion create(String titulo, boolean exito, String detalle, String contenido, LocalDateTime fechaEjecucion) {
-        Notificacion notificacion = new Notificacion(titulo, exito, detalle, contenido, fechaEjecucion);
+    public Notificacion create(NotificacionType canal, String titulo, boolean exito, String detalle, String contenido, LocalDateTime fechaEjecucion) {
+        INotificacionStrategy strategy = strategyResolver.resolve(canal);
+        Notificacion notificacion = strategy.send(titulo, exito, detalle, contenido, fechaEjecucion);
         return notificacionRepository.save(notificacion);
     }
 
