@@ -66,7 +66,7 @@ public class AuditAspect {
             String notifDetail = MDC.get(NOTIF_DETAIL_KEY);
             String content = resolveContent();
 
-            createNotifications(title, success, notifDetail, content);
+            createEmailNotification(title, success, notifDetail, content);
             clearNotificationContext();
         }
     }
@@ -92,15 +92,14 @@ public class AuditAspect {
             String content = resolveContent();
             String resolvedDetail = (notifDetail == null || notifDetail.isBlank()) ? ex.getMessage() : notifDetail;
 
-            createNotifications(title, false, resolvedDetail, content);
+            createEmailNotification(title, false, resolvedDetail, content);
             clearNotificationContext();
         }
     }
 
-    private void createNotifications(String title, boolean success, String detail, String content) {
+    private void createEmailNotification(String title, boolean success, String detail, String content) {
         LocalDateTime now = LocalDateTime.now();
         notificacionService.create(NotificacionType.EMAIL, title, success, detail, content, now);
-        notificacionService.create(NotificacionType.WHATSAPP, title, success, detail, content, now);
     }
 
     private boolean isMailNotification(Auditable auditable) {
