@@ -2,6 +2,7 @@ package com.example.reto_backend_febrero2026.email;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -23,13 +24,14 @@ public class EmailController {
     @GetMapping("/{emailAddress:.+}")
     public EmailDTO getDestinationById(@PathVariable String emailAddress) {
         return emailService.findById(emailAddress)
-                .orElseThrow(() -> new IllegalArgumentException("Email no encontrado: " + emailAddress));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Email no encontrado: " + emailAddress));
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.OK)
-    public EmailDTO createDestination(@RequestBody EmailDTO body) {
-        return emailService.create(body.getEmail());
+    public String createDestination(@RequestBody EmailDTO body) {
+        emailService.create(body.getEmail());
+        return "Email creado exitosamente";
     }
 
     // controller para futuras implementaciones de la app
