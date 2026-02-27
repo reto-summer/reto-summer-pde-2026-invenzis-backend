@@ -2,6 +2,7 @@ package com.example.reto_backend_febrero2026.licitacion;
 
 import com.example.reto_backend_febrero2026.familia.IFamiliaService;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -42,29 +43,11 @@ import java.util.List;
     public ResponseEntity<LicitacionDTO> getLicitacionById(@PathVariable Integer id) {
         return ResponseEntity.ok(licitacionService.getLicitacionById(id));
     }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public String handleIllegalArgument(IllegalArgumentException ex) {
+        return ex.getMessage();
+    }
+
 }
-
-        /*
-        @PostMapping("/save") // TESTING
-        public ResponseEntity<LicitacionModelDTO> savelicitacion(@RequestBody LicitacionModelDTO licitacionDTO) {
-            return ResponseEntity.ok(licitacionService.savelicitacion(licitacionDTO));
-        }
-
-        @GetMapping("/fecha_publicacion/{YYYY-MM-DD}")
-        public ResponseEntity<LicitacionModelDTO> getlicitacionByfecha_publicacion(@PathVariable LocalDate fecha) {
-            LicitacionModelDTO licitacion = licitacionService.getlicitacionByfecha_publicacion(fecha);
-            return ResponseEntity.ok(licitacion);
-        }
-
-        @GetMapping("/fecha_cierre/{YYYY-MM-DDTHH:MM:SS}")
-        public ResponseEntity<LicitacionModelDTO> getlicitacionByfecha_cierre(@PathVariable LocalDateTime fecha) {
-            LicitacionModelDTO licitacion = licitacionService.getlicitacionByfecha_cierre(fecha);
-            return ResponseEntity.ok(licitacion);
-        }
-
-        @GetMapping("/fecha_publicacion/desde/{YYYY-MM-DD}/hasta/{YYYY-MM-SS}")
-        public ResponseEntity<LicitacionModelDTO> getlicitacionByfecha_inicio_fin(@PathVariable LocalDate fecha_inicio, @PathVariable LocalDate fecha_fin) {
-            LicitacionModelDTO licitacion = licitacionService.getlicitacionByfecha_inicio_fin(fecha_inicio, fecha_fin);
-            return ResponseEntity.ok(licitacion);
-        }
-        */

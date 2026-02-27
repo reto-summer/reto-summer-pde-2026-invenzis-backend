@@ -4,12 +4,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 import com.example.reto_backend_febrero2026.audit.Auditable;
 import com.example.reto_backend_febrero2026.familia.FamiliaDTO;
@@ -46,10 +43,7 @@ public class LicitacionService implements ILicitacionService {
             Integer subfamiliaCod)
     {
         if (subfamiliaCod != null && familiaCod == null) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "No se puede filtrar por subfamilia sin especificar la familia correspondiente."
-            );
+            throw new IllegalArgumentException( "No se puede filtrar por subfamilia sin especificar la familia correspondiente.");
         }
 
         LocalDateTime cierreDesde = licitacionUtility.toStartOfDay(fechaCierreDesde);
@@ -68,11 +62,7 @@ public class LicitacionService implements ILicitacionService {
         return licitacionRepository
                 .findById(id)
                 .map(licitacionMapper::licitacionToLicitacionDTO)
-                .orElseThrow(() ->
-                new ResponseStatusException(
-                        HttpStatus.NOT_FOUND,
-                        "No existe licitación con id: " + id
-                ));
+                .orElseThrow(() -> new IllegalArgumentException("No existe licitación con id: " + id));
     }
 
     @Auditable(module = "LICITACION_SERVICE", action = "CLEAN_SAVE")
@@ -109,29 +99,67 @@ public class LicitacionService implements ILicitacionService {
                 .getLicitacionByTitulo(titulo)
                 .map(licitacionMapper::licitacionToLicitacionDTO)
                 .orElseThrow(() ->
-                new ResponseStatusException(
-                        HttpStatus.NOT_FOUND,
-                        "No existe licitación con titulo: " + titulo
-                ));
+                        new IllegalArgumentException("No existe licitación con titulo: " + titulo));
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<LicitacionDTO> getLicitacionesByFamiliaAndSubfamilia(Integer familiaCod, Integer subfamiliaCod) {
-        return licitacionRepository.findByFamilia_CodAndSubfamilia_Cod(familiaCod, subfamiliaCod)
-                .stream()
+
+        if (subfamiliaCod != null && familiaCod == null) {
+            throw new IllegalArgumentException( "No se puede filtrar por subfamilia sin especificar la familia correspondiente.");
+        }
+
+        List<Licitacion> licitaciones =
+                licitacionRepository.findByFamilia_CodAndSubfamilia_Cod(familiaCod, subfamiliaCod);
+
+        if (licitaciones.isEmpty()) {
+            throw new IllegalArgumentException(
+                    "No existen licitaciones para familiaCod=" + familiaCod +
+                            " y subfamiliaCod=" + subfamiliaCod
+            );
+        }
+
+        List<LicitacionDTO> resultado = licitaciones.stream()
                 .map(licitacionMapper::licitacionToLicitacionDTO)
-                .collect(Collectors.toList());
+                .toList();
+
+        return resultado;
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<LicitacionDTO> getLicitacionesNoEnviadasByFamiliaAndSubfamilia(Integer familiaCod, Integer subfamiliaCod, List<String> emails) {
-        if (emails == null || emails.isEmpty()) {
-            return List.of();
+    public List<LicitacionDTO> getLicitacionesNoEnviadasByFamiliaAndSubfamilia(
+            Integer familiaCod,
+            Integer subfamiliaCod,
+            List<String> emails) {
+
+        if (subfamiliaCod != null && familiaCod == null) {
+            throw new IllegalArgumentException( "No se puede filtrar por subfamilia sin especificar la familia correspondiente.");
         }
 
-        return licitacionRepository.findNoEnviadasByFamiliaAndSubfamiliaAndEmails(familiaCod, subfamiliaCod, emails).stream()
-                .map(licitacionMapper::licitacionToLicitacionDTO).collect(Collectors.toList());
+        if (emails == null || emails.isEmpty()) {
+            throw new IllegalArgumentException("La lista de emails no puede ser null o vacía");
+        }
+
+        List<Licitacion> licitaciones =
+                licitacionRepository.findNoEnviadasByFamiliaAndSubfamiliaAndEmails(
+                        familiaCod,
+                        subfamiliaCod,
+                        emails
+                );
+
+        if (licitaciones.isEmpty()) {
+            throw new IllegalArgumentException(
+                    "No existen licitaciones no enviadas para familiaCod=" + familiaCod +
+                            ", subfamiliaCod=" + subfamiliaCod
+            );
+        }
+
+        List<LicitacionDTO> resultado = licitaciones.stream()
+                .map(licitacionMapper::licitacionToLicitacionDTO)
+                .toList();
+
+        return resultado;
     }
 }
