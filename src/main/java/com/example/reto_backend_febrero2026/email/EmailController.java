@@ -1,6 +1,6 @@
 package com.example.reto_backend_febrero2026.email;
 
-import org.springframework.http.HttpStatus;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,11 +23,10 @@ public class EmailController {
     @GetMapping("/{emailAddress:.+}")
     public EmailDTO getDestinationById(@PathVariable String emailAddress) {
         return emailService.findById(emailAddress)
-                .orElseThrow(() -> new IllegalArgumentException("Email no encontrado: " + emailAddress));
+                .orElseThrow(() -> new EntityNotFoundException("Email no encontrado: " + emailAddress));
     }
 
     @PostMapping
-    @ResponseStatus(HttpStatus.OK)
     public EmailDTO createDestination(@RequestBody EmailDTO body) {
         return emailService.create(body.getEmail());
     }
@@ -39,15 +38,7 @@ public class EmailController {
     }*/
 
     @DeleteMapping("/{emailAddress:.+}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteDestination(@PathVariable String emailAddress) {
         emailService.deactivate(emailAddress);
     }
-
-    @ExceptionHandler(IllegalArgumentException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public String handleBadRequest(IllegalArgumentException ex) {
-        return ex.getMessage();
-    }
-
 }

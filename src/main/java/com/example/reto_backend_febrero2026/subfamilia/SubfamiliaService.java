@@ -3,6 +3,7 @@ package com.example.reto_backend_febrero2026.subfamilia;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.mapstruct.ap.shaded.freemarker.template.utility.NullArgumentException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -35,8 +36,7 @@ public class SubfamiliaService implements ISubfamiliaService {
                 new Subfamilia.SubfamiliaId(famiCod, cod);
 
         Subfamilia subfamilia = subfamiliaRepository.findById(id)
-            .orElseThrow(() -> new ResponseStatusException(
-                HttpStatus.NOT_FOUND,
+            .orElseThrow(() -> new EntityNotFoundException(
                         "Subfamilia no encontrada con famiCod: "
                                 + famiCod + " y cod: " + cod
                 ));
@@ -58,7 +58,7 @@ public class SubfamiliaService implements ISubfamiliaService {
         Subfamilia subfamilia = subfamiliaMapper.subFamiliaDTOtoSubfamilia(dto);
 
         if (subfamilia.getFamiCod() == null || subfamilia.getCod() == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "fami_cod y cod son obligatorios");
+            throw new IllegalArgumentException("fami_cod y cod son obligatorios");
         }
 
         if (subfamilia.getDescripcion() == null) {

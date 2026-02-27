@@ -3,15 +3,14 @@ package com.example.reto_backend_febrero2026.email;
 import com.example.reto_backend_febrero2026.audit.Auditable;
 import com.example.reto_backend_febrero2026.licitacion.LicitacionDTO;
 import jakarta.mail.internet.MimeMessage;
+import jakarta.persistence.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
@@ -57,8 +56,8 @@ public class EmailService implements IEmailService {
 
     @Override
     public Optional<EmailDTO> findById(String emailAddress) {
-        return emailRepository.findById(emailAddress)
-                .map(emailMapper::emailToEmailDTO);
+        Email email = emailRepository.findById(emailAddress).orElseThrow(() -> new EntityNotFoundException("Subfamilia no encontrada"));
+        return Optional.ofNullable(emailMapper.emailToEmailDTO(email));
     }
 
     @Override
@@ -82,7 +81,7 @@ public class EmailService implements IEmailService {
 
             return emailRepository.findById(normalizedEmail)
                     .map(emailMapper::emailToEmailDTO)
-                    .orElseThrow(() -> new RuntimeException("Error al recuperar email reactivado"));
+                    .orElseThrow(() -> new IllegalArgumentException("Error al recuperar email reactivado"));
         }
 
         log.info("Creando nuevo email {}", normalizedEmail);
@@ -92,7 +91,7 @@ public class EmailService implements IEmailService {
     @Override
     public EmailDTO update(String emailAddress, Boolean activo) {
         if (!emailRepository.existsById(emailAddress)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Destino de email no encontrado: " + emailAddress);
+            throw new IllegalArgumentException("Destino de email no encontrado: " + emailAddress);
         }
 
         if (activo != null) {
@@ -101,13 +100,13 @@ public class EmailService implements IEmailService {
 
         return emailRepository.findById(emailAddress)
                 .map(emailMapper::emailToEmailDTO)
-                .orElseThrow(() -> new RuntimeException("Error al recuperar email actualizado"));
+                .orElseThrow(() -> new IllegalArgumentException("Error al recuperar email actualizado"));
     }
 
     @Override
     public void deactivate(String emailAddress) {
         if (!emailRepository.existsById(emailAddress)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Destino de email no encontrado: " + emailAddress);
+            throw new IllegalArgumentException ("Destino de email no encontrado: " + emailAddress);
         }
 
         emailRepository.updateActivo(emailAddress, false);
