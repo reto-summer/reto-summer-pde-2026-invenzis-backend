@@ -59,8 +59,8 @@ public class TestController {
         return arceClientService.obtenerUrlConsulta(filters);
     }
 
-    @GetMapping("licitacion/titulo/{titulo}")
-    public ResponseEntity<LicitacionDTO> getLicitacionByTitle(@PathVariable String titulo) {
+    @GetMapping("licitaciones/titulo/{titulo}")
+    public ResponseEntity<List<LicitacionDTO>> getLicitacionByTitle(@PathVariable String titulo) {
         return ResponseEntity.ok(licitacionService.getLicitacionByTitulo(titulo));
     }
 

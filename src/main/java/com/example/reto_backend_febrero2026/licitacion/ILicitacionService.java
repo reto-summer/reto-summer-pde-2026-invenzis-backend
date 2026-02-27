@@ -10,7 +10,7 @@ public interface ILicitacionService {
                                 LocalDate fechaCierreDesde, LocalDate fechaCierreHasta, Integer familiaCod,
                                 Integer subfamiliaCod);
     LicitacionDTO getLicitacionById(int id);
-    LicitacionDTO getLicitacionByTitulo(String titulo);
+    List<LicitacionDTO> getLicitacionByTitulo(String titulo);
     LicitacionDTO save(LicitacionItemRecord itemRecord);
     List<LicitacionDTO> getLicitacionesByFamiliaAndSubfamilia(Integer familia_cod, Integer subfamilia_cod);
     List<LicitacionDTO> getLicitacionesNoEnviadasByFamiliaAndSubfamilia(Integer familiaCod, Integer subfamiliaCod, List<String> emails);

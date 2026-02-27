@@ -99,14 +99,16 @@ public class LicitacionService implements ILicitacionService {
         return licitacionDTO;
     }
 
+    //@Override
     @Transactional(readOnly = true)
-    public LicitacionDTO getLicitacionByTitulo(String titulo){
+    public List<LicitacionDTO> getLicitacionByTitulo(String titulo){
         return licitacionRepository
-                .getLicitacionByTitulo(titulo)
+                .findByTituloContainingIgnoreCase(titulo)
+                .stream()
                 .map(licitacionMapper::licitacionToLicitacionDTO)
-                .orElseThrow(() ->
-                        new EntityNotFoundException("No existe licitación con titulo: " + titulo));
+                .toList();
     }
+
 
     @Override
     @Transactional(readOnly = true)
