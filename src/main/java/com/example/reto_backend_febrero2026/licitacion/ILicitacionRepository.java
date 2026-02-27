@@ -13,13 +13,7 @@ import java.util.Optional;
 @Repository
 public interface ILicitacionRepository extends JpaRepository<Licitacion, Integer> {
 
-    @Query("""
-        SELECT l FROM Licitacion l
-        LEFT JOIN FETCH l.familia
-        LEFT JOIN FETCH l.subfamilia
-        WHERE l.titulo = :titulo
-    """)
-    Optional<Licitacion> getLicitacionByTitulo(String titulo);
+    List<Licitacion> findByTituloContainingIgnoreCase(String titulo);
 
     List<Licitacion> findByFamilia_CodAndSubfamilia_Cod(Integer familiaCod, Integer subfamiliaCod);
 
