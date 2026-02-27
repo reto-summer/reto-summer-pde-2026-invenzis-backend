@@ -5,6 +5,7 @@ import com.example.reto_backend_febrero2026.familia.IFamiliaService;
 import com.example.reto_backend_febrero2026.integration.servlet.dto.LicitacionItemRecord;
 import com.example.reto_backend_febrero2026.subfamilia.ISubfamiliaService;
 import com.example.reto_backend_febrero2026.subfamilia.SubfamiliaDTO;
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -170,13 +171,12 @@ class LicitacionServiceTest {
         when(licitacionRepository.findById(id))
                 .thenReturn(Optional.empty());
 
-        ResponseStatusException exception = assertThrows(
-                ResponseStatusException.class,
+        EntityNotFoundException exception = assertThrows(
+                EntityNotFoundException.class,
                 () -> licitacionService.getLicitacionById(id)
         );
 
-        assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
-        assertEquals("No existe licitación con id: " + id, exception.getReason());
+        assertEquals("No existe licitación con id: " + id, exception.getMessage());
 
         verify(licitacionRepository).findById(id);
         verify(licitacionMapper, never()).licitacionToLicitacionDTO(any());

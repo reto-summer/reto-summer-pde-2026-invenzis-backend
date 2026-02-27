@@ -77,8 +77,11 @@ public class LicitacionUtility {
     public LocalDate parsearFechaPublicacion(String fechaRaw) {
         if (fechaRaw == null || fechaRaw.isEmpty()) return null;
         try {
-            OffsetDateTime odt = OffsetDateTime.parse(fechaRaw, DateTimeFormatter.RFC_1123_DATE_TIME);
-            return odt.withOffsetSameInstant(ZoneOffset.of("-03:00")).toLocalDate();
+            OffsetDateTime odt = OffsetDateTime.parse(
+                    fechaRaw,
+                    DateTimeFormatter.RFC_1123_DATE_TIME
+            );
+            return odt.toLocalDate();
         } catch (Exception e) {
             return null;
         }
