@@ -1,4 +1,4 @@
-package com.example.reto_backend_febrero2026.mail;
+package com.example.reto_backend_febrero2026.email;
 
 import com.example.reto_backend_febrero2026.licitacion.LicitacionDTO;
 

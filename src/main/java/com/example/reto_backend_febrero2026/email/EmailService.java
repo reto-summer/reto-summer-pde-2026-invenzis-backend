@@ -1,4 +1,4 @@
-package com.example.reto_backend_febrero2026.mail;
+package com.example.reto_backend_febrero2026.email;
 
 import com.example.reto_backend_febrero2026.audit.Auditable;
 import com.example.reto_backend_febrero2026.licitacion.LicitacionDTO;
@@ -8,8 +8,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
@@ -65,30 +67,50 @@ public class EmailService implements IEmailService {
         if (!normalizedEmail.matches(EMAIL_REGEX)) {
             throw new IllegalArgumentException("El formato del email no es válido");
         }
-        if (emailRepository.existsById(normalizedEmail)) {
-            throw new IllegalStateException("El email ya existe en la base de datos");
+        Optional<Email> existingEmail = emailRepository.findById(normalizedEmail);
+        
+        if (existingEmail.isPresent()) {
+            Email emailEntity = existingEmail.get();
+
+            if (emailEntity.getActivo()) {
+                log.info("El email {} ya existe y está activo", normalizedEmail);
+                return emailMapper.emailToEmailDTO(emailEntity);
+            }
+
+            log.info("Reactivando email {}", normalizedEmail);
+            emailRepository.updateActivo(normalizedEmail, true);
+
+            return emailRepository.findById(normalizedEmail)
+                    .map(emailMapper::emailToEmailDTO)
+                    .orElseThrow(() -> new RuntimeException("Error al recuperar email reactivado"));
         }
+
+        log.info("Creando nuevo email {}", normalizedEmail);
         return emailMapper.emailToEmailDTO(emailRepository.save(new Email(normalizedEmail)));
     }
 
     @Override
     public EmailDTO update(String emailAddress, Boolean activo) {
-        Email destination = emailRepository.findById(emailAddress)
-                .orElseThrow(() -> new RuntimeException("Destino de email no encontrado"));
-
-        if (activo != null) {
-            destination.setActivo(activo);
+        if (!emailRepository.existsById(emailAddress)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Destino de email no encontrado: " + emailAddress);
         }
 
-        return emailMapper.emailToEmailDTO(emailRepository.save(destination));
+        if (activo != null) {
+            emailRepository.updateActivo(emailAddress, activo);
+        }
+
+        return emailRepository.findById(emailAddress)
+                .map(emailMapper::emailToEmailDTO)
+                .orElseThrow(() -> new RuntimeException("Error al recuperar email actualizado"));
     }
 
     @Override
     public void deactivate(String emailAddress) {
-        Email destination = emailRepository.findById(emailAddress)
-                .orElseThrow(() -> new RuntimeException("Destino de email no encontrado"));
-        destination.setActivo(false);
-        emailRepository.save(destination);
+        if (!emailRepository.existsById(emailAddress)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Destino de email no encontrado: " + emailAddress);
+        }
+
+        emailRepository.updateActivo(emailAddress, false);
     }
 
     @Override
