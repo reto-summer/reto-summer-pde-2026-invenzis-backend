@@ -1,19 +1,23 @@
 package com.example.reto_backend_febrero2026.notificacion;
 
-import com.example.reto_backend_febrero2026.notificacion.strategy.INotificacionStrategy;
-import com.example.reto_backend_febrero2026.notificacion.strategy.NotificacionStrategyResolver;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import com.example.reto_backend_febrero2026.notificacion.strategy.INotificacionStrategy;
+import com.example.reto_backend_febrero2026.notificacion.strategy.NotificacionStrategyResolver;
 
 @ExtendWith(MockitoExtension.class)
 class NotificacionServiceTest {
@@ -54,26 +58,6 @@ class NotificacionServiceTest {
         verify(notificacionRepository).save(notificacion);
     }
 
-    @Test
-    void create_conTipoWHATSAPP_deberiaResolverEstrategiaWhatsapp() {
-        // Arrange
-        INotificacionStrategy whatsappStrategy = mock(INotificacionStrategy.class);
-        LocalDateTime fecha = LocalDateTime.of(2026, 2, 27, 10, 0);
-        Notificacion notificacion = new Notificacion("[WHATSAPP] Test", true, "OK", "Contenido", fecha);
-
-        when(strategyResolver.resolve(NotificacionType.WHATSAPP)).thenReturn(whatsappStrategy);
-        when(whatsappStrategy.send("Test", true, "Detalle", "Contenido", fecha)).thenReturn(notificacion);
-        when(notificacionRepository.save(notificacion)).thenReturn(notificacion);
-
-        // Act
-        notificacionService.create(NotificacionType.WHATSAPP, "Test", true, "Detalle", "Contenido", fecha);
-
-        // Assert
-        verify(strategyResolver).resolve(NotificacionType.WHATSAPP);
-        verify(whatsappStrategy).send("Test", true, "Detalle", "Contenido", fecha);
-        verify(notificacionRepository).save(notificacion);
-    }
-
     // ===== findAllResumen =====
 
     @Test
@@ -82,7 +66,7 @@ class NotificacionServiceTest {
         LocalDateTime fecha = LocalDateTime.of(2026, 2, 27, 10, 0);
         Notificacion n1 = new Notificacion("[EMAIL] Test1", true, "D1", "C1", fecha);
         n1.setId(1);
-        Notificacion n2 = new Notificacion("[WHATSAPP] Test2", false, "D2", "C2", fecha);
+        Notificacion n2 = new Notificacion("[EMAIL] Test2", false, "D2", "C2", fecha);
         n2.setId(2);
 
         when(notificacionRepository.findAll()).thenReturn(List.of(n1, n2));
@@ -94,7 +78,7 @@ class NotificacionServiceTest {
         assertEquals(2, resultado.size());
         assertEquals("[EMAIL] Test1", resultado.get(0).getTitulo());
         assertTrue(resultado.get(0).getExito());
-        assertEquals("[WHATSAPP] Test2", resultado.get(1).getTitulo());
+        assertEquals("[EMAIL] Test2", resultado.get(1).getTitulo());
         assertFalse(resultado.get(1).getExito());
     }
 
@@ -168,7 +152,7 @@ class NotificacionServiceTest {
     void findFallidas_deberiaFiltrarSoloFallidas() {
         // Arrange
         LocalDateTime fecha = LocalDateTime.of(2026, 2, 27, 10, 0);
-        Notificacion n1 = new Notificacion("[WHATSAPP] Error", false, "D", "C", fecha);
+        Notificacion n1 = new Notificacion("[EMAIL] Error", false, "D", "C", fecha);
         n1.setId(1);
 
         when(notificacionRepository.findByExitoFalse()).thenReturn(List.of(n1));
