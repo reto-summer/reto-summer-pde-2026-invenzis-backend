@@ -1,22 +1,14 @@
 package com.example.reto_backend_febrero2026.mail;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 @RestController
-@RequestMapping("/mail")
+@RequestMapping("/email")
 @CrossOrigin(origins = "*")
 public class EmailController {
-
-    private static final Logger log = LoggerFactory.getLogger(EmailController.class);
 
     private final IEmailService emailService;
 
@@ -24,98 +16,50 @@ public class EmailController {
         this.emailService = emailService;
     }
 
-    @GetMapping("")
-    public ResponseEntity<List<Email>> getAllActiveDestinations() {
-        return ResponseEntity.ok(emailService.findAllActive());
+    @GetMapping
+    public List<String> getAllActiveEmails() {
+        return emailService.findAllActiveEmails();
     }
 
-    @GetMapping("/{emailAddress}")
-    public ResponseEntity<Email> getDestinationById(@PathVariable String emailAddress) {
-        Optional<Email> destination = emailService.findById(emailAddress);
-        return destination.map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+    @GetMapping("/{emailAddress:.+}")
+    public EmailDTO getDestinationById(@PathVariable String emailAddress) {
+        return emailService.findById(emailAddress)
+                .orElseThrow(() -> new IllegalArgumentException("Email no encontrado: " + emailAddress));
     }
 
-    @PostMapping("/save")
-    public ResponseEntity<Map<String, Object>> createDestination(@RequestBody Map<String, String> body) {
-        Map<String, Object> response = new HashMap<>();
-        String email = body.get("email");
-
-        if (email == null || email.trim().isEmpty()) {
-            response.put("error", "El email no puede estar vacío");
-            return ResponseEntity.badRequest().body(response);
-        }
-
-        try {
-            Email saved = emailService.create(email);
-            response.put("mensaje", "Email registrado exitosamente");
-            response.put("emailAddress", saved.getEmailAddress());
-            response.put("fechaCreacion", saved.getFechaCreacion());
-            return ResponseEntity.status(HttpStatus.CREATED).body(response);
-        } catch (IllegalArgumentException e) {
-            response.put("error", e.getMessage());
-            return ResponseEntity.badRequest().body(response);
-        } catch (IllegalStateException e) {
-            response.put("error", e.getMessage());
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
-        } catch (Exception e) {
-            log.error("Error al crear destino de email", e);
-            response.put("error", "Error al registrar el email");
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
-        }
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public EmailDTO createDestination(@RequestBody EmailDTO body) {
+        return emailService.create(body.getEmail());
     }
 
-    @PutMapping("/update/{emailAddress}")
-    public ResponseEntity<Map<String, Object>> updateDestination(
-            @PathVariable String emailAddress,
-            @RequestBody Map<String, Object> body) {
-        Map<String, Object> response = new HashMap<>();
+    // controller para futuras implementaciones de la app
+/*    @PutMapping("/{emailAddress:.+}")
+    public EmailDTO updateDestination(@PathVariable String emailAddress, @RequestBody EmailDTO body) {
+        return emailService.update(emailAddress, body.getActivo());
+    }*/
 
-        Boolean activo = body.get("activo") != null ? (Boolean) body.get("activo") : null;
-
-        try {
-            Email updated = emailService.update(emailAddress, activo);
-            response.put("mensaje", "Email actualizado exitosamente");
-            response.put("emailAddress", updated.getEmailAddress());
-            response.put("activo", updated.getActivo());
-            response.put("fechaActualizacion", updated.getFechaActualizacion());
-            return ResponseEntity.ok(response);
-        } catch (IllegalArgumentException e) {
-            response.put("error", e.getMessage());
-            return ResponseEntity.badRequest().body(response);
-        } catch (RuntimeException e) {
-            if (e.getMessage().contains("no encontrado")) {
-                response.put("error", e.getMessage());
-                return ResponseEntity.notFound().build();
-            }
-            log.error("Error al actualizar destino de email", e);
-            response.put("error", "Error al actualizar el email");
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
-        }
+    @DeleteMapping("/{emailAddress:.+}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteDestination(@PathVariable String emailAddress) {
+        emailService.deactivate(emailAddress);
     }
 
-    @DeleteMapping("/delete/{emailAddress}")
-    public ResponseEntity<Map<String, Object>> deleteDestination(@PathVariable String emailAddress) {
-        Map<String, Object> response = new HashMap<>();
-
-        try {
-            emailService.deactivate(emailAddress);
-            response.put("mensaje", "Email eliminado exitosamente");
-            response.put("emailAddress", emailAddress);
-            return ResponseEntity.ok(response);
-        } catch (RuntimeException e) {
-            if (e.getMessage().contains("no encontrado")) {
-                response.put("error", e.getMessage());
-                return ResponseEntity.notFound().build();
-            }
-            log.error("Error al eliminar destino de email", e);
-            response.put("error", "Error al eliminar el email");
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
-        }
+    @ExceptionHandler(IllegalArgumentException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String handleBadRequest(IllegalArgumentException ex) {
+        return ex.getMessage();
     }
 
-    @GetMapping("/active/emails")
-    public ResponseEntity<List<String>> getAllActiveEmails() {
-        return ResponseEntity.ok(emailService.findAllActiveEmails());
+    @ExceptionHandler(IllegalStateException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public String handleConflict(IllegalStateException ex) {
+        return ex.getMessage();
+    }
+
+    @ExceptionHandler(RuntimeException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public String handleNotFound(RuntimeException ex) {
+        return ex.getMessage();
     }
 }

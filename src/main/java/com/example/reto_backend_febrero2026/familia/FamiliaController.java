@@ -21,11 +21,6 @@ public class FamiliaController {
         return familiaService.findAll();
     }
 
-    @GetMapping("/{cod}")
-    public FamiliaDTO findById(@PathVariable Integer cod) {
-        return familiaService.findById(cod);
-    }
-
     @ExceptionHandler(IllegalArgumentException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public String handleIllegalArgument(IllegalArgumentException ex) {
