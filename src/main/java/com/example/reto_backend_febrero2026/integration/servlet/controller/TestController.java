@@ -1,15 +1,18 @@
 package com.example.reto_backend_febrero2026.integration.servlet.controller;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import com.example.reto_backend_febrero2026.familia.FamiliaDTO;
 import com.example.reto_backend_febrero2026.familia.IFamiliaService;
+import com.example.reto_backend_febrero2026.integration.servlet.service.strategy.ArceRssFilters;
 import com.example.reto_backend_febrero2026.licitacion.ILicitacionService;
 import com.example.reto_backend_febrero2026.subfamilia.ISubfamiliaService;
 import com.example.reto_backend_febrero2026.subfamilia.SubfamiliaDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.reto_backend_febrero2026.integration.servlet.service.ArceClientService;
@@ -30,7 +33,6 @@ public class TestController {
         this.licitacionService = licitacionService;
     }
 
-    /*
     @GetMapping("/api/save-rss")
     public CompletableFuture<List<LicitacionDTO>> saveLicitaciones(
             @RequestParam(required = false) Integer familyCod,
@@ -55,7 +57,7 @@ public class TestController {
         );
 
         return arceClientService.obtenerUrlConsulta(filters);
-    } */
+    }
 
     @GetMapping("licitacion/titulo/{titulo}")
     public ResponseEntity<LicitacionDTO> getLicitacionByTitle(@PathVariable String titulo) {
