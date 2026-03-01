@@ -1,4 +1,4 @@
-package com.example.reto_backend_febrero2026.email;
+package com.example.reto_backend_febrero2026.channel.email;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 
 public class EmailDTO {
 
-    private String email;
+    private String emailAddress;
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Boolean activo;
@@ -19,12 +19,12 @@ public class EmailDTO {
 
     public EmailDTO() {}
 
-    public String getEmail() {
-        return email;
+    public String getEmailAddress() {
+        return emailAddress;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setEmailAddress(String emailAddress) {
+        this.emailAddress = emailAddress;
     }
 
     public Boolean getActivo() {

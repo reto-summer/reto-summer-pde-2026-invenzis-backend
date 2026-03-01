@@ -1,4 +1,4 @@
-package com.example.reto_backend_febrero2026.email;
+package com.example.reto_backend_febrero2026.channel.email;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;

@@ -1,9 +1,8 @@
-package com.example.reto_backend_febrero2026.email;
+package com.example.reto_backend_febrero2026.channel.email;
 
 import com.example.reto_backend_febrero2026.licitacion.LicitacionDTO;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface IEmailService {
 
@@ -13,7 +12,7 @@ public interface IEmailService {
 
     EmailDTO create(String email);
 
-    EmailDTO update(String emailAddress, Boolean activo);
+    EmailDTO update(String emailAddress, Boolean habilitadoEnvio);
 
     void deactivate(String emailAddress);
 

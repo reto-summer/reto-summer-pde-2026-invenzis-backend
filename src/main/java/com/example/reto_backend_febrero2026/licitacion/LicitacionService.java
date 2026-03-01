@@ -110,6 +110,7 @@ public class LicitacionService implements ILicitacionService {
     }
 
 
+    // SIN SENTIDO, USAR EL FINDBYFILTERS
     @Override
     @Transactional(readOnly = true)
     public List<LicitacionDTO> getLicitacionesByFamiliaAndSubfamilia(Integer familiaCod, Integer subfamiliaCod) {
@@ -135,39 +136,4 @@ public class LicitacionService implements ILicitacionService {
         return resultado;
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public List<LicitacionDTO> getLicitacionesNoEnviadasByFamiliaAndSubfamilia(
-            Integer familiaCod,
-            Integer subfamiliaCod,
-            List<String> emails) {
-
-        if (subfamiliaCod != null && familiaCod == null) {
-            throw new IllegalArgumentException( "No se puede filtrar por subfamilia sin especificar la familia correspondiente.");
-        }
-
-        if (emails == null || emails.isEmpty()) {
-            throw new IllegalArgumentException("La lista de emails no puede ser null o vacía");
-        }
-
-        List<Licitacion> licitaciones =
-                licitacionRepository.findNoEnviadasByFamiliaAndSubfamiliaAndEmails(
-                        familiaCod,
-                        subfamiliaCod,
-                        emails
-                );
-
-        if (licitaciones.isEmpty()) {
-            throw new IllegalArgumentException(
-                    "No existen licitaciones no enviadas para familiaCod=" + familiaCod +
-                            ", subfamiliaCod=" + subfamiliaCod
-            );
-        }
-
-        List<LicitacionDTO> resultado = licitaciones.stream()
-                .map(licitacionMapper::licitacionToLicitacionDTO)
-                .toList();
-
-        return resultado;
-    }
 }

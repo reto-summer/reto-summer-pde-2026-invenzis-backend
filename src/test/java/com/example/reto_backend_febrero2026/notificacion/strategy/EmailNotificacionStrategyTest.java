@@ -1,6 +1,6 @@
 package com.example.reto_backend_febrero2026.notificacion.strategy;
 
-import com.example.reto_backend_febrero2026.email.IEmailService;
+import com.example.reto_backend_febrero2026.channel.email.IEmailService;
 import com.example.reto_backend_febrero2026.notificacion.Notificacion;
 import com.example.reto_backend_febrero2026.notificacion.NotificacionType;
 import org.junit.jupiter.api.Test;

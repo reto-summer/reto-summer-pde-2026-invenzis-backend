@@ -1,19 +1,19 @@
 package com.example.reto_backend_febrero2026.licitacion_email;
 
-import com.example.reto_backend_febrero2026.email.Email;
+import com.example.reto_backend_febrero2026.channel.email.Email;
 import com.example.reto_backend_febrero2026.licitacion.Licitacion;
-import jakarta.persistence.Column;
-import jakarta.persistence.EmbeddedId;
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.MapsId;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "licitacion_email")
+@Table(
+        name = "licitacion_email",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = {"id_licitacion", "email"})
+        }
+)
 public class LicitacionEmail {
 
     @EmbeddedId
@@ -22,7 +22,9 @@ public class LicitacionEmail {
     @Column(name = "enviado", nullable = false)
     private boolean enviado = false;
 
+
     @Column(name = "fecha_envio")
+    @CreationTimestamp
     private LocalDateTime fechaEnvio;
 
     @ManyToOne

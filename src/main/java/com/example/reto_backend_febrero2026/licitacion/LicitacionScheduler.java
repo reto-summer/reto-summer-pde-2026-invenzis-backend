@@ -2,16 +2,19 @@ package com.example.reto_backend_febrero2026.licitacion;
 
 import com.example.reto_backend_febrero2026.config.Config;
 import com.example.reto_backend_febrero2026.config.IConfigService;
+import com.example.reto_backend_febrero2026.integration.servlet.dto.LicitacionItemRecord;
 import com.example.reto_backend_febrero2026.integration.servlet.service.ArceClientService;
 import com.example.reto_backend_febrero2026.integration.servlet.service.strategy.ArceRssFilters;
-import com.example.reto_backend_febrero2026.email.IEmailService;
+import com.example.reto_backend_febrero2026.channel.email.IEmailService;
 import com.example.reto_backend_febrero2026.licitacion_email.ILicitacionEmailService;
+import com.example.reto_backend_febrero2026.licitacion_email.LicitacionEmailService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Map;
 
 @Component
 public class LicitacionScheduler {
@@ -23,15 +26,18 @@ public class LicitacionScheduler {
     private final IConfigService configService;
     private final ILicitacionService licitacionService;
     private final ILicitacionEmailService licitacionEmailService;
+    private final LicitacionMapper licitacionMapper;
 
     public LicitacionScheduler(ArceClientService arceClientService, IEmailService mailService,
                                IConfigService configService, ILicitacionService licitacionService,
-                               ILicitacionEmailService licitacionEmailService) {
+                               ILicitacionEmailService licitacionEmailService,
+                               LicitacionMapper licitacionMapper) {
         this.arceClientService = arceClientService;
         this.mailService = mailService;
         this.configService = configService;
         this.licitacionService = licitacionService;
         this.licitacionEmailService = licitacionEmailService;
+        this.licitacionMapper = licitacionMapper;
     }
 
     @Scheduled(cron = "0 0 0 * * *", zone = "America/Montevideo")
@@ -42,27 +48,29 @@ public class LicitacionScheduler {
             ArceRssFilters filters = new ArceRssFilters(config.getFamilia().getCod(), config.getSubfamilia().getCod());
 
             // 1. Sincronizar RSS → BD
-            arceClientService.obtenerLicitaciones(filters).get();
+            List<LicitacionDTO> nuevasLicitaciones = arceClientService.obtenerLicitaciones(filters).get();
 
-            // 2. Licitacion-email pendiente (enviado=false)
-            List<String> emails = mailService.findAllActiveEmails();
-            List<LicitacionDTO> todas = licitacionService
-                    .getLicitacionesByFamiliaAndSubfamilia(filters.familyCod(), filters.subFamilyCod());
-            licitacionEmailService.registrarPendientes(todas, emails);
-
-            // 3. Obtener pendientes reales por destinatario
-            List<LicitacionDTO> licitaciones = licitacionService
-                    .getLicitacionesNoEnviadasByFamiliaAndSubfamilia(filters.familyCod(), filters.subFamilyCod(), emails);
-
-            // 4. Enviar email
-            mailService.sendLicitacionesEmail(licitaciones);
-
-            // 5. Registrar envíos en tabla intermedia
-            licitacionEmailService.registrarEnvios(licitaciones, emails);
-
-            log.info("Envío diario completado con {} licitaciones", licitaciones.size());
+            for (LicitacionDTO licitacionDTO : nuevasLicitaciones) {
+                LicitacionItemRecord licitacion = licitacionMapper.DTOtoLicitacionItemRecordItem(licitacionDTO);
+                licitacionService.save(licitacion);
+            }
         } catch (Exception e) {
-            log.error("Error en envío diario de licitaciones: {}", e.getMessage(), e);
+            e.printStackTrace();
         }
+    }
+
+    public List<String> getActiveEmails() {
+        List<String> emails = mailService.findAllActiveEmails();
+        return emails;
+    }
+
+    public void updateLicitacionNotification(){
+        Config config = configService.getEntityConfig();
+        List<LicitacionDTO> licitaciones =licitacionService.findByFilters(null, null,
+                null,null, config.getFamilia().getCod(), config.getSubfamilia().getCod());
+        List<String> mails = getActiveEmails();
+
+        licitacionEmailService.registrarPendientes(licitaciones, mails);
+
     }
 }
