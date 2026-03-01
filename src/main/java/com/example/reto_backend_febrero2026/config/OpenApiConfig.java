@@ -12,16 +12,6 @@ public class OpenApiConfig {
 
     @Bean
     public OpenAPI customOpenAPI() {
-        // Servidor Localhost
-        Server localServer = new Server();
-        localServer.setUrl("http://localhost:8080");
-        localServer.setDescription("Entorno de Desarrollo (Local)");
-
-        // Servidor Deploy
-        Server deployServer = new Server();
-        deployServer.setUrl("https://qa-reto-summer-pde-2026-invenzis-backend-133459896240.us-east1.run.app");
-        deployServer.setDescription("Entorno de QA (Deploy)");
-
-        return new OpenAPI().servers(List.of(localServer, deployServer));
+        return new OpenAPI();
     }
 }
