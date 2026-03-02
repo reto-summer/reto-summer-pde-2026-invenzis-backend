@@ -24,15 +24,18 @@ public interface ILicitacionEmailRepository extends JpaRepository<LicitacionEmai
     """)
     int updateEnviado(@Param("licitacionIds") List<Integer> licitacionIds, @Param("emails") Set<String> emails);
 
-    // 2. Verificación de duplicados
 
     @Query("""
-    SELECT CONCAT(le.id.idLicitacion, '_', le.id.email) 
-    FROM LicitacionEmail le 
-    WHERE le.id.idLicitacion IN :ids 
-    AND le.id.email IN :emails
+    SELECT CONCAT(le.idLicitacion, '_', le.direccionEmail)
+    FROM LicitacionEmail le
+    WHERE le.idLicitacion IN :ids
+    AND le.direccionEmail IN :emails
 """)
-    Set<String> findByLicitacionesAndEmails(@Param("ids") List<Integer> ids, @Param("emails") Set<String> emails);
-
+    Set<String> findByLicitacionesAndEmails(
+            @Param("ids") List<Integer> ids,
+            @Param("emails") Set<String> emails
+    );
     List<LicitacionEmail> findByEnviadoFalse();
+
+
 }

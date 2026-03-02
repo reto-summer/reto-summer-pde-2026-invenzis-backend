@@ -36,41 +36,43 @@ public class LicitacionEmailService implements ILicitacionEmailService {
 
 
     @Transactional
-    public void savePendingEmails() {
-        List<LicitacionDTO> licitacionesDTO = getLicitaciones();
-        List<EmailDTO> emailsDTO = emailService.findAllActive();
-        if (licitacionesDTO.isEmpty() || emailsDTO.isEmpty()) return;
-
-        Set<String> existingKeys = licitacionEmailRepository.findByLicitacionesAndEmails(getLicitacionIds(licitacionesDTO), getEmailAddresses(emailsDTO));
-
-        List<LicitacionEmail> toSave = new ArrayList<>();
-
-        for (LicitacionDTO lDto : licitacionesDTO) {
-            for (EmailDTO eDto : emailsDTO) {
-                String compositeKey = lDto.getIdLicitacion() + "_" + eDto.getDireccionEmail();
-
-                // Solo agrega si no existe el registro pendiente/enviado
-                if (!existingKeys.contains(compositeKey)) {
-                    Licitacion l = licitacionMapper.licitacionDTOtoLicitacion(lDto);
-                    Email e = emailMapper.emailDTOtoEmail(eDto);
-                    toSave.add(new LicitacionEmail(l, e));
-                }
-            }
-        }
-
-        if (!toSave.isEmpty()) {
-            licitacionEmailRepository.saveAll(toSave);
-            licitacionEmailRepository.flush();
-        }
-    }
-
-    @Transactional
     public void saveSentEmails(List<Integer> licitacionIds, List<String> emailAddresses) {
         if (licitacionIds.isEmpty() || emailAddresses.isEmpty()) return;
 
         HashSet<String> direcciones = new HashSet<>(emailAddresses);
 
         licitacionEmailRepository.updateEnviado(licitacionIds, direcciones);
+    }
+
+    @Override
+    @Transactional
+    public void savePendingEmails() {
+        // 1. Traemos licitaciones de hoy (o los últimos 2 días para dar margen)
+        List<LicitacionDTO> licitacionesDTO = getLicitaciones();
+        List<EmailDTO> emailsDTO = emailService.findAllActive();
+
+        if (licitacionesDTO.isEmpty() || emailsDTO.isEmpty()) return;
+
+        // 2. Buscamos qué combinaciones YA existen para no duplicar
+        Set<String> existingKeys = licitacionEmailRepository.findByLicitacionesAndEmails(
+                getLicitacionIds(licitacionesDTO),
+                getEmailAddresses(emailsDTO)
+        );
+
+        List<LicitacionEmail> aCrear = new ArrayList<>();
+
+        for (LicitacionDTO l : licitacionesDTO) {
+            for (EmailDTO e : emailsDTO) {
+                String key = l.getIdLicitacion() + "_" + e.getDireccionEmail();
+                if (!existingKeys.contains(key)) {
+                    aCrear.add(new LicitacionEmail(
+                            licitacionMapper.licitacionDTOtoLicitacion(l),
+                            emailMapper.emailDTOtoEmail(e)
+                    ));
+                }
+            }
+        }
+        licitacionEmailRepository.saveAll(aCrear);
     }
 
     private List<LicitacionDTO> getLicitaciones() {
@@ -92,6 +94,12 @@ public class LicitacionEmailService implements ILicitacionEmailService {
         return licitacionesDTO.stream()
                 .map(LicitacionDTO::getIdLicitacion)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public void save(Licitacion licitacion, Email email) {
+        LicitacionEmail licEm = new LicitacionEmail(licitacion, email);
+        licitacionEmailRepository.save(licEm);
     }
 }
 

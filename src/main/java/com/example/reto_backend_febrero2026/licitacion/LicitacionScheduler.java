@@ -22,18 +22,18 @@ public class LicitacionScheduler {
     private static final Logger log = LoggerFactory.getLogger(LicitacionScheduler.class);
 
     private final ArceClientService arceClientService;
-    private final IEmailService mailService;
+    private final IEmailService emailService;
     private final IConfigService configService;
     private final ILicitacionService licitacionService;
     private final ILicitacionEmailService licitacionEmailService;
     private final LicitacionMapper licitacionMapper;
 
-    public LicitacionScheduler(ArceClientService arceClientService, IEmailService mailService,
+    public LicitacionScheduler(ArceClientService arceClientService, IEmailService emailService,
                                IConfigService configService, ILicitacionService licitacionService,
                                ILicitacionEmailService licitacionEmailService,
                                LicitacionMapper licitacionMapper) {
         this.arceClientService = arceClientService;
-        this.mailService = mailService;
+        this.emailService = emailService;
         this.configService = configService;
         this.licitacionService = licitacionService;
         this.licitacionEmailService = licitacionEmailService;
@@ -59,5 +59,10 @@ public class LicitacionScheduler {
         }
     }
 
+    @Scheduled(cron = "0 0 0 * * *", zone = "America/Montevideo")
+    public void ejecutarProcesoNotificaciones() {
+        licitacionEmailService.savePendingEmails();
 
+        emailService.sendNotification();
+    }
 }

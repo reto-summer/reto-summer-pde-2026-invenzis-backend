@@ -2,9 +2,15 @@ package com.example.reto_backend_febrero2026.licitacion;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.example.reto_backend_febrero2026.channel.email.Email;
+import com.example.reto_backend_febrero2026.channel.email.EmailDTO;
+import com.example.reto_backend_febrero2026.channel.email.EmailMapper;
+import com.example.reto_backend_febrero2026.channel.email.IEmailService;
+import com.example.reto_backend_febrero2026.licitacion_email.ILicitacionEmailService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,13 +30,23 @@ public class LicitacionService implements ILicitacionService {
     private final IFamiliaService iFamiliaService;
     private final ILicitacionRepository licitacionRepository;
     private final LicitacionMapper licitacionMapper;
+    private final ILicitacionEmailService licitacionEmailService;
+    private final IEmailService emailService;
+    private final EmailMapper emailMapper;
 
-    public LicitacionService(LicitacionUtility licitacionUtility, ISubfamiliaService subfamiliaService, IFamiliaService familiaService, ILicitacionRepository licitacionRepository, LicitacionMapper licitacionMapper ) {
+    public LicitacionService(LicitacionUtility licitacionUtility, ISubfamiliaService subfamiliaService, IFamiliaService familiaService,
+                             ILicitacionRepository licitacionRepository, LicitacionMapper licitacionMapper,
+                             ILicitacionEmailService licitacionEmailService, IEmailService emailService,
+                             EmailMapper emailMapper) {
         this.licitacionUtility = licitacionUtility;
         this.iSubfamiliaService = subfamiliaService;
         this.iFamiliaService = familiaService;
         this.licitacionRepository = licitacionRepository;
         this.licitacionMapper = licitacionMapper;
+        this.licitacionEmailService = licitacionEmailService;
+        this.emailService = emailService;
+        this.emailMapper = emailMapper;
+
     }
 
     @Override
@@ -71,30 +87,45 @@ public class LicitacionService implements ILicitacionService {
 
     @Auditable(module = "LICITACION_SERVICE", action = "CLEAN_SAVE")
     @Transactional
-    public LicitacionDTO save(LicitacionItemRecord itemRecord){
+    public LicitacionDTO save(LicitacionItemRecord itemRecord) {
 
-        Integer id = licitacionUtility.extraerIdDelLink(itemRecord.link()).orElse(null);
+        Integer id = licitacionUtility
+                .extraerIdDelLink(itemRecord.link())
+                .orElse(null);
 
         if (id != null) {
-            Optional<Licitacion> existente = licitacionRepository.findById(id);
-
-            if (existente.isPresent()) {
-                return licitacionMapper.licitacionToLicitacionDTO(existente.get());
-            }
+            return licitacionRepository.findById(id)
+                    .map(licitacionMapper::licitacionToLicitacionDTO)
+                    .orElseGet(() -> crearNuevaLicitacion(itemRecord));
         }
 
-        LicitacionDTO licitacionDTO = licitacionMapper.itemRecordToDTO(itemRecord);
+        return crearNuevaLicitacion(itemRecord);
+    }
 
-        FamiliaDTO familiaDTO = iFamiliaService.findById(itemRecord.familiaCod());
+    private LicitacionDTO crearNuevaLicitacion(LicitacionItemRecord itemRecord) {
 
-        SubfamiliaDTO subfamiliaDTO = iSubfamiliaService.findById(itemRecord.familiaCod(), itemRecord.subFamiliaCod());
+        LicitacionDTO dto = licitacionMapper.itemRecordToDTO(itemRecord);
 
-        licitacionDTO.setFamilia(familiaDTO);
-        licitacionDTO.setSubfamilia(subfamiliaDTO);
+        dto.setFamilia(iFamiliaService.findById(itemRecord.familiaCod()));
+        dto.setSubfamilia(
+                iSubfamiliaService.findById(
+                        itemRecord.familiaCod(),
+                        itemRecord.subFamiliaCod()
+                )
+        );
 
-        Licitacion licitacion = licitacionMapper.licitacionDTOtoLicitacion(licitacionDTO);
-        licitacionRepository.save(licitacion);
-        return licitacionDTO;
+        Licitacion licitacion =
+                licitacionRepository.save(
+                        licitacionMapper.licitacionDTOtoLicitacion(dto)
+                );
+
+        emailService.findAllActive().stream()
+                .map(emailMapper::emailDTOtoEmail)
+                .forEach(email ->
+                        licitacionEmailService.save(licitacion, email)
+                );
+
+        return licitacionMapper.licitacionToLicitacionDTO(licitacion);
     }
 
     //@Override

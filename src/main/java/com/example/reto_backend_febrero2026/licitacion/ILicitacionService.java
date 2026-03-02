@@ -20,4 +20,5 @@ public interface ILicitacionService {
     List<LicitacionDTO> getLicitacionesByFamiliaAndSubfamilia(Integer familia_cod, Integer subfamilia_cod);
 
 
+
 }

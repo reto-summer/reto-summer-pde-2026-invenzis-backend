@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -38,7 +37,6 @@ public class EmailService implements IEmailService, IChannel {
                         IEmailRepository emailRepository,
                         EmailMapper emailMapper,
                         ILicitacionEmailService licitacionEmailService,
-                        EmailRecipientResolver recipientResolver,
                         EmailTransportService emailTransportService,
                         EmailValidator emailValidator,
                         LicitacionMapper licitacionMapper) {
@@ -151,22 +149,24 @@ public class EmailService implements IEmailService, IChannel {
                 continue;
             }
 
-            try {
-                String html = templateService.generarLicitacionesHtml(
-                        licitaciones,
-                        LocalDateTime.now()
-                );
+            // DENTRO DE EmailService.java -> sendNotification()
 
-                String subject =  licitaciones.size() + " Licitaciones ARCE - " + LocalDate.now();
+            try {
+                String html = templateService.generarLicitacionesHtml(licitaciones, LocalDateTime.now());
+                String subject = licitaciones.size() + " Licitaciones ARCE - " + LocalDate.now();
 
                 emailTransportService.sendHtmlEmail(List.of(email), subject, html);
 
-                registros.forEach(LicitacionEmail::marcarComoEnviado);
+                List<Integer> idsLicitaciones = registros.stream()
+                        .map(LicitacionEmail::getIdLicitacion)
+                        .toList();
 
-                log.info("Email enviado a {} con {} licitaciones", email, licitaciones.size());
+                licitacionEmailService.saveSentEmails(idsLicitaciones, List.of(email));
+
+                log.info("Email enviado y registros actualizados masivamente para {}", email);
 
             } catch (Exception e) {
-                log.error("Error enviando mail a {}: {}", email, e.getMessage(), e);
+                log.error("Error enviando mail a {}: {}", email, e.getMessage());
             }
         }
     }
