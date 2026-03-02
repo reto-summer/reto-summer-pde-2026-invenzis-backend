@@ -149,8 +149,6 @@ public class EmailService implements IEmailService, IChannel {
                 continue;
             }
 
-            // DENTRO DE EmailService.java -> sendNotification()
-
             try {
                 String html = templateService.generarLicitacionesHtml(licitaciones, LocalDateTime.now());
                 String subject = licitaciones.size() + " Licitaciones ARCE - " + LocalDate.now();

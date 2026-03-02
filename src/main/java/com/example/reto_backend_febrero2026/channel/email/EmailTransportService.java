@@ -25,7 +25,6 @@ public class EmailTransportService {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
             helper.setFrom(mailFrom);
-            // Convertimos a array solo aquí adentro
             helper.setTo(recipients.toArray(new String[0]));
             helper.setSubject(subject);
             helper.setText(htmlContent, true);
