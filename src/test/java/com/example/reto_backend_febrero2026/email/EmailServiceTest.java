@@ -1,21 +1,36 @@
-/*package com.example.reto_backend_febrero2026.email;
+package com.example.reto_backend_febrero2026.email;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.web.server.ResponseStatusException;
+import org.thymeleaf.TemplateEngine;
+import org.springframework.mail.javamail.JavaMailSender;
 
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class EmailServiceTest {
+
+    @Mock
+    private JavaMailSender mailSender;
+
+    @Mock
+    private TemplateEngine templateEngine;
 
     @Mock
     private IEmailRepository emailRepository;
@@ -26,322 +41,154 @@ class EmailServiceTest {
     @InjectMocks
     private EmailService emailService;
 
-
     @Test
-    void findAllActive_deberiaRetornarListaDeDTOsMapeados() {
+    void findAllActive_deberiaRetornarListaMapeada() {
         Email email1 = new Email("admin@example.com");
-        email1.setActivo(true);
-        
         Email email2 = new Email("user@example.com");
-        email2.setActivo(true);
-        
-        List<Email> emails = List.of(email1, email2);
-
         EmailDTO dto1 = new EmailDTO();
         dto1.setEmail("admin@example.com");
-        dto1.setActivo(true);
-        
         EmailDTO dto2 = new EmailDTO();
         dto2.setEmail("user@example.com");
-        dto2.setActivo(true);
 
-        when(emailRepository.findByActivoTrue()).thenReturn(emails);
+        when(emailRepository.findByActivoTrue()).thenReturn(List.of(email1, email2));
         when(emailMapper.emailToEmailDTO(email1)).thenReturn(dto1);
         when(emailMapper.emailToEmailDTO(email2)).thenReturn(dto2);
 
+        List<EmailDTO> result = emailService.findAllActive();
 
-        List<EmailDTO> resultado = emailService.findAllActive();
-
-        assertEquals(2, resultado.size());
-        assertEquals("admin@example.com", resultado.get(0).getEmail());
-        assertEquals("user@example.com", resultado.get(1).getEmail());
+        assertEquals(2, result.size());
         verify(emailRepository).findByActivoTrue();
         verify(emailMapper, times(2)).emailToEmailDTO(any(Email.class));
     }
 
     @Test
-    void findAllActive_sinEmails_deberiaRetornarListaVacia() {
-        when(emailRepository.findByActivoTrue()).thenReturn(List.of());
-
-        List<EmailDTO> resultado = emailService.findAllActive();
-
-        assertTrue(resultado.isEmpty());
-        verify(emailRepository).findByActivoTrue();
-        verifyNoInteractions(emailMapper);
-    }
-
-
-    @Test
-    void findById_emailExistente_deberiaRetornarOptionalConDTO() {
-        // Arrange
+    void findById_existente_deberiaRetornarDTO() {
         Email email = new Email("test@example.com");
-        email.setActivo(true);
-        
         EmailDTO dto = new EmailDTO();
         dto.setEmail("test@example.com");
-        dto.setActivo(true);
-
         when(emailRepository.findById("test@example.com")).thenReturn(Optional.of(email));
         when(emailMapper.emailToEmailDTO(email)).thenReturn(dto);
 
-        Optional<EmailDTO> resultado = emailService.findById("test@example.com");
+        EmailDTO result = emailService.findById("test@example.com");
 
-        assertTrue(resultado.isPresent());
-        assertEquals("test@example.com", resultado.get().getEmail());
+        assertEquals("test@example.com", result.getEmail());
         verify(emailRepository).findById("test@example.com");
-        verify(emailMapper).emailToEmailDTO(email);
     }
 
     @Test
-    void findById_emailInexistente_deberiaRetornarOptionalVacio() {
+    void findById_inexistente_deberiaLanzarEntityNotFound() {
         when(emailRepository.findById("noexiste@example.com")).thenReturn(Optional.empty());
 
-        Optional<EmailDTO> resultado = emailService.findById("noexiste@example.com");
-
-        assertFalse(resultado.isPresent());
+        assertThrows(EntityNotFoundException.class, () -> emailService.findById("noexiste@example.com"));
         verify(emailRepository).findById("noexiste@example.com");
         verifyNoInteractions(emailMapper);
     }
 
     @Test
-    void create_emailValido_deberiaCrearYRetornarDTO() {
-        String emailInput = "newemail@example.com";
-        Email emailEntity = new Email(emailInput);
-        
-        EmailDTO dto = new EmailDTO();
-        dto.setEmail(emailInput);
-        dto.setActivo(true);
-
-        when(emailRepository.findById(emailInput)).thenReturn(Optional.empty());
-        when(emailRepository.save(any(Email.class))).thenReturn(emailEntity);
-        when(emailMapper.emailToEmailDTO(emailEntity)).thenReturn(dto);
-
-        EmailDTO resultado = emailService.create(emailInput);
-
-        assertEquals(emailInput, resultado.getEmail());
-        assertTrue(resultado.getActivo());
-        verify(emailRepository).findById(emailInput);
-        verify(emailRepository).save(any(Email.class));
-        verify(emailMapper).emailToEmailDTO(emailEntity);
-    }
-
-    @Test
-    void create_emailConMayusculas_deberiaGuardarNormalizado() {
-
-        String emailInput = "TEST@EXAMPLE.COM";
-        String normalizedEmail = "test@example.com";
-        Email emailEntity = new Email(normalizedEmail);
-        
-        EmailDTO dto = new EmailDTO();
-        dto.setEmail(normalizedEmail);
-        dto.setActivo(true);
-
-        when(emailRepository.findById(normalizedEmail)).thenReturn(Optional.empty());
-        when(emailRepository.save(any(Email.class))).thenReturn(emailEntity);
-        when(emailMapper.emailToEmailDTO(emailEntity)).thenReturn(dto);
-
-        EmailDTO resultado = emailService.create(emailInput);
-
-        assertEquals(normalizedEmail, resultado.getEmail());
-        verify(emailRepository).findById(normalizedEmail);
-        verify(emailRepository).save(argThat(email -> 
-            email.getEmailAddress().equals(normalizedEmail)
-        ));
-    }
-
-    @Test
-    void create_emailConEspacios_deberiaGuardarTrimmed() {
-        String emailInput = "  spaced@example.com  ";
-        String normalizedEmail = "spaced@example.com";
-        Email emailEntity = new Email(normalizedEmail);
-        
-        EmailDTO dto = new EmailDTO();
-        dto.setEmail(normalizedEmail);
-        dto.setActivo(true);
-
-        when(emailRepository.findById(normalizedEmail)).thenReturn(Optional.empty());
-        when(emailRepository.save(any(Email.class))).thenReturn(emailEntity);
-        when(emailMapper.emailToEmailDTO(emailEntity)).thenReturn(dto);
-
-        EmailDTO resultado = emailService.create(emailInput);
-
-        assertEquals(normalizedEmail, resultado.getEmail());
-        verify(emailRepository).findById(normalizedEmail);
-    }
-
-    @Test
-    void create_emailInvalido_deberiaLanzarIllegalArgumentException() {
-        String invalidEmail = "invalidemail";
-
-        IllegalArgumentException ex = assertThrows(
-                IllegalArgumentException.class,
-                () -> emailService.create(invalidEmail)
-        );
-        
-        assertTrue(ex.getMessage().contains("El formato del email no es válido"));
+    void create_emailInvalido_deberiaLanzarIllegalArgument() {
+        assertThrows(IllegalArgumentException.class, () -> emailService.create("invalidemail"));
         verifyNoInteractions(emailRepository);
     }
 
     @Test
-    void create_emailDuplicadoActivo_deberiaRetornarExistentesSinGuardar() {
-        String emailInput = "existing@example.com";
-        Email existingEmail = new Email(emailInput);
-        existingEmail.setActivo(true);
-        
+    void create_emailNuevo_deberiaGuardarNormalizado() {
+        Email saved = new Email("newemail@example.com");
         EmailDTO dto = new EmailDTO();
-        dto.setEmail(emailInput);
-        dto.setActivo(true);
+        dto.setEmail("newemail@example.com");
+        when(emailRepository.findById("newemail@example.com")).thenReturn(Optional.empty());
+        when(emailRepository.save(any(Email.class))).thenReturn(saved);
+        when(emailMapper.emailToEmailDTO(saved)).thenReturn(dto);
 
-        when(emailRepository.findById(emailInput)).thenReturn(Optional.of(existingEmail));
-        when(emailMapper.emailToEmailDTO(existingEmail)).thenReturn(dto);
+        EmailDTO result = emailService.create(" NEWEMAIL@EXAMPLE.COM ");
 
-        EmailDTO resultado = emailService.create(emailInput);
+        assertEquals("newemail@example.com", result.getEmail());
+        verify(emailRepository).save(argThat(e -> "newemail@example.com".equals(e.getEmailAddress())));
+    }
 
-        assertEquals(emailInput, resultado.getEmail());
-        assertTrue(resultado.getActivo());
-        verify(emailRepository).findById(emailInput);
-        verify(emailMapper).emailToEmailDTO(existingEmail);
-        verify(emailRepository, never()).save(any());
+    @Test
+    void create_emailExistenteActivo_noDeberiaGuardar() {
+        Email existing = new Email("existing@example.com");
+        existing.setActivo(true);
+        EmailDTO dto = new EmailDTO();
+        dto.setEmail("existing@example.com");
+        when(emailRepository.findById("existing@example.com")).thenReturn(Optional.of(existing));
+        when(emailMapper.emailToEmailDTO(existing)).thenReturn(dto);
+
+        EmailDTO result = emailService.create("existing@example.com");
+
+        assertEquals("existing@example.com", result.getEmail());
+        verify(emailRepository, never()).save(any(Email.class));
         verify(emailRepository, never()).updateActivo(anyString(), anyBoolean());
     }
 
     @Test
-    void create_emailDuplicadoInactivo_deberiaReactivarYRetornar() {
-        String emailInput = "reactivate@example.com";
-        Email inactiveEmail = new Email(emailInput);
-        inactiveEmail.setActivo(false);
-        
-        Email reactivatedEmail = new Email(emailInput);
-        reactivatedEmail.setActivo(true);
-        
+    void create_emailExistenteInactivo_deberiaReactivar() {
+        Email inactive = new Email("reactivate@example.com");
+        inactive.setActivo(false);
+        Email reactivated = new Email("reactivate@example.com");
+        reactivated.setActivo(true);
         EmailDTO dto = new EmailDTO();
-        dto.setEmail(emailInput);
-        dto.setActivo(true);
+        dto.setEmail("reactivate@example.com");
 
-        when(emailRepository.findById(emailInput))
-                .thenReturn(Optional.of(inactiveEmail))
-                .thenReturn(Optional.of(reactivatedEmail));
-        when(emailMapper.emailToEmailDTO(reactivatedEmail)).thenReturn(dto);
+        when(emailRepository.findById("reactivate@example.com"))
+                .thenReturn(Optional.of(inactive))
+                .thenReturn(Optional.of(reactivated));
+        when(emailMapper.emailToEmailDTO(reactivated)).thenReturn(dto);
 
-        EmailDTO resultado = emailService.create(emailInput);
+        EmailDTO result = emailService.create("reactivate@example.com");
 
-        assertEquals(emailInput, resultado.getEmail());
-        assertTrue(resultado.getActivo());
-        verify(emailRepository, times(2)).findById(emailInput);
-        verify(emailRepository).updateActivo(emailInput, true);
-        verify(emailRepository, never()).save(any());
-    }
-
-
-    @Test
-    void update_emailExistente_deberiaActualizarYRetornarDTO() {
-        String emailAddress = "update@example.com";
-        Email updatedEmail = new Email(emailAddress);
-        updatedEmail.setActivo(true);
-        
-        EmailDTO dto = new EmailDTO();
-        dto.setEmail(emailAddress);
-        dto.setActivo(true);
-
-        when(emailRepository.existsById(emailAddress)).thenReturn(true);
-        when(emailRepository.findById(emailAddress)).thenReturn(Optional.of(updatedEmail));
-        when(emailMapper.emailToEmailDTO(updatedEmail)).thenReturn(dto);
-
-        EmailDTO resultado = emailService.update(emailAddress, true);
-
-        assertEquals(emailAddress, resultado.getEmail());
-        verify(emailRepository).existsById(emailAddress);
-        verify(emailRepository).updateActivo(emailAddress, true);
+        assertEquals("reactivate@example.com", result.getEmail());
+        verify(emailRepository).updateActivo("reactivate@example.com", true);
+        verify(emailRepository, never()).save(any(Email.class));
     }
 
     @Test
-    void update_emailInexistente_deberiaLanzarResponseStatusException404() {
-        String emailAddress = "noexiste@example.com";
-
-        when(emailRepository.existsById(emailAddress)).thenReturn(false);
-
-        ResponseStatusException ex = assertThrows(
-                ResponseStatusException.class,
-                () -> emailService.update(emailAddress, true)
-        );
-        
-        assertEquals(org.springframework.http.HttpStatus.NOT_FOUND, ex.getStatusCode());
-        verify(emailRepository).existsById(emailAddress);
-        verify(emailRepository, never()).updateActivo(anyString(), anyBoolean());
-    }
-
-    @Test
-    void update_activoNull_deberiaNoActualizarPeroContinuar() {
-        String emailAddress = "test@example.com";
-        Email email = new Email(emailAddress);
-        
+    void update_existente_conActivo_deberiaActualizar() {
+        Email email = new Email("update@example.com");
         EmailDTO dto = new EmailDTO();
-        dto.setEmail(emailAddress);
-        dto.setActivo(true);
-
-        when(emailRepository.existsById(emailAddress)).thenReturn(true);
-        when(emailRepository.findById(emailAddress)).thenReturn(Optional.of(email));
+        dto.setEmail("update@example.com");
+        when(emailRepository.existsById("update@example.com")).thenReturn(true);
+        when(emailRepository.findById("update@example.com")).thenReturn(Optional.of(email));
         when(emailMapper.emailToEmailDTO(email)).thenReturn(dto);
 
-        EmailDTO resultado = emailService.update(emailAddress, null);
+        EmailDTO result = emailService.update("update@example.com", true);
 
-        assertEquals(emailAddress, resultado.getEmail());
-        verify(emailRepository).existsById(emailAddress);
-        verify(emailRepository, never()).updateActivo(anyString(), anyBoolean());
-        verify(emailRepository).findById(emailAddress);
-    }
-
-
-    @Test
-    void deactivate_emailExistente_deberiaDesactivar() {
-        String emailAddress = "deactivate@example.com";
-
-        when(emailRepository.existsById(emailAddress)).thenReturn(true);
-
-        emailService.deactivate(emailAddress);
-
-        verify(emailRepository).existsById(emailAddress);
-        verify(emailRepository).updateActivo(emailAddress, false);
+        assertEquals("update@example.com", result.getEmail());
+        verify(emailRepository).updateActivo("update@example.com", true);
     }
 
     @Test
-    void deactivate_emailInexistente_deberiaLanzarResponseStatusException404() {
-        String emailAddress = "noexiste@example.com";
+    void update_inexistente_deberiaLanzarIllegalArgument() {
+        when(emailRepository.existsById("noexiste@example.com")).thenReturn(false);
 
-        when(emailRepository.existsById(emailAddress)).thenReturn(false);
-
-        ResponseStatusException ex = assertThrows(
-                ResponseStatusException.class,
-                () -> emailService.deactivate(emailAddress)
-        );
-        
-        assertEquals(org.springframework.http.HttpStatus.NOT_FOUND, ex.getStatusCode());
-        verify(emailRepository).existsById(emailAddress);
+        assertThrows(IllegalArgumentException.class, () -> emailService.update("noexiste@example.com", true));
         verify(emailRepository, never()).updateActivo(anyString(), anyBoolean());
     }
 
-
     @Test
-    void findAllActiveEmails_deberiaRetornarListaDeStringsConEmails() {
-        List<String> emails = List.of("admin@example.com", "user@example.com");
+    void deactivate_existente_deberiaDesactivar() {
+        when(emailRepository.existsById("deactivate@example.com")).thenReturn(true);
 
-        when(emailRepository.findAllActiveEmails()).thenReturn(emails);
+        emailService.deactivate("deactivate@example.com");
 
-        List<String> resultado = emailService.findAllActiveEmails();
-
-        assertEquals(2, resultado.size());
-        assertEquals("admin@example.com", resultado.get(0));
-        assertEquals("user@example.com", resultado.get(1));
-        verify(emailRepository).findAllActiveEmails();
+        verify(emailRepository).updateActivo("deactivate@example.com", false);
     }
 
     @Test
-    void findAllActiveEmails_sinEmails_deberiaRetornarListaVacia() {
-        when(emailRepository.findAllActiveEmails()).thenReturn(List.of());
+    void deactivate_inexistente_deberiaLanzarIllegalArgument() {
+        when(emailRepository.existsById("noexiste@example.com")).thenReturn(false);
 
-        List<String> resultado = emailService.findAllActiveEmails();
+        assertThrows(IllegalArgumentException.class, () -> emailService.deactivate("noexiste@example.com"));
+        verify(emailRepository, never()).updateActivo(anyString(), anyBoolean());
+    }
 
-        assertTrue(resultado.isEmpty());
+    @Test
+    void findAllActiveEmails_deberiaRetornarLista() {
+        when(emailRepository.findAllActiveEmails()).thenReturn(List.of("a@a.com", "b@b.com"));
+
+        List<String> result = emailService.findAllActiveEmails();
+
+        assertEquals(2, result.size());
         verify(emailRepository).findAllActiveEmails();
     }
-}*/
+}
