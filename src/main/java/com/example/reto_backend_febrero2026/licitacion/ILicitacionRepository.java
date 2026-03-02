@@ -36,12 +36,14 @@ public interface ILicitacionRepository extends JpaRepository<Licitacion, Integer
         SELECT l FROM Licitacion l
         LEFT JOIN FETCH l.familia f
         LEFT JOIN FETCH l.subfamilia s
+        LEFT JOIN FETCH l.inciso i
         WHERE (l.fechaPublicacion >= COALESCE(:fechaPublicacionDesde, l.fechaPublicacion))
         AND (l.fechaPublicacion <= COALESCE(:fechaPublicacionHasta, l.fechaPublicacion))
         AND (l.fechaCierre >= COALESCE(:fechaCierreDesde, l.fechaCierre))
         AND (l.fechaCierre <= COALESCE(:fechaCierreHasta, l.fechaCierre))
         AND (f.cod = COALESCE(:familiaCod, f.cod))
         AND (s.cod = COALESCE(:subfamiliaCod, s.cod))
+        AND (i.id = COALESCE(:idInciso, i.id))
         ORDER BY l.fechaCierre ASC
     """)
     List<Licitacion> findByFilters(
@@ -50,6 +52,7 @@ public interface ILicitacionRepository extends JpaRepository<Licitacion, Integer
             @Param("fechaCierreDesde") LocalDateTime fechaCierreDesde,
             @Param("fechaCierreHasta") LocalDateTime fechaCierreHasta,
             @Param("familiaCod") Integer familiaCod,
-            @Param("subfamiliaCod") Integer subfamiliaCod
+            @Param("subfamiliaCod") Integer subfamiliaCod,
+            @Param("idInciso") Integer idInciso
     );
 }

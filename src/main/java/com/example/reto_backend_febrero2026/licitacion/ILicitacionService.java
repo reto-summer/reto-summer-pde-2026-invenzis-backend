@@ -8,7 +8,7 @@ import java.util.List;
 public interface ILicitacionService {
     List<LicitacionDTO> findByFilters(LocalDate fechaPublicacionDesde, LocalDate fechaPublicacionHasta,
                                 LocalDate fechaCierreDesde, LocalDate fechaCierreHasta, Integer familiaCod,
-                                Integer subfamiliaCod);
+                                Integer subfamiliaCod, Integer idInciso);
     LicitacionDTO getLicitacionById(int id);
     List<LicitacionDTO> getLicitacionByTitulo(String titulo);
     LicitacionDTO save(LicitacionItemRecord itemRecord);

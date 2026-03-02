@@ -45,7 +45,8 @@ public class LicitacionService implements ILicitacionService {
             LocalDate fechaCierreDesde,
             LocalDate fechaCierreHasta,
             Integer familiaCod,
-            Integer subfamiliaCod)
+            Integer subfamiliaCod,
+            Integer idInciso)
     {
         if (subfamiliaCod != null && familiaCod == null) {
             throw new IllegalArgumentException( "No se puede filtrar por subfamilia sin especificar la familia correspondiente.");
@@ -55,7 +56,7 @@ public class LicitacionService implements ILicitacionService {
         LocalDateTime cierreHasta = licitacionUtility.toEndOfDay(fechaCierreHasta);
 
         return licitacionRepository
-                .findByFilters(fechaPublicacionDesde, fechaPublicacionHasta, cierreDesde, cierreHasta, familiaCod, subfamiliaCod)
+                .findByFilters(fechaPublicacionDesde, fechaPublicacionHasta, cierreDesde, cierreHasta, familiaCod, subfamiliaCod, idInciso)
                 .stream()
                 .map(licitacionMapper::licitacionToLicitacionDTO)
                 .toList();

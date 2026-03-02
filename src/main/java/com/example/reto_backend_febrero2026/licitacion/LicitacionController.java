@@ -27,7 +27,8 @@ import java.util.List;
                                                              @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaCierreDesde,
                                                              @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaCierreHasta,
                                                              @RequestParam(required = false) Integer familiaCod,
-                                                             @RequestParam(required = false) Integer subfamiliaCod) {
+                                                             @RequestParam(required = false) Integer subfamiliaCod,
+                                                             @RequestParam(required = false) Integer idInciso) {
         return ResponseEntity.ok(
                 licitacionService.findByFilters(
                         fechaPublicacionDesde,
@@ -35,7 +36,8 @@ import java.util.List;
                         fechaCierreDesde,
                         fechaCierreHasta,
                         familiaCod,
-                        subfamiliaCod
+                        subfamiliaCod,
+                        idInciso
                 )
         );
     }
