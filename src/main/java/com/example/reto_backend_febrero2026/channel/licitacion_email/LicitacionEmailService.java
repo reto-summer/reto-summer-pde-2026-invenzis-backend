@@ -28,19 +28,19 @@ public class LicitacionEmailService implements ILicitacionEmailService, IChannel
     private final IEmailService emailService;
     private final EmailMapper emailMapper;
     private final LicitacionMapper licitacionMapper;
-    private final EmailTransportService emailTransportService;
-    private final EmailTemplateService templateService;
+    private final IEmailTemplateService emailTemplateService;
+    private final IEmailTransportService emailTransportService;
 
     public LicitacionEmailService(ILicitacionEmailRepository licitacionEmailRepository, ILicitacionService licitacionService,
                                   IEmailService emailService, EmailMapper emailMapper, LicitacionMapper licitacionMapper,
-                                  EmailTransportService emailTransportService, EmailTemplateService templateService) {
+                                  IEmailTransportService emailTransportService, IEmailTemplateService emailTemplateService) {
         this.licitacionEmailRepository = licitacionEmailRepository;
         this.licitacionService = licitacionService;
         this.emailService = emailService;
         this.emailMapper = emailMapper;
         this.licitacionMapper = licitacionMapper;
         this.emailTransportService = emailTransportService;
-        this.templateService = templateService;
+        this.emailTemplateService = emailTemplateService;
     }
 
     @Override
@@ -75,7 +75,7 @@ public class LicitacionEmailService implements ILicitacionEmailService, IChannel
             }
 
             try {
-                String html = templateService.generarLicitacionesHtml(licitaciones, LocalDateTime.now());
+                String html = emailTemplateService.generarLicitacionesHtml(licitaciones, LocalDateTime.now());
                 String subject = licitaciones.size() + " Licitaciones ARCE - " + LocalDate.now();
 
                 emailTransportService.sendHtmlEmail(List.of(email), subject, html);

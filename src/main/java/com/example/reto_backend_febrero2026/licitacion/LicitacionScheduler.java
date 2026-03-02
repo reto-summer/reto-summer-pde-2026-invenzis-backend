@@ -1,7 +1,7 @@
 package com.example.reto_backend_febrero2026.licitacion;
 
-import com.example.reto_backend_febrero2026.config.Config;
-import com.example.reto_backend_febrero2026.config.IConfigService;
+import com.example.reto_backend_febrero2026.config_entity.Config;
+import com.example.reto_backend_febrero2026.config_entity.IConfigService;
 import com.example.reto_backend_febrero2026.integration.servlet.dto.LicitacionItemRecord;
 import com.example.reto_backend_febrero2026.integration.servlet.service.ArceClientService;
 import com.example.reto_backend_febrero2026.integration.servlet.service.strategy.ArceRssFilters;

@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Locale;
 
 @Service
-public class EmailTemplateService {
+public class EmailTemplateService implements IEmailTemplateService {
 
     private final TemplateEngine templateEngine;
     private final Locale defaultLocale = new Locale("es","UY");
@@ -20,6 +20,7 @@ public class EmailTemplateService {
         this.templateEngine = templateEngine;
     }
 
+    @Override
     public String generarLicitacionesHtml(List<LicitacionDTO> items, LocalDateTime fecha) {
         String fechaFormateada = fecha.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
         Context ctx = new Context(defaultLocale);

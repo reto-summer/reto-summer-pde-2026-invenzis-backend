@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class EmailTransportService {
+public class EmailTransportService implements IEmailTransportService {
 
     private final JavaMailSender mailSender;
 
@@ -20,6 +20,7 @@ public class EmailTransportService {
         this.mailSender = mailSender;
     }
 
+    @Override
     public void sendHtmlEmail(List<String> recipients, String subject, String htmlContent) {
         try {
             MimeMessage message = mailSender.createMimeMessage();
