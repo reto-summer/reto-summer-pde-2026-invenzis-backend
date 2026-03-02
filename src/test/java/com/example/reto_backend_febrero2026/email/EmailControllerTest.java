@@ -1,4 +1,4 @@
-/*package com.example.reto_backend_febrero2026.email;
+package com.example.reto_backend_febrero2026.email;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,7 +60,7 @@ class EmailControllerTest {
         dto.setFechaCreacion(now);
         dto.setFechaActualizacion(now);
 
-        when(emailService.findById("test@example.com")).thenReturn(Optional.of(dto));
+        when(emailService.findById("test@example.com")).thenReturn(dto);
 
         mockMvc.perform(get("/email/test@example.com"))
                 .andExpect(status().isOk())
@@ -72,7 +72,8 @@ class EmailControllerTest {
 
     @Test
     void getDestinationById_emailInexistente_deberiaRetornar404() throws Exception {
-        when(emailService.findById("noexiste@example.com")).thenReturn(Optional.empty());
+        when(emailService.findById("noexiste@example.com"))
+                .thenThrow(new jakarta.persistence.EntityNotFoundException("Email no encontrado: noexiste@example.com"));
 
         mockMvc.perform(get("/email/noexiste@example.com"))
                 .andExpect(status().isNotFound());
@@ -89,7 +90,7 @@ class EmailControllerTest {
         dto.setFechaCreacion(now);
         dto.setFechaActualizacion(now);
 
-        when(emailService.findById("user+tag@example.co.uk")).thenReturn(Optional.of(dto));
+        when(emailService.findById("user+tag@example.co.uk")).thenReturn(dto);
 
         mockMvc.perform(get("/email/user+tag@example.co.uk"))
                 .andExpect(status().isOk())
@@ -136,7 +137,7 @@ class EmailControllerTest {
                 .contentType("application/json")
                 .content("{\"email\":\"invalidemail\"}"))
                 .andExpect(status().isBadRequest())
-                .andExpect(content().string("El formato del email no es válido"));
+                .andExpect(jsonPath("$.message").value("El formato del email no es válido"));
 
         verify(emailService).create("invalidemail");
     }
@@ -174,4 +175,4 @@ class EmailControllerTest {
 
         verify(emailService).deactivate("user+tag@example.co.uk");
     }
-}*/
+}

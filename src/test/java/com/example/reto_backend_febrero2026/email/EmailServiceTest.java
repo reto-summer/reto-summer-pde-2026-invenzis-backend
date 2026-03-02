@@ -1,4 +1,4 @@
-/*package com.example.reto_backend_febrero2026.email;
+package com.example.reto_backend_febrero2026.email;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -84,7 +84,7 @@ class EmailServiceTest {
         when(emailRepository.findById("test@example.com")).thenReturn(Optional.of(email));
         when(emailMapper.emailToEmailDTO(email)).thenReturn(dto);
 
-        Optional<EmailDTO> resultado = emailService.findById("test@example.com");
+        Optional<EmailDTO> resultado = Optional.ofNullable(emailService.findById("test@example.com"));
 
         assertTrue(resultado.isPresent());
         assertEquals("test@example.com", resultado.get().getEmail());
@@ -93,12 +93,15 @@ class EmailServiceTest {
     }
 
     @Test
-    void findById_emailInexistente_deberiaRetornarOptionalVacio() {
+    void findById_emailInexistente_deberiaLanzarEntityNotFoundException() {
         when(emailRepository.findById("noexiste@example.com")).thenReturn(Optional.empty());
 
-        Optional<EmailDTO> resultado = emailService.findById("noexiste@example.com");
+        jakarta.persistence.EntityNotFoundException ex = assertThrows(
+                jakarta.persistence.EntityNotFoundException.class,
+                () -> emailService.findById("noexiste@example.com")
+        );
 
-        assertFalse(resultado.isPresent());
+        assertTrue(ex.getMessage().contains("Email no encontrado"));
         verify(emailRepository).findById("noexiste@example.com");
         verifyNoInteractions(emailMapper);
     }
@@ -255,17 +258,17 @@ class EmailServiceTest {
     }
 
     @Test
-    void update_emailInexistente_deberiaLanzarResponseStatusException404() {
+    void update_emailInexistente_deberiaLanzarEntityNotFoundException() {
         String emailAddress = "noexiste@example.com";
 
         when(emailRepository.existsById(emailAddress)).thenReturn(false);
 
-        ResponseStatusException ex = assertThrows(
-                ResponseStatusException.class,
+        jakarta.persistence.EntityNotFoundException ex = assertThrows(
+                jakarta.persistence.EntityNotFoundException.class,
                 () -> emailService.update(emailAddress, true)
         );
-        
-        assertEquals(org.springframework.http.HttpStatus.NOT_FOUND, ex.getStatusCode());
+
+        assertTrue(ex.getMessage().contains("Destino de email no encontrado"));
         verify(emailRepository).existsById(emailAddress);
         verify(emailRepository, never()).updateActivo(anyString(), anyBoolean());
     }
@@ -305,17 +308,17 @@ class EmailServiceTest {
     }
 
     @Test
-    void deactivate_emailInexistente_deberiaLanzarResponseStatusException404() {
+    void deactivate_emailInexistente_deberiaLanzarEntityNotFoundException() {
         String emailAddress = "noexiste@example.com";
 
         when(emailRepository.existsById(emailAddress)).thenReturn(false);
 
-        ResponseStatusException ex = assertThrows(
-                ResponseStatusException.class,
+        jakarta.persistence.EntityNotFoundException ex = assertThrows(
+                jakarta.persistence.EntityNotFoundException.class,
                 () -> emailService.deactivate(emailAddress)
         );
-        
-        assertEquals(org.springframework.http.HttpStatus.NOT_FOUND, ex.getStatusCode());
+
+        assertTrue(ex.getMessage().contains("Destino de email no encontrado"));
         verify(emailRepository).existsById(emailAddress);
         verify(emailRepository, never()).updateActivo(anyString(), anyBoolean());
     }
@@ -344,4 +347,4 @@ class EmailServiceTest {
         assertTrue(resultado.isEmpty());
         verify(emailRepository).findAllActiveEmails();
     }
-}*/
+}
