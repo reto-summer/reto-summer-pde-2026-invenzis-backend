@@ -5,10 +5,12 @@ import com.example.reto_backend_febrero2026.email.IEmailRepository;
 import com.example.reto_backend_febrero2026.licitacion.ILicitacionRepository;
 import com.example.reto_backend_febrero2026.licitacion.Licitacion;
 import com.example.reto_backend_febrero2026.licitacion.LicitacionDTO;
+import com.example.reto_backend_febrero2026.licitacion.LicitacionMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -19,13 +21,16 @@ public class LicitacionEmailService implements ILicitacionEmailService {
     private final ILicitacionEmailRepository licitacionEmailRepository;
     private final ILicitacionRepository licitacionRepository;
     private final IEmailRepository emailRepository;
+    private final LicitacionMapper licitacionMapper;
 
     public LicitacionEmailService(ILicitacionEmailRepository licitacionEmailRepository,
                                   ILicitacionRepository licitacionRepository,
-                                  IEmailRepository emailRepository) {
+                                  IEmailRepository emailRepository,
+                                  LicitacionMapper licitacionMapper) {
         this.licitacionEmailRepository = licitacionEmailRepository;
         this.licitacionRepository = licitacionRepository;
         this.emailRepository = emailRepository;
+        this.licitacionMapper = licitacionMapper;
     }
 
     @Override
@@ -52,6 +57,21 @@ public class LicitacionEmailService implements ILicitacionEmailService {
                 licitacionEmailRepository.save(new LicitacionEmail(licitacion, email, false));
             }
         }
+    }
+
+    @Override
+    public List<LicitacionDTO> getPendientes(List<String> emails) {
+        return new ArrayList<>(
+            licitacionEmailRepository.findByEnviadoFalseAndIdEmailIn(emails)
+                .stream()
+                .map(le -> licitacionMapper.licitacionToLicitacionDTO(le.getLicitacion()))
+                .collect(Collectors.toMap(
+                    LicitacionDTO::getIdLicitacion,
+                    dto -> dto,
+                    (a, b) -> a
+                ))
+                .values()
+        );
     }
 
     @Override

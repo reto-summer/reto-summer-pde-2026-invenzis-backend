@@ -7,4 +7,5 @@ import java.util.List;
 public interface ILicitacionEmailService {
     void registrarPendientes(List<LicitacionDTO> licitaciones, List<String> emails);
     void registrarEnvios(List<LicitacionDTO> licitaciones, List<String> emails);
+    List<LicitacionDTO> getPendientes(List<String> emails);
 }

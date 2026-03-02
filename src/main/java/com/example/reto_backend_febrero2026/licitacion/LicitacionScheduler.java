@@ -34,35 +34,42 @@ public class LicitacionScheduler {
         this.licitacionEmailService = licitacionEmailService;
     }
 
-    @Scheduled(cron = "0 0 0 * * *", zone = "America/Montevideo")
+    @Scheduled(cron = "${scheduler.licitaciones.cron}", zone = "America/Montevideo")
     public void getLicitacionesByConfig() {
         log.info("Iniciando envío diario de licitaciones ARCE");
+        String pasoActual = "Inicialización";
         try {
+            pasoActual = "Carga de configuración";
             Config config = configService.getEntityConfig();
             ArceRssFilters filters = new ArceRssFilters(config.getFamilia().getCod(), config.getSubfamilia().getCod());
 
             // 1. Sincronizar RSS → BD
+            pasoActual = "Sincronización RSS → base de datos";
             arceClientService.obtenerLicitaciones(filters).get();
 
             // 2. Licitacion-email pendiente (enviado=false)
+            pasoActual = "Registro de licitaciones pendientes";
             List<String> emails = mailService.findAllActiveEmails();
             List<LicitacionDTO> todas = licitacionService
                     .getLicitacionesByFamiliaAndSubfamilia(filters.familyCod(), filters.subFamilyCod());
             licitacionEmailService.registrarPendientes(todas, emails);
 
             // 3. Obtener pendientes reales por destinatario
-            List<LicitacionDTO> licitaciones = licitacionService
-                    .getLicitacionesNoEnviadasByFamiliaAndSubfamilia(filters.familyCod(), filters.subFamilyCod(), emails);
+            pasoActual = "Consulta de licitaciones no enviadas";
+            List<LicitacionDTO> licitaciones = licitacionEmailService.getPendientes(emails);
 
             // 4. Enviar email
+            pasoActual = "Envío de email a destinatarios";
             mailService.sendLicitacionesEmail(licitaciones);
 
             // 5. Registrar envíos en tabla intermedia
+            pasoActual = "Registro de envíos en base de datos";
             licitacionEmailService.registrarEnvios(licitaciones, emails);
 
             log.info("Envío diario completado con {} licitaciones", licitaciones.size());
         } catch (Exception e) {
-            log.error("Error en envío diario de licitaciones: {}", e.getMessage(), e);
+            log.error("Error en paso '{}': {}", pasoActual, e.getMessage(), e);
+            mailService.sendErrorEmail(pasoActual, e);
         }
     }
 }

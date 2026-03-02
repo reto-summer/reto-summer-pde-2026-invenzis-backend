@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+
 import org.slf4j.MDC;
 
 @Service
@@ -56,7 +57,7 @@ public class EmailService implements IEmailService {
 
     @Override
     public EmailDTO findById(String emailAddress) {
-        Email email = emailRepository.findById(emailAddress).orElseThrow(() -> new EntityNotFoundException("Subfamilia no encontrada"));
+        Email email = emailRepository.findById(emailAddress).orElseThrow(() -> new EntityNotFoundException("Email no encontrado: " + emailAddress));
         return emailMapper.emailToEmailDTO(email);
     }
 
@@ -91,7 +92,7 @@ public class EmailService implements IEmailService {
     @Override
     public EmailDTO update(String emailAddress, Boolean activo) {
         if (!emailRepository.existsById(emailAddress)) {
-            throw new IllegalArgumentException("Destino de email no encontrado: " + emailAddress);
+            throw new EntityNotFoundException("Destino de email no encontrado: " + emailAddress);
         }
 
         if (activo != null) {
@@ -106,7 +107,7 @@ public class EmailService implements IEmailService {
     @Override
     public void deactivate(String emailAddress) {
         if (!emailRepository.existsById(emailAddress)) {
-            throw new IllegalArgumentException ("Destino de email no encontrado: " + emailAddress);
+            throw new EntityNotFoundException("Destino de email no encontrado: " + emailAddress);
         }
 
         emailRepository.updateActivo(emailAddress, false);
@@ -179,6 +180,56 @@ public class EmailService implements IEmailService {
             MDC.put("notificationDetail", e.getMessage());
             log.error("Error al enviar email de licitaciones: {}", e.getMessage(), e);
             throw new RuntimeException("ERROR en envío de mail: " + e);
+        }
+    }
+
+    @Async
+    @Override
+    public void sendErrorEmail(String paso, Exception excepcion) {
+        String fecha = LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy", new Locale("es", "UY")));
+        String hora = java.time.LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
+        String subject = "Error en envío de licitaciones ARCE - " + fecha;
+
+        String tipoError = excepcion.getClass().getSimpleName();
+        String mensajeError = excepcion.getMessage() != null ? excepcion.getMessage() : "Sin detalle disponible";
+        String causa = excepcion.getCause() != null ? excepcion.getCause().getMessage() : null;
+
+        Context ctx = new Context(new Locale("es", "UY"));
+        ctx.setVariable("fecha", fecha);
+        ctx.setVariable("hora", hora);
+        ctx.setVariable("paso", paso);
+        ctx.setVariable("tipoError", tipoError);
+        ctx.setVariable("mensajeError", mensajeError);
+        ctx.setVariable("causa", causa);
+
+        String htmlContent = templateEngine.process("email/error-licitaciones", ctx);
+
+        List<Email> emailsFromDb = emailRepository.findByActivoTrue();
+        String[] recipients;
+
+        if (!emailsFromDb.isEmpty()) {
+            recipients = emailsFromDb.stream().map(Email::getEmailAddress).toArray(String[]::new);
+        } else {
+            recipients = parseEmailList(mailTo);
+        }
+
+        if (recipients.length == 0) {
+            log.error("No hay destinatarios para enviar email de error del scheduler");
+            return;
+        }
+
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+            helper.setFrom(mailFrom);
+            helper.setTo(recipients);
+            helper.setSubject(subject);
+            helper.setText(htmlContent, true);
+
+            mailSender.send(message);
+            log.info("Email de error del scheduler enviado a {} destinatarios", recipients.length);
+        } catch (Exception e) {
+            log.error("Error al enviar email de error del scheduler: {}", e.getMessage(), e);
         }
     }
 

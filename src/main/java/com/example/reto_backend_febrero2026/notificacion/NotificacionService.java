@@ -31,9 +31,8 @@ public class NotificacionService implements INotificacionService {
 
     @Override
     public List<NotificacionResumenDTO> findAllResumen() {
-        return notificacionRepository.findAll()
-                .stream()
-                .map(n -> new NotificacionResumenDTO(n.getId(), n.getTitulo(), n.getExito(), n.getFechaEjecucion()))
+        return notificacionRepository.findAll().stream()
+                .map(this::toResumen)
                 .collect(Collectors.toList());
     }
 
@@ -41,28 +40,26 @@ public class NotificacionService implements INotificacionService {
     public Optional<NotificacionDetalleDTO> findById(Integer id) {
         return notificacionRepository.findById(id)
                 .map(n -> new NotificacionDetalleDTO(
-                        n.getId(),
-                        n.getTitulo(),
-                        n.getExito(),
-                        n.getDetalle(),
-                        n.getContenido(),
-                        n.getFechaEjecucion()
+                        n.getId(), n.getTitulo(), n.getExito(),
+                        n.getDetalle(), n.getContenido(), n.getFechaEjecucion()
                 ));
     }
 
     @Override
     public List<NotificacionResumenDTO> findExitosas() {
-        return notificacionRepository.findByExitoTrue()
-                .stream()
-                .map(n -> new NotificacionResumenDTO(n.getId(), n.getTitulo(), n.getExito(), n.getFechaEjecucion()))
+        return notificacionRepository.findByExitoTrue().stream()
+                .map(this::toResumen)
                 .collect(Collectors.toList());
     }
 
     @Override
     public List<NotificacionResumenDTO> findFallidas() {
-        return notificacionRepository.findByExitoFalse()
-                .stream()
-                .map(n -> new NotificacionResumenDTO(n.getId(), n.getTitulo(), n.getExito(), n.getFechaEjecucion()))
+        return notificacionRepository.findByExitoFalse().stream()
+                .map(this::toResumen)
                 .collect(Collectors.toList());
+    }
+
+    private NotificacionResumenDTO toResumen(Notificacion n) {
+        return new NotificacionResumenDTO(n.getId(), n.getTitulo(), n.getExito(), n.getFechaEjecucion());
     }
 }
