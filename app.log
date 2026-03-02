@@ -1,0 +1,398 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ----------------< com.example:reto-backend-febrero2026 >----------------
+[INFO] Building reto-backend-febrero2026 0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] >>> spring-boot:3.5.10:run (default-cli) > test-compile @ reto-backend-febrero2026 >>>
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ reto-backend-febrero2026 ---
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] Copying 3 resources from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.14.1:compile (default-compile) @ reto-backend-febrero2026 ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ reto-backend-febrero2026 ---
+[INFO] skip non existing resourceDirectory C:\Users\enzui\OneDrive - Universidad Cat�lica del Uruguay\invenzis-back\reto-summer-pde-2026-invenzis-backend\src\test\resources
+[INFO] 
+[INFO] --- compiler:3.14.1:testCompile (default-testCompile) @ reto-backend-febrero2026 ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 9 source files with javac [debug parameters release 21] to target\test-classes
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by lombok.permit.Permit
+WARNING: Please consider reporting this to the maintainers of class lombok.permit.Permit
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+[WARNING] /C:/Users/enzui/OneDrive - Universidad Cat�lica del Uruguay/invenzis-back/reto-summer-pde-2026-invenzis-backend/src/test/java/com/example/reto_backend_febrero2026/subfamilia/SubfamiliaControllerTest.java:[28,6] org.springframework.boot.test.mock.mockito.MockBean in org.springframework.boot.test.mock.mockito has been deprecated and marked for removal
+[WARNING] /C:/Users/enzui/OneDrive - Universidad Cat�lica del Uruguay/invenzis-back/reto-summer-pde-2026-invenzis-backend/src/test/java/com/example/reto_backend_febrero2026/subfamilia/SubfamiliaControllerTest.java:[28,6] org.springframework.boot.test.mock.mockito.MockBean in org.springframework.boot.test.mock.mockito has been deprecated and marked for removal
+[WARNING] /C:/Users/enzui/OneDrive - Universidad Cat�lica del Uruguay/invenzis-back/reto-summer-pde-2026-invenzis-backend/src/test/java/com/example/reto_backend_febrero2026/subfamilia/SubfamiliaControllerTest.java:[28,6] org.springframework.boot.test.mock.mockito.MockBean in org.springframework.boot.test.mock.mockito has been deprecated and marked for removal
+[WARNING] /C:/Users/enzui/OneDrive - Universidad Cat�lica del Uruguay/invenzis-back/reto-summer-pde-2026-invenzis-backend/src/test/java/com/example/reto_backend_febrero2026/subfamilia/SubfamiliaControllerTest.java:[28,6] org.springframework.boot.test.mock.mockito.MockBean in org.springframework.boot.test.mock.mockito has been deprecated and marked for removal
+[WARNING] /C:/Users/enzui/OneDrive - Universidad Cat�lica del Uruguay/invenzis-back/reto-summer-pde-2026-invenzis-backend/src/test/java/com/example/reto_backend_febrero2026/subfamilia/SubfamiliaControllerTest.java:[28,6] org.springframework.boot.test.mock.mockito.MockBean in org.springframework.boot.test.mock.mockito has been deprecated and marked for removal
+[INFO] 
+[INFO] <<< spring-boot:3.5.10:run (default-cli) < test-compile @ reto-backend-febrero2026 <<<
+[INFO] 
+[INFO] 
+[INFO] --- spring-boot:3.5.10:run (default-cli) @ reto-backend-febrero2026 ---
+[INFO] Attaching agents: []
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::               (v3.5.10)
+
+2026-02-26T21:46:27.968-03:00  INFO 17836 --- [reto-backend-febrero2026] [           main] c.e.r.RetoBackendFebrero2026Application  : Starting RetoBackendFebrero2026Application using Java 25.0.2 with PID 17836 (C:\Users\enzui\OneDrive - Universidad Católica del Uruguay\invenzis-back\reto-summer-pde-2026-invenzis-backend\target\classes started by enzui in C:\Users\enzui\OneDrive - Universidad Católica del Uruguay\invenzis-back\reto-summer-pde-2026-invenzis-backend)
+2026-02-26T21:46:27.970-03:00  INFO 17836 --- [reto-backend-febrero2026] [           main] c.e.r.RetoBackendFebrero2026Application  : No active profile set, falling back to 1 default profile: "default"
+2026-02-26T21:46:28.979-03:00  INFO 17836 --- [reto-backend-febrero2026] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-02-26T21:46:29.109-03:00  INFO 17836 --- [reto-backend-febrero2026] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 116 ms. Found 8 JPA repository interfaces.
+2026-02-26T21:46:30.189-03:00  INFO 17836 --- [reto-backend-febrero2026] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2026-02-26T21:46:30.214-03:00  INFO 17836 --- [reto-backend-febrero2026] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-02-26T21:46:30.215-03:00  INFO 17836 --- [reto-backend-febrero2026] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.50]
+2026-02-26T21:46:30.305-03:00  INFO 17836 --- [reto-backend-febrero2026] [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-02-26T21:46:30.305-03:00  INFO 17836 --- [reto-backend-febrero2026] [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 2279 ms
+2026-02-26T21:46:30.483-03:00  INFO 17836 --- [reto-backend-febrero2026] [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-02-26T21:46:30.547-03:00  INFO 17836 --- [reto-backend-febrero2026] [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.41.Final
+2026-02-26T21:46:30.585-03:00  INFO 17836 --- [reto-backend-febrero2026] [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-02-26T21:46:31.212-03:00  INFO 17836 --- [reto-backend-febrero2026] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-02-26T21:46:31.270-03:00  INFO 17836 --- [reto-backend-febrero2026] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-02-26T21:46:33.165-03:00  INFO 17836 --- [reto-backend-febrero2026] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@14239223
+2026-02-26T21:46:33.167-03:00  INFO 17836 --- [reto-backend-febrero2026] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-02-26T21:46:33.429-03:00  WARN 17836 --- [reto-backend-febrero2026] [           main] org.hibernate.orm.deprecation            : HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-02-26T21:46:33.875-03:00  INFO 17836 --- [reto-backend-febrero2026] [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 17.6
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-02-26T21:46:35.506-03:00  INFO 17836 --- [reto-backend-febrero2026] [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-02-26T21:46:40.068-03:00  INFO 17836 --- [reto-backend-febrero2026] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-02-26T21:46:40.976-03:00  INFO 17836 --- [reto-backend-febrero2026] [           main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-02-26T21:46:42.794-03:00  WARN 17836 --- [reto-backend-febrero2026] [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-02-26T21:46:42.894-03:00  INFO 17836 --- [reto-backend-febrero2026] [           main] o.s.v.b.OptionalValidatorFactoryBean     : Failed to set up a Bean Validation provider: jakarta.validation.NoProviderFoundException: Unable to create a Configuration, because no Jakarta Bean Validation provider could be found. Add a provider like Hibernate Validator (RI) to your classpath.
+2026-02-26T21:46:43.735-03:00  INFO 17836 --- [reto-backend-febrero2026] [           main] .w.s.a.s.AnnotationActionEndpointMapping : Supporting [WS-Addressing August 2004, WS-Addressing 1.0]
+2026-02-26T21:46:43.860-03:00  INFO 17836 --- [reto-backend-febrero2026] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2026-02-26T21:46:43.878-03:00  INFO 17836 --- [reto-backend-febrero2026] [           main] c.e.r.RetoBackendFebrero2026Application  : Started RetoBackendFebrero2026Application in 16.318 seconds (process running for 16.72)
+2026-02-26T21:47:00.017-03:00  INFO 17836 --- [reto-backend-febrero2026] [   scheduling-1] c.e.r.licitacion.LicitacionScheduler     : Iniciando envío diario de licitaciones ARCE
+2026-02-26T21:47:01.260-03:00  INFO 17836 --- [reto-backend-febrero2026] [   scheduling-1] c.e.r.AuditAspect                        : [37450481] Módulo: ARCE_CLIENTE_SERVICE - Mensaje: Ejecución exitosa: obtenerLicitaciones - Detalle: [ArceRssFilters[familyCod=1, subFamilyCod=1]]
+2026-02-26T21:47:02.474-03:00  INFO 17836 --- [reto-backend-febrero2026] [   scheduling-1] c.e.r.licitacion.LicitacionScheduler     : Envío diario completado con 0 licitaciones
+2026-02-26T21:47:02.952-03:00  INFO 17836 --- [reto-backend-febrero2026] [  AuditThread-2] c.e.r.email.EmailService                 : Usando 1 emails de la base de datos
+2026-02-26T21:47:06.312-03:00  INFO 17836 --- [reto-backend-febrero2026] [  AuditThread-2] c.e.r.email.EmailService                 : Email de licitaciones enviado a 1 destinatarios con 0 licitaciones
+2026-02-26T21:47:06.313-03:00  INFO 17836 --- [reto-backend-febrero2026] [  AuditThread-2] c.e.r.AuditAspect                        : [37450481] Módulo: EMAIL_SERVICE - Mensaje: Ejecución exitosa: sendLicitacionesEmail - Detalle: [[]]
+2026-02-26T21:48:00.000-03:00  INFO 17836 --- [reto-backend-febrero2026] [   scheduling-1] c.e.r.licitacion.LicitacionScheduler     : Iniciando envío diario de licitaciones ARCE
+2026-02-26T21:48:00.798-03:00  INFO 17836 --- [reto-backend-febrero2026] [   scheduling-1] c.e.r.AuditAspect                        : [37450481] Módulo: ARCE_CLIENTE_SERVICE - Mensaje: Ejecución exitosa: obtenerLicitaciones - Detalle: [ArceRssFilters[familyCod=1, subFamilyCod=1]]
+2026-02-26T21:48:02.026-03:00  INFO 17836 --- [reto-backend-febrero2026] [   scheduling-1] c.e.r.licitacion.LicitacionScheduler     : Envío diario completado con 0 licitaciones
+2026-02-26T21:48:02.304-03:00  INFO 17836 --- [reto-backend-febrero2026] [  AuditThread-5] c.e.r.email.EmailService                 : Usando 1 emails de la base de datos
+2026-02-26T21:48:05.648-03:00  INFO 17836 --- [reto-backend-febrero2026] [  AuditThread-5] c.e.r.email.EmailService                 : Email de licitaciones enviado a 1 destinatarios con 0 licitaciones
+2026-02-26T21:48:05.649-03:00  INFO 17836 --- [reto-backend-febrero2026] [  AuditThread-5] c.e.r.AuditAspect                        : [37450481] Módulo: EMAIL_SERVICE - Mensaje: Ejecución exitosa: sendLicitacionesEmail - Detalle: [[]]
+2026-02-26T21:49:00.010-03:00  INFO 17836 --- [reto-backend-febrero2026] [   scheduling-1] c.e.r.licitacion.LicitacionScheduler     : Iniciando envío diario de licitaciones ARCE
+2026-02-26T21:49:00.777-03:00  INFO 17836 --- [reto-backend-febrero2026] [   scheduling-1] c.e.r.AuditAspect                        : [37450481] Módulo: ARCE_CLIENTE_SERVICE - Mensaje: Ejecución exitosa: obtenerLicitaciones - Detalle: [ArceRssFilters[familyCod=1, subFamilyCod=1]]
+2026-02-26T21:49:02.491-03:00  INFO 17836 --- [reto-backend-febrero2026] [   scheduling-1] c.e.r.licitacion.LicitacionScheduler     : Envío diario completado con 0 licitaciones
+2026-02-26T21:49:02.695-03:00  INFO 17836 --- [reto-backend-febrero2026] [  AuditThread-2] c.e.r.email.EmailService                 : Usando 1 emails de la base de datos
+2026-02-26T21:49:07.370-03:00  INFO 17836 --- [reto-backend-febrero2026] [  AuditThread-2] c.e.r.email.EmailService                 : Email de licitaciones enviado a 1 destinatarios con 0 licitaciones
+2026-02-26T21:49:07.372-03:00  INFO 17836 --- [reto-backend-febrero2026] [  AuditThread-2] c.e.r.AuditAspect                        : [37450481] Módulo: EMAIL_SERVICE - Mensaje: Ejecución exitosa: sendLicitacionesEmail - Detalle: [[]]
+2026-02-26T21:50:00.001-03:00  INFO 17836 --- [reto-backend-febrero2026] [   scheduling-1] c.e.r.licitacion.LicitacionScheduler     : Iniciando envío diario de licitaciones ARCE
+2026-02-26T21:50:00.864-03:00  INFO 17836 --- [reto-backend-febrero2026] [   scheduling-1] c.e.r.AuditAspect                        : [37450481] Módulo: ARCE_CLIENTE_SERVICE - Mensaje: Ejecución exitosa: obtenerLicitaciones - Detalle: [ArceRssFilters[familyCod=1, subFamilyCod=1]]
+2026-02-26T21:50:02.291-03:00  INFO 17836 --- [reto-backend-febrero2026] [   scheduling-1] c.e.r.licitacion.LicitacionScheduler     : Envío diario completado con 0 licitaciones
+2026-02-26T21:50:02.446-03:00  INFO 17836 --- [reto-backend-febrero2026] [  AuditThread-5] c.e.r.email.EmailService                 : Usando 1 emails de la base de datos
+2026-02-26T21:50:07.617-03:00  INFO 17836 --- [reto-backend-febrero2026] [  AuditThread-5] c.e.r.email.EmailService                 : Email de licitaciones enviado a 1 destinatarios con 0 licitaciones
+2026-02-26T21:50:07.617-03:00  INFO 17836 --- [reto-backend-febrero2026] [  AuditThread-5] c.e.r.AuditAspect                        : [37450481] Módulo: EMAIL_SERVICE - Mensaje: Ejecución exitosa: sendLicitacionesEmail - Detalle: [[]]
+2026-02-26T21:51:00.006-03:00  INFO 17836 --- [reto-backend-febrero2026] [   scheduling-1] c.e.r.licitacion.LicitacionScheduler     : Iniciando envío diario de licitaciones ARCE
+2026-02-26T21:51:00.761-03:00  INFO 17836 --- [reto-backend-febrero2026] [   scheduling-1] c.e.r.AuditAspect                        : [37450481] Módulo: ARCE_CLIENTE_SERVICE - Mensaje: Ejecución exitosa: obtenerLicitaciones - Detalle: [ArceRssFilters[familyCod=1, subFamilyCod=1]]
+2026-02-26T21:51:01.906-03:00  INFO 17836 --- [reto-backend-febrero2026] [   scheduling-1] c.e.r.licitacion.LicitacionScheduler     : Envío diario completado con 0 licitaciones
+2026-02-26T21:51:02.046-03:00  INFO 17836 --- [reto-backend-febrero2026] [  AuditThread-2] c.e.r.email.EmailService                 : Usando 1 emails de la base de datos
+2026-02-26T21:51:06.153-03:00  INFO 17836 --- [reto-backend-febrero2026] [  AuditThread-2] c.e.r.email.EmailService                 : Email de licitaciones enviado a 1 destinatarios con 0 licitaciones
+2026-02-26T21:51:06.153-03:00  INFO 17836 --- [reto-backend-febrero2026] [  AuditThread-2] c.e.r.AuditAspect                        : [37450481] Módulo: EMAIL_SERVICE - Mensaje: Ejecución exitosa: sendLicitacionesEmail - Detalle: [[]]
+2026-02-26T21:52:00.001-03:00  INFO 17836 --- [reto-backend-febrero2026] [   scheduling-1] c.e.r.licitacion.LicitacionScheduler     : Iniciando envío diario de licitaciones ARCE
+2026-02-26T21:52:00.873-03:00  INFO 17836 --- [reto-backend-febrero2026] [   scheduling-1] c.e.r.AuditAspect                        : [37450481] Módulo: ARCE_CLIENTE_SERVICE - Mensaje: Ejecución exitosa: obtenerLicitaciones - Detalle: [ArceRssFilters[familyCod=1, subFamilyCod=1]]
+2026-02-26T21:52:02.304-03:00  INFO 17836 --- [reto-backend-febrero2026] [   scheduling-1] c.e.r.licitacion.LicitacionScheduler     : Envío diario completado con 0 licitaciones
+2026-02-26T21:52:02.512-03:00  INFO 17836 --- [reto-backend-febrero2026] [  AuditThread-5] c.e.r.email.EmailService                 : Usando 1 emails de la base de datos
+2026-02-26T21:52:06.605-03:00  INFO 17836 --- [reto-backend-febrero2026] [  AuditThread-5] c.e.r.email.EmailService                 : Email de licitaciones enviado a 1 destinatarios con 0 licitaciones
+2026-02-26T21:52:06.605-03:00  INFO 17836 --- [reto-backend-febrero2026] [  AuditThread-5] c.e.r.AuditAspect                        : [37450481] Módulo: EMAIL_SERVICE - Mensaje: Ejecución exitosa: sendLicitacionesEmail - Detalle: [[]]
+2026-02-26T21:53:00.007-03:00  INFO 17836 --- [reto-backend-febrero2026] [   scheduling-1] c.e.r.licitacion.LicitacionScheduler     : Iniciando envío diario de licitaciones ARCE
+2026-02-26T21:53:00.577-03:00  INFO 17836 --- [reto-backend-febrero2026] [   scheduling-1] c.e.r.AuditAspect                        : [37450481] Módulo: ARCE_CLIENTE_SERVICE - Mensaje: Ejecución exitosa: obtenerLicitaciones - Detalle: [ArceRssFilters[familyCod=1, subFamilyCod=1]]
+2026-02-26T21:53:01.560-03:00  INFO 17836 --- [reto-backend-febrero2026] [   scheduling-1] c.e.r.licitacion.LicitacionScheduler     : Envío diario completado con 0 licitaciones
+2026-02-26T21:53:01.698-03:00  INFO 17836 --- [reto-backend-febrero2026] [  AuditThread-2] c.e.r.email.EmailService                 : Usando 1 emails de la base de datos
+2026-02-26T21:53:05.676-03:00  INFO 17836 --- [reto-backend-febrero2026] [  AuditThread-2] c.e.r.email.EmailService                 : Email de licitaciones enviado a 1 destinatarios con 0 licitaciones
+2026-02-26T21:53:05.676-03:00  INFO 17836 --- [reto-backend-febrero2026] [  AuditThread-2] c.e.r.AuditAspect                        : [37450481] Módulo: EMAIL_SERVICE - Mensaje: Ejecución exitosa: sendLicitacionesEmail - Detalle: [[]]
+2026-02-26T22:45:45.870-03:00  WARN 17836 --- [reto-backend-febrero2026] [l-1:housekeeper] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Failed to validate connection org.postgresql.jdbc.PgConnection@2fb42eae (This connection has been closed.). Possibly consider using a shorter maxLifetime value.
+2026-02-26T22:45:45.900-03:00  WARN 17836 --- [reto-backend-febrero2026] [l-1:housekeeper] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Failed to validate connection org.postgresql.jdbc.PgConnection@40848389 (This connection has been closed.). Possibly consider using a shorter maxLifetime value.
+2026-02-26T22:45:45.915-03:00  WARN 17836 --- [reto-backend-febrero2026] [l-1:housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=52m42s469ms763µs400ns).
+2026-02-26T22:45:45.923-03:00  WARN 17836 --- [reto-backend-febrero2026] [l-1:housekeeper] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Failed to validate connection org.postgresql.jdbc.PgConnection@4e4b1469 (This connection has been closed.). Possibly consider using a shorter maxLifetime value.
+2026-02-26T22:45:45.936-03:00  WARN 17836 --- [reto-backend-febrero2026] [l-1:housekeeper] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Failed to validate connection org.postgresql.jdbc.PgConnection@45e7763a (This connection has been closed.). Possibly consider using a shorter maxLifetime value.
+2026-02-26T22:45:45.944-03:00  WARN 17836 --- [reto-backend-febrero2026] [l-1:housekeeper] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Failed to validate connection org.postgresql.jdbc.PgConnection@68d66044 (This connection has been closed.). Possibly consider using a shorter maxLifetime value.
+2026-02-26T22:45:45.952-03:00  WARN 17836 --- [reto-backend-febrero2026] [l-1:housekeeper] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Failed to validate connection org.postgresql.jdbc.PgConnection@c2a3e1c (This connection has been closed.). Possibly consider using a shorter maxLifetime value.
+2026-02-26T22:45:45.962-03:00  WARN 17836 --- [reto-backend-febrero2026] [l-1:housekeeper] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Failed to validate connection org.postgresql.jdbc.PgConnection@1ad48bac (This connection has been closed.). Possibly consider using a shorter maxLifetime value.
+2026-02-26T22:45:45.973-03:00  WARN 17836 --- [reto-backend-febrero2026] [l-1:housekeeper] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Failed to validate connection org.postgresql.jdbc.PgConnection@64fc786a (This connection has been closed.). Possibly consider using a shorter maxLifetime value.
+2026-02-26T22:45:45.987-03:00  WARN 17836 --- [reto-backend-febrero2026] [l-1:housekeeper] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Failed to validate connection org.postgresql.jdbc.PgConnection@14239223 (This connection has been closed.). Possibly consider using a shorter maxLifetime value.
+2026-02-26T22:45:46.000-03:00  WARN 17836 --- [reto-backend-febrero2026] [l-1:housekeeper] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Failed to validate connection org.postgresql.jdbc.PgConnection@3ff3e0f1 (This connection has been closed.). Possibly consider using a shorter maxLifetime value.
+2026-02-27T04:47:32.098-03:00  WARN 17836 --- [reto-backend-febrero2026] [onnection-adder] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Pool is empty, failed to create/setup connection (489e7b32-0c76-4f69-82e2-5e2fb6365c37)
+
+org.postgresql.util.PSQLException: El intento de conexión falló.
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:385) ~[postgresql-42.7.9.jar:42.7.9]
+	at org.postgresql.core.ConnectionFactory.openConnection(ConnectionFactory.java:57) ~[postgresql-42.7.9.jar:42.7.9]
+	at org.postgresql.jdbc.PgConnection.<init>(PgConnection.java:290) ~[postgresql-42.7.9.jar:42.7.9]
+	at org.postgresql.Driver.makeConnection(Driver.java:448) ~[postgresql-42.7.9.jar:42.7.9]
+	at org.postgresql.Driver.connect(Driver.java:298) ~[postgresql-42.7.9.jar:42.7.9]
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:144) ~[HikariCP-6.3.3.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:370) ~[HikariCP-6.3.3.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:207) ~[HikariCP-6.3.3.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:488) ~[HikariCP-6.3.3.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:752) ~[HikariCP-6.3.3.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:731) ~[HikariCP-6.3.3.jar:na]
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:328) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1090) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:614) ~[na:na]
+	at java.base/java.lang.Thread.run(Thread.java:1474) ~[na:na]
+Caused by: java.net.UnknownHostException: aws-1-us-east-1.pooler.supabase.com
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:569) ~[na:na]
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:284) ~[na:na]
+	at java.base/java.net.Socket.connect(Socket.java:659) ~[na:na]
+	at org.postgresql.core.PGStream.createSocket(PGStream.java:261) ~[postgresql-42.7.9.jar:42.7.9]
+	at org.postgresql.core.PGStream.<init>(PGStream.java:122) ~[postgresql-42.7.9.jar:42.7.9]
+	at org.postgresql.core.v3.ConnectionFactoryImpl.tryConnect(ConnectionFactoryImpl.java:146) ~[postgresql-42.7.9.jar:42.7.9]
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:289) ~[postgresql-42.7.9.jar:42.7.9]
+	... 14 common frames omitted
+
+2026-02-27T08:32:07.804-03:00  WARN 17836 --- [reto-backend-febrero2026] [l-1:housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=9h46m24s246ms205µs400ns).
+2026-02-27T08:32:07.817-03:00  WARN 17836 --- [reto-backend-febrero2026] [l-1:housekeeper] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Failed to validate connection org.postgresql.jdbc.PgConnection@6274f3cd (This connection has been closed.). Possibly consider using a shorter maxLifetime value.
+2026-02-27T08:32:07.838-03:00  WARN 17836 --- [reto-backend-febrero2026] [l-1:housekeeper] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Failed to validate connection org.postgresql.jdbc.PgConnection@5bfb910e (This connection has been closed.). Possibly consider using a shorter maxLifetime value.
+2026-02-27T08:32:07.867-03:00  WARN 17836 --- [reto-backend-febrero2026] [l-1:housekeeper] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Failed to validate connection org.postgresql.jdbc.PgConnection@7b2f16e8 (This connection has been closed.). Possibly consider using a shorter maxLifetime value.
+2026-02-27T08:32:08.780-03:00  WARN 17836 --- [reto-backend-febrero2026] [onnection-adder] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Pool is empty, failed to create/setup connection (d65c2707-0d11-4ddc-85fb-35846a8ddb1d)
+
+org.postgresql.util.PSQLException: El intento de conexión falló.
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:385) ~[postgresql-42.7.9.jar:42.7.9]
+	at org.postgresql.core.ConnectionFactory.openConnection(ConnectionFactory.java:57) ~[postgresql-42.7.9.jar:42.7.9]
+	at org.postgresql.jdbc.PgConnection.<init>(PgConnection.java:290) ~[postgresql-42.7.9.jar:42.7.9]
+	at org.postgresql.Driver.makeConnection(Driver.java:448) ~[postgresql-42.7.9.jar:42.7.9]
+	at org.postgresql.Driver.connect(Driver.java:298) ~[postgresql-42.7.9.jar:42.7.9]
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:144) ~[HikariCP-6.3.3.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:370) ~[HikariCP-6.3.3.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:207) ~[HikariCP-6.3.3.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:488) ~[HikariCP-6.3.3.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:752) ~[HikariCP-6.3.3.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:731) ~[HikariCP-6.3.3.jar:na]
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:328) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1090) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:614) ~[na:na]
+	at java.base/java.lang.Thread.run(Thread.java:1474) ~[na:na]
+Caused by: java.net.UnknownHostException: aws-1-us-east-1.pooler.supabase.com
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:569) ~[na:na]
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:284) ~[na:na]
+	at java.base/java.net.Socket.connect(Socket.java:659) ~[na:na]
+	at org.postgresql.core.PGStream.createSocket(PGStream.java:261) ~[postgresql-42.7.9.jar:42.7.9]
+	at org.postgresql.core.PGStream.<init>(PGStream.java:122) ~[postgresql-42.7.9.jar:42.7.9]
+	at org.postgresql.core.v3.ConnectionFactoryImpl.tryConnect(ConnectionFactoryImpl.java:146) ~[postgresql-42.7.9.jar:42.7.9]
+	at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:289) ~[postgresql-42.7.9.jar:42.7.9]
+	... 14 common frames omitted
+
+2026-02-27T08:32:20.665-03:00  INFO 17836 --- [reto-backend-febrero2026] [   scheduling-1] c.e.r.licitacion.LicitacionScheduler     : Iniciando envío diario de licitaciones ARCE
+2026-02-27T08:32:26.590-03:00  INFO 17836 --- [reto-backend-febrero2026] [   scheduling-1] c.e.r.AuditAspect                        : [37450481] Módulo: ARCE_CLIENTE_SERVICE - Mensaje: Ejecución exitosa: obtenerLicitaciones - Detalle: [ArceRssFilters[familyCod=1, subFamilyCod=1]]
+2026-02-27T08:32:27.842-03:00  INFO 17836 --- [reto-backend-febrero2026] [   scheduling-1] c.e.r.licitacion.LicitacionScheduler     : Envío diario completado con 0 licitaciones
+2026-02-27T08:32:27.999-03:00  INFO 17836 --- [reto-backend-febrero2026] [  AuditThread-5] c.e.r.email.EmailService                 : Usando 1 emails de la base de datos
+2026-02-27T08:32:32.322-03:00  INFO 17836 --- [reto-backend-febrero2026] [  AuditThread-5] c.e.r.email.EmailService                 : Email de licitaciones enviado a 1 destinatarios con 0 licitaciones
+2026-02-27T08:32:32.322-03:00  INFO 17836 --- [reto-backend-febrero2026] [  AuditThread-5] c.e.r.AuditAspect                        : [37450481] Módulo: EMAIL_SERVICE - Mensaje: Ejecución exitosa: sendLicitacionesEmail - Detalle: [[]]
+2026-02-27T08:33:00.007-03:00  INFO 17836 --- [reto-backend-febrero2026] [   scheduling-1] c.e.r.licitacion.LicitacionScheduler     : Iniciando envío diario de licitaciones ARCE
+2026-02-27T08:33:05.167-03:00  INFO 17836 --- [reto-backend-febrero2026] [   scheduling-1] c.e.r.AuditAspect                        : [37450481] Módulo: ARCE_CLIENTE_SERVICE - Mensaje: Ejecución exitosa: obtenerLicitaciones - Detalle: [ArceRssFilters[familyCod=1, subFamilyCod=1]]
+2026-02-27T08:33:06.545-03:00  INFO 17836 --- [reto-backend-febrero2026] [   scheduling-1] c.e.r.licitacion.LicitacionScheduler     : Envío diario completado con 0 licitaciones
+2026-02-27T08:33:06.840-03:00  INFO 17836 --- [reto-backend-febrero2026] [  AuditThread-2] c.e.r.email.EmailService                 : Usando 1 emails de la base de datos
+2026-02-27T08:33:10.317-03:00  INFO 17836 --- [reto-backend-febrero2026] [  AuditThread-2] c.e.r.email.EmailService                 : Email de licitaciones enviado a 1 destinatarios con 0 licitaciones
+2026-02-27T08:33:10.318-03:00  INFO 17836 --- [reto-backend-febrero2026] [  AuditThread-2] c.e.r.AuditAspect                        : [37450481] Módulo: EMAIL_SERVICE - Mensaje: Ejecución exitosa: sendLicitacionesEmail - Detalle: [[]]
+2026-02-27T08:34:00.006-03:00  INFO 17836 --- [reto-backend-febrero2026] [   scheduling-1] c.e.r.licitacion.LicitacionScheduler     : Iniciando envío diario de licitaciones ARCE
+2026-02-27T08:34:05.253-03:00  INFO 17836 --- [reto-backend-febrero2026] [   scheduling-1] c.e.r.AuditAspect                        : [37450481] Módulo: ARCE_CLIENTE_SERVICE - Mensaje: Ejecución exitosa: obtenerLicitaciones - Detalle: [ArceRssFilters[familyCod=1, subFamilyCod=1]]
+2026-02-27T08:34:06.770-03:00  INFO 17836 --- [reto-backend-febrero2026] [   scheduling-1] c.e.r.licitacion.LicitacionScheduler     : Envío diario completado con 0 licitaciones
+2026-02-27T08:34:06.959-03:00  INFO 17836 --- [reto-backend-febrero2026] [  AuditThread-5] c.e.r.email.EmailService                 : Usando 1 emails de la base de datos
+2026-02-27T08:34:10.724-03:00  INFO 17836 --- [reto-backend-febrero2026] [  AuditThread-5] c.e.r.email.EmailService                 : Email de licitaciones enviado a 1 destinatarios con 0 licitaciones
+2026-02-27T08:34:10.726-03:00  INFO 17836 --- [reto-backend-febrero2026] [  AuditThread-5] c.e.r.AuditAspect                        : [37450481] Módulo: EMAIL_SERVICE - Mensaje: Ejecución exitosa: sendLicitacionesEmail - Detalle: [[]]
+2026-02-27T08:35:00.062-03:00  INFO 17836 --- [reto-backend-febrero2026] [   scheduling-1] c.e.r.licitacion.LicitacionScheduler     : Iniciando envío diario de licitaciones ARCE
+2026-02-27T08:35:05.481-03:00  INFO 17836 --- [reto-backend-febrero2026] [   scheduling-1] c.e.r.AuditAspect                        : [37450481] Módulo: ARCE_CLIENTE_SERVICE - Mensaje: Ejecución exitosa: obtenerLicitaciones - Detalle: [ArceRssFilters[familyCod=1, subFamilyCod=1]]
+2026-02-27T08:35:06.770-03:00  INFO 17836 --- [reto-backend-febrero2026] [   scheduling-1] c.e.r.licitacion.LicitacionScheduler     : Envío diario completado con 0 licitaciones
+2026-02-27T08:35:06.919-03:00  INFO 17836 --- [reto-backend-febrero2026] [  AuditThread-2] c.e.r.email.EmailService                 : Usando 1 emails de la base de datos
+2026-02-27T08:35:11.164-03:00  INFO 17836 --- [reto-backend-febrero2026] [  AuditThread-2] c.e.r.email.EmailService                 : Email de licitaciones enviado a 1 destinatarios con 0 licitaciones
+2026-02-27T08:35:11.164-03:00  INFO 17836 --- [reto-backend-febrero2026] [  AuditThread-2] c.e.r.AuditAspect                        : [37450481] Módulo: EMAIL_SERVICE - Mensaje: Ejecución exitosa: sendLicitacionesEmail - Detalle: [[]]
+2026-02-27T08:36:00.001-03:00  INFO 17836 --- [reto-backend-febrero2026] [   scheduling-1] c.e.r.licitacion.LicitacionScheduler     : Iniciando envío diario de licitaciones ARCE
+2026-02-27T08:36:06.347-03:00  INFO 17836 --- [reto-backend-febrero2026] [   scheduling-1] c.e.r.AuditAspect                        : [37450481] Módulo: ARCE_CLIENTE_SERVICE - Mensaje: Ejecución exitosa: obtenerLicitaciones - Detalle: [ArceRssFilters[familyCod=1, subFamilyCod=1]]
+2026-02-27T08:36:07.998-03:00  INFO 17836 --- [reto-backend-febrero2026] [   scheduling-1] c.e.r.licitacion.LicitacionScheduler     : Envío diario completado con 0 licitaciones
+2026-02-27T08:36:08.297-03:00  INFO 17836 --- [reto-backend-febrero2026] [  AuditThread-5] c.e.r.email.EmailService                 : Usando 1 emails de la base de datos
+2026-02-27T08:36:11.826-03:00  INFO 17836 --- [reto-backend-febrero2026] [  AuditThread-5] c.e.r.email.EmailService                 : Email de licitaciones enviado a 1 destinatarios con 0 licitaciones
+2026-02-27T08:36:11.827-03:00  INFO 17836 --- [reto-backend-febrero2026] [  AuditThread-5] c.e.r.AuditAspect                        : [37450481] Módulo: EMAIL_SERVICE - Mensaje: Ejecución exitosa: sendLicitacionesEmail - Detalle: [[]]
+2026-02-27T08:37:00.002-03:00  INFO 17836 --- [reto-backend-febrero2026] [   scheduling-1] c.e.r.licitacion.LicitacionScheduler     : Iniciando envío diario de licitaciones ARCE
+2026-02-27T08:37:08.280-03:00  INFO 17836 --- [reto-backend-febrero2026] [   scheduling-1] c.e.r.AuditAspect                        : [37450481] Módulo: ARCE_CLIENTE_SERVICE - Mensaje: Ejecución exitosa: obtenerLicitaciones - Detalle: [ArceRssFilters[familyCod=1, subFamilyCod=1]]
+2026-02-27T08:37:09.995-03:00  INFO 17836 --- [reto-backend-febrero2026] [   scheduling-1] c.e.r.licitacion.LicitacionScheduler     : Envío diario completado con 0 licitaciones
+2026-02-27T08:37:10.186-03:00  INFO 17836 --- [reto-backend-febrero2026] [  AuditThread-2] c.e.r.email.EmailService                 : Usando 1 emails de la base de datos
+2026-02-27T08:37:14.842-03:00  INFO 17836 --- [reto-backend-febrero2026] [  AuditThread-2] c.e.r.email.EmailService                 : Email de licitaciones enviado a 1 destinatarios con 0 licitaciones
+2026-02-27T08:37:14.843-03:00  INFO 17836 --- [reto-backend-febrero2026] [  AuditThread-2] c.e.r.AuditAspect                        : [37450481] Módulo: EMAIL_SERVICE - Mensaje: Ejecución exitosa: sendLicitacionesEmail - Detalle: [[]]
+2026-02-27T08:38:00.012-03:00  INFO 17836 --- [reto-backend-febrero2026] [   scheduling-1] c.e.r.licitacion.LicitacionScheduler     : Iniciando envío diario de licitaciones ARCE
+2026-02-27T08:38:05.148-03:00  INFO 17836 --- [reto-backend-febrero2026] [   scheduling-1] c.e.r.AuditAspect                        : [37450481] Módulo: ARCE_CLIENTE_SERVICE - Mensaje: Ejecución exitosa: obtenerLicitaciones - Detalle: [ArceRssFilters[familyCod=1, subFamilyCod=1]]
+2026-02-27T08:38:06.438-03:00  INFO 17836 --- [reto-backend-febrero2026] [   scheduling-1] c.e.r.licitacion.LicitacionScheduler     : Envío diario completado con 0 licitaciones
+2026-02-27T08:38:06.616-03:00  INFO 17836 --- [reto-backend-febrero2026] [  AuditThread-5] c.e.r.email.EmailService                 : Usando 1 emails de la base de datos
+2026-02-27T08:38:09.958-03:00  INFO 17836 --- [reto-backend-febrero2026] [  AuditThread-5] c.e.r.email.EmailService                 : Email de licitaciones enviado a 1 destinatarios con 0 licitaciones
+2026-02-27T08:38:09.960-03:00  INFO 17836 --- [reto-backend-febrero2026] [  AuditThread-5] c.e.r.AuditAspect                        : [37450481] Módulo: EMAIL_SERVICE - Mensaje: Ejecución exitosa: sendLicitacionesEmail - Detalle: [[]]
+2026-02-27T08:39:00.008-03:00  INFO 17836 --- [reto-backend-febrero2026] [   scheduling-1] c.e.r.licitacion.LicitacionScheduler     : Iniciando envío diario de licitaciones ARCE
+2026-02-27T08:39:07.019-03:00 ERROR 17836 --- [reto-backend-febrero2026] [   scheduling-1] c.e.r.AuditAspect                        : [37450481] Módulo: ARCE_CLIENTE_SERVICE - Mensaje: ERROR en obtenerLicitaciones: Error al conectar con ARCE RSS: I/O error on GET request for "https://www.comprasestatales.gub.uy/consultas/rss/tipo-pub/VIG/tipo-doc/C/filtro-cat/CAT/familia/1/sub-familia/1": null - Detalle: java.lang.RuntimeException: Error al conectar con ARCE RSS: I/O error on GET request for "https://www.comprasestatales.gub.uy/consultas/rss/tipo-pub/VIG/tipo-doc/C/filtro-cat/CAT/familia/1/sub-familia/1": null
+	at com.example.reto_backend_febrero2026.integration.servlet.service.ArceClientService.obtenerLicitaciones(ArceClientService.java:100)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:360)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.invokeJoinpoint(ReflectiveMethodInvocation.java:196)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163)
+	at org.springframework.aop.aspectj.AspectJAfterThrowingAdvice.invoke(AspectJAfterThrowingAdvice.java:64)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:173)
+	at org.springframework.aop.framework.adapter.AfterReturningAdviceInterceptor.invoke(AfterReturningAdviceInterceptor.java:57)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:173)
+	at org.springframework.aop.aspectj.MethodInvocationProceedingJoinPoint.proceed(MethodInvocationProceedingJoinPoint.java:89)
+	at com.example.reto_backend_febrero2026.AuditAspect.around(AuditAspect.java:47)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at org.springframework.aop.aspectj.AbstractAspectJAdvice.invokeAdviceMethodWithGivenArgs(AbstractAspectJAdvice.java:649)
+	at org.springframework.aop.aspectj.AbstractAspectJAdvice.invokeAdviceMethod(AbstractAspectJAdvice.java:631)
+	at org.springframework.aop.aspectj.AspectJAroundAdvice.invoke(AspectJAroundAdvice.java:
+2026-02-27T08:39:09.033-03:00 ERROR 17836 --- [reto-backend-febrero2026] [   scheduling-1] c.e.r.AuditAspect                        : [37450481] Módulo: ARCE_CLIENTE_SERVICE - Mensaje: ERROR en obtenerLicitaciones: Error al conectar con ARCE RSS: I/O error on GET request for "https://www.comprasestatales.gub.uy/consultas/rss/tipo-pub/VIG/tipo-doc/C/filtro-cat/CAT/familia/1/sub-familia/1": null - Detalle: java.lang.RuntimeException: Error al conectar con ARCE RSS: I/O error on GET request for "https://www.comprasestatales.gub.uy/consultas/rss/tipo-pub/VIG/tipo-doc/C/filtro-cat/CAT/familia/1/sub-familia/1": null
+	at com.example.reto_backend_febrero2026.integration.servlet.service.ArceClientService.obtenerLicitaciones(ArceClientService.java:100)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:360)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.invokeJoinpoint(ReflectiveMethodInvocation.java:196)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163)
+	at org.springframework.aop.aspectj.AspectJAfterThrowingAdvice.invoke(AspectJAfterThrowingAdvice.java:64)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:173)
+	at org.springframework.aop.framework.adapter.AfterReturningAdviceInterceptor.invoke(AfterReturningAdviceInterceptor.java:57)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:173)
+	at org.springframework.aop.aspectj.MethodInvocationProceedingJoinPoint.proceed(MethodInvocationProceedingJoinPoint.java:89)
+	at com.example.reto_backend_febrero2026.AuditAspect.around(AuditAspect.java:47)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at org.springframework.aop.aspectj.AbstractAspectJAdvice.invokeAdviceMethodWithGivenArgs(AbstractAspectJAdvice.java:649)
+	at org.springframework.aop.aspectj.AbstractAspectJAdvice.invokeAdviceMethod(AbstractAspectJAdvice.java:631)
+	at org.springframework.aop.aspectj.AspectJAroundAdvice.invoke(AspectJAroundAdvice.java:
+2026-02-27T08:39:15.052-03:00 ERROR 17836 --- [reto-backend-febrero2026] [   scheduling-1] c.e.r.AuditAspect                        : [37450481] Módulo: ARCE_CLIENTE_SERVICE - Mensaje: ERROR en obtenerLicitaciones: Error al conectar con ARCE RSS: I/O error on GET request for "https://www.comprasestatales.gub.uy/consultas/rss/tipo-pub/VIG/tipo-doc/C/filtro-cat/CAT/familia/1/sub-familia/1": null - Detalle: java.lang.RuntimeException: Error al conectar con ARCE RSS: I/O error on GET request for "https://www.comprasestatales.gub.uy/consultas/rss/tipo-pub/VIG/tipo-doc/C/filtro-cat/CAT/familia/1/sub-familia/1": null
+	at com.example.reto_backend_febrero2026.integration.servlet.service.ArceClientService.obtenerLicitaciones(ArceClientService.java:100)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:360)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.invokeJoinpoint(ReflectiveMethodInvocation.java:196)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163)
+	at org.springframework.aop.aspectj.AspectJAfterThrowingAdvice.invoke(AspectJAfterThrowingAdvice.java:64)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:173)
+	at org.springframework.aop.framework.adapter.AfterReturningAdviceInterceptor.invoke(AfterReturningAdviceInterceptor.java:57)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:173)
+	at org.springframework.aop.aspectj.MethodInvocationProceedingJoinPoint.proceed(MethodInvocationProceedingJoinPoint.java:89)
+	at com.example.reto_backend_febrero2026.AuditAspect.around(AuditAspect.java:47)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at org.springframework.aop.aspectj.AbstractAspectJAdvice.invokeAdviceMethodWithGivenArgs(AbstractAspectJAdvice.java:649)
+	at org.springframework.aop.aspectj.AbstractAspectJAdvice.invokeAdviceMethod(AbstractAspectJAdvice.java:631)
+	at org.springframework.aop.aspectj.AspectJAroundAdvice.invoke(AspectJAroundAdvice.java:
+2026-02-27T08:39:37.726-03:00  INFO 17836 --- [reto-backend-febrero2026] [   scheduling-1] c.e.r.AuditAspect                        : [37450481] Módulo: ARCE_CLIENTE_SERVICE - Mensaje: Ejecución exitosa: obtenerLicitaciones - Detalle: [ArceRssFilters[familyCod=1, subFamilyCod=1]]
+2026-02-27T08:39:39.116-03:00  INFO 17836 --- [reto-backend-febrero2026] [   scheduling-1] c.e.r.licitacion.LicitacionScheduler     : Envío diario completado con 0 licitaciones
+2026-02-27T08:39:39.259-03:00  INFO 17836 --- [reto-backend-febrero2026] [  AuditThread-5] c.e.r.email.EmailService                 : Usando 1 emails de la base de datos
+2026-02-27T08:39:43.437-03:00  INFO 17836 --- [reto-backend-febrero2026] [  AuditThread-5] c.e.r.email.EmailService                 : Email de licitaciones enviado a 1 destinatarios con 0 licitaciones
+2026-02-27T08:39:43.453-03:00  INFO 17836 --- [reto-backend-febrero2026] [  AuditThread-5] c.e.r.AuditAspect                        : [37450481] Módulo: EMAIL_SERVICE - Mensaje: Ejecución exitosa: sendLicitacionesEmail - Detalle: [[]]
+2026-02-27T08:40:00.009-03:00  INFO 17836 --- [reto-backend-febrero2026] [   scheduling-1] c.e.r.licitacion.LicitacionScheduler     : Iniciando envío diario de licitaciones ARCE
+2026-02-27T08:40:00.734-03:00  INFO 17836 --- [reto-backend-febrero2026] [   scheduling-1] c.e.r.AuditAspect                        : [37450481] Módulo: ARCE_CLIENTE_SERVICE - Mensaje: Ejecución exitosa: obtenerLicitaciones - Detalle: [ArceRssFilters[familyCod=1, subFamilyCod=1]]
+2026-02-27T08:40:02.281-03:00  INFO 17836 --- [reto-backend-febrero2026] [   scheduling-1] c.e.r.licitacion.LicitacionScheduler     : Envío diario completado con 0 licitaciones
+2026-02-27T08:40:02.780-03:00  INFO 17836 --- [reto-backend-febrero2026] [  AuditThread-4] c.e.r.email.EmailService                 : Usando 1 emails de la base de datos
+2026-02-27T08:40:07.089-03:00  INFO 17836 --- [reto-backend-febrero2026] [  AuditThread-4] c.e.r.email.EmailService                 : Email de licitaciones enviado a 1 destinatarios con 0 licitaciones
+2026-02-27T08:40:07.089-03:00  INFO 17836 --- [reto-backend-febrero2026] [  AuditThread-4] c.e.r.AuditAspect                        : [37450481] Módulo: EMAIL_SERVICE - Mensaje: Ejecución exitosa: sendLicitacionesEmail - Detalle: [[]]
+2026-02-27T08:41:00.006-03:00  INFO 17836 --- [reto-backend-febrero2026] [   scheduling-1] c.e.r.licitacion.LicitacionScheduler     : Iniciando envío diario de licitaciones ARCE
+2026-02-27T08:41:05.255-03:00  INFO 17836 --- [reto-backend-febrero2026] [   scheduling-1] c.e.r.AuditAspect                        : [37450481] Módulo: ARCE_CLIENTE_SERVICE - Mensaje: Ejecución exitosa: obtenerLicitaciones - Detalle: [ArceRssFilters[familyCod=1, subFamilyCod=1]]
+2026-02-27T08:41:06.889-03:00  INFO 17836 --- [reto-backend-febrero2026] [   scheduling-1] c.e.r.licitacion.LicitacionScheduler     : Envío diario completado con 0 licitaciones
+2026-02-27T08:41:07.095-03:00  INFO 17836 --- [reto-backend-febrero2026] [  AuditThread-5] c.e.r.email.EmailService                 : Usando 1 emails de la base de datos
+2026-02-27T08:41:11.302-03:00  INFO 17836 --- [reto-backend-febrero2026] [  AuditThread-5] c.e.r.email.EmailService                 : Email de licitaciones enviado a 1 destinatarios con 0 licitaciones
+2026-02-27T08:41:11.303-03:00  INFO 17836 --- [reto-backend-febrero2026] [  AuditThread-5] c.e.r.AuditAspect                        : [37450481] Módulo: EMAIL_SERVICE - Mensaje: Ejecución exitosa: sendLicitacionesEmail - Detalle: [[]]
+2026-02-27T08:42:00.003-03:00  INFO 17836 --- [reto-backend-febrero2026] [   scheduling-1] c.e.r.licitacion.LicitacionScheduler     : Iniciando envío diario de licitaciones ARCE
+2026-02-27T08:42:05.412-03:00  INFO 17836 --- [reto-backend-febrero2026] [   scheduling-1] c.e.r.AuditAspect                        : [37450481] Módulo: ARCE_CLIENTE_SERVICE - Mensaje: Ejecución exitosa: obtenerLicitaciones - Detalle: [ArceRssFilters[familyCod=1, subFamilyCod=1]]
+2026-02-27T08:42:07.113-03:00  INFO 17836 --- [reto-backend-febrero2026] [   scheduling-1] c.e.r.licitacion.LicitacionScheduler     : Envío diario completado con 0 licitaciones
+2026-02-27T08:42:07.308-03:00  INFO 17836 --- [reto-backend-febrero2026] [  AuditThread-4] c.e.r.email.EmailService                 : Usando 1 emails de la base de datos
+2026-02-27T08:42:10.657-03:00  INFO 17836 --- [reto-backend-febrero2026] [  AuditThread-4] c.e.r.email.EmailService                 : Email de licitaciones enviado a 1 destinatarios con 0 licitaciones
+2026-02-27T08:42:10.658-03:00  INFO 17836 --- [reto-backend-febrero2026] [  AuditThread-4] c.e.r.AuditAspect                        : [37450481] Módulo: EMAIL_SERVICE - Mensaje: Ejecución exitosa: sendLicitacionesEmail - Detalle: [[]]
+2026-02-27T08:43:00.001-03:00  INFO 17836 --- [reto-backend-febrero2026] [   scheduling-1] c.e.r.licitacion.LicitacionScheduler     : Iniciando envío diario de licitaciones ARCE
+2026-02-27T08:43:05.371-03:00  INFO 17836 --- [reto-backend-febrero2026] [   scheduling-1] c.e.r.AuditAspect                        : [37450481] Módulo: ARCE_CLIENTE_SERVICE - Mensaje: Ejecución exitosa: obtenerLicitaciones - Detalle: [ArceRssFilters[familyCod=1, subFamilyCod=1]]
+2026-02-27T08:43:06.802-03:00  INFO 17836 --- [reto-backend-febrero2026] [   scheduling-1] c.e.r.licitacion.LicitacionScheduler     : Envío diario completado con 0 licitaciones
+2026-02-27T08:43:07.011-03:00  INFO 17836 --- [reto-backend-febrero2026] [  AuditThread-5] c.e.r.email.EmailService                 : Usando 1 emails de la base de datos
+2026-02-27T08:43:10.692-03:00  INFO 17836 --- [reto-backend-febrero2026] [  AuditThread-5] c.e.r.email.EmailService                 : Email de licitaciones enviado a 1 destinatarios con 0 licitaciones
+2026-02-27T08:43:10.692-03:00  INFO 17836 --- [reto-backend-febrero2026] [  AuditThread-5] c.e.r.AuditAspect                        : [37450481] Módulo: EMAIL_SERVICE - Mensaje: Ejecución exitosa: sendLicitacionesEmail - Detalle: [[]]
+2026-02-27T08:44:00.003-03:00  INFO 17836 --- [reto-backend-febrero2026] [   scheduling-1] c.e.r.licitacion.LicitacionScheduler     : Iniciando envío diario de licitaciones ARCE
+2026-02-27T08:44:05.571-03:00  INFO 17836 --- [reto-backend-febrero2026] [   scheduling-1] c.e.r.AuditAspect                        : [37450481] Módulo: ARCE_CLIENTE_SERVICE - Mensaje: Ejecución exitosa: obtenerLicitaciones - Detalle: [ArceRssFilters[familyCod=1, subFamilyCod=1]]
+2026-02-27T08:44:06.710-03:00  INFO 17836 --- [reto-backend-febrero2026] [   scheduling-1] c.e.r.licitacion.LicitacionScheduler     : Envío diario completado con 0 licitaciones
+2026-02-27T08:44:06.867-03:00  INFO 17836 --- [reto-backend-febrero2026] [  AuditThread-4] c.e.r.email.EmailService                 : Usando 1 emails de la base de datos
+2026-02-27T08:44:10.114-03:00  INFO 17836 --- [reto-backend-febrero2026] [  AuditThread-4] c.e.r.email.EmailService                 : Email de licitaciones enviado a 1 destinatarios con 0 licitaciones
+2026-02-27T08:44:10.114-03:00  INFO 17836 --- [reto-backend-febrero2026] [  AuditThread-4] c.e.r.AuditAspect                        : [37450481] Módulo: EMAIL_SERVICE - Mensaje: Ejecución exitosa: sendLicitacionesEmail - Detalle: [[]]
+2026-02-27T08:45:00.004-03:00  INFO 17836 --- [reto-backend-febrero2026] [   scheduling-1] c.e.r.licitacion.LicitacionScheduler     : Iniciando envío diario de licitaciones ARCE
+2026-02-27T08:45:06.506-03:00  INFO 17836 --- [reto-backend-febrero2026] [   scheduling-1] c.e.r.AuditAspect                        : [37450481] Módulo: ARCE_CLIENTE_SERVICE - Mensaje: Ejecución exitosa: obtenerLicitaciones - Detalle: [ArceRssFilters[familyCod=1, subFamilyCod=1]]
+2026-02-27T08:45:08.047-03:00  INFO 17836 --- [reto-backend-febrero2026] [   scheduling-1] c.e.r.licitacion.LicitacionScheduler     : Envío diario completado con 0 licitaciones
+2026-02-27T08:45:08.257-03:00  INFO 17836 --- [reto-backend-febrero2026] [  AuditThread-5] c.e.r.email.EmailService                 : Usando 1 emails de la base de datos
+2026-02-27T08:45:12.242-03:00  INFO 17836 --- [reto-backend-febrero2026] [  AuditThread-5] c.e.r.email.EmailService                 : Email de licitaciones enviado a 1 destinatarios con 0 licitaciones
+2026-02-27T08:45:12.244-03:00  INFO 17836 --- [reto-backend-febrero2026] [  AuditThread-5] c.e.r.AuditAspect                        : [37450481] Módulo: EMAIL_SERVICE - Mensaje: Ejecución exitosa: sendLicitacionesEmail - Detalle: [[]]
+2026-02-27T08:46:00.003-03:00  INFO 17836 --- [reto-backend-febrero2026] [   scheduling-1] c.e.r.licitacion.LicitacionScheduler     : Iniciando envío diario de licitaciones ARCE
+2026-02-27T08:46:01.402-03:00  INFO 17836 --- [reto-backend-febrero2026] [   scheduling-1] c.e.r.AuditAspect                        : [37450481] Módulo: ARCE_CLIENTE_SERVICE - Mensaje: Ejecución exitosa: obtenerLicitaciones - Detalle: [ArceRssFilters[familyCod=1, subFamilyCod=1]]
+2026-02-27T08:46:03.035-03:00  INFO 17836 --- [reto-backend-febrero2026] [   scheduling-1] c.e.r.licitacion.LicitacionScheduler     : Envío diario completado con 0 licitaciones
+2026-02-27T08:46:03.242-03:00  INFO 17836 --- [reto-backend-febrero2026] [  AuditThread-4] c.e.r.email.EmailService                 : Usando 1 emails de la base de datos
+2026-02-27T08:46:07.846-03:00  INFO 17836 --- [reto-backend-febrero2026] [  AuditThread-4] c.e.r.email.EmailService                 : Email de licitaciones enviado a 1 destinatarios con 0 licitaciones
+2026-02-27T08:46:07.848-03:00  INFO 17836 --- [reto-backend-febrero2026] [  AuditThread-4] c.e.r.AuditAspect                        : [37450481] Módulo: EMAIL_SERVICE - Mensaje: Ejecución exitosa: sendLicitacionesEmail - Detalle: [[]]
+2026-02-27T08:47:00.001-03:00  INFO 17836 --- [reto-backend-febrero2026] [   scheduling-1] c.e.r.licitacion.LicitacionScheduler     : Iniciando envío diario de licitaciones ARCE
+2026-02-27T08:47:05.456-03:00  INFO 17836 --- [reto-backend-febrero2026] [   scheduling-1] c.e.r.AuditAspect                        : [37450481] Módulo: ARCE_CLIENTE_SERVICE - Mensaje: Ejecución exitosa: obtenerLicitaciones - Detalle: [ArceRssFilters[familyCod=1, subFamilyCod=1]]
+2026-02-27T08:47:07.143-03:00  INFO 17836 --- [reto-backend-febrero2026] [   scheduling-1] c.e.r.licitacion.LicitacionScheduler     : Envío diario completado con 0 licitaciones
+2026-02-27T08:47:07.355-03:00  INFO 17836 --- [reto-backend-febrero2026] [  AuditThread-5] c.e.r.email.EmailService                 : Usando 1 emails de la base de datos
+2026-02-27T08:47:12.057-03:00  INFO 17836 --- [reto-backend-febrero2026] [  AuditThread-5] c.e.r.email.EmailService                 : Email de licitaciones enviado a 1 destinatarios con 0 licitaciones
+2026-02-27T08:47:12.059-03:00  INFO 17836 --- [reto-backend-febrero2026] [  AuditThread-5] c.e.r.AuditAspect                        : [37450481] Módulo: EMAIL_SERVICE - Mensaje: Ejecución exitosa: sendLicitacionesEmail - Detalle: [[]]
+2026-02-27T08:48:00.007-03:00  INFO 17836 --- [reto-backend-febrero2026] [   scheduling-1] c.e.r.licitacion.LicitacionScheduler     : Iniciando envío diario de licitaciones ARCE
+2026-02-27T08:48:06.532-03:00  INFO 17836 --- [reto-backend-febrero2026] [   scheduling-1] c.e.r.AuditAspect                        : [37450481] Módulo: ARCE_CLIENTE_SERVICE - Mensaje: Ejecución exitosa: obtenerLicitaciones - Detalle: [ArceRssFilters[familyCod=1, subFamilyCod=1]]
+2026-02-27T08:48:08.219-03:00  INFO 17836 --- [reto-backend-febrero2026] [   scheduling-1] c.e.r.licitacion.LicitacionScheduler     : Envío diario completado con 0 licitaciones
+2026-02-27T08:48:08.365-03:00  INFO 17836 --- [reto-backend-febrero2026] [  AuditThread-4] c.e.r.email.EmailService                 : Usando 1 emails de la base de datos
+2026-02-27T08:48:12.048-03:00  INFO 17836 --- [reto-backend-febrero2026] [  AuditThread-4] c.e.r.email.EmailService                 : Email de licitaciones enviado a 1 destinatarios con 0 licitaciones
+2026-02-27T08:48:12.060-03:00  INFO 17836 --- [reto-backend-febrero2026] [  AuditThread-4] c.e.r.AuditAspect                        : [37450481] Módulo: EMAIL_SERVICE - Mensaje: Ejecución exitosa: sendLicitacionesEmail - Detalle: [[]]
+2026-02-27T08:49:00.019-03:00  INFO 17836 --- [reto-backend-febrero2026] [   scheduling-1] c.e.r.licitacion.LicitacionScheduler     : Iniciando envío diario de licitaciones ARCE
+2026-02-27T08:49:05.618-03:00  INFO 17836 --- [reto-backend-febrero2026] [   scheduling-1] c.e.r.AuditAspect                        : [37450481] Módulo: ARCE_CLIENTE_SERVICE - Mensaje: Ejecución exitosa: obtenerLicitaciones - Detalle: [ArceRssFilters[familyCod=1, subFamilyCod=1]]
+2026-02-27T08:49:07.350-03:00  INFO 17836 --- [reto-backend-febrero2026] [   scheduling-1] c.e.r.licitacion.LicitacionScheduler     : Envío diario completado con 0 licitaciones
+2026-02-27T08:49:07.559-03:00  INFO 17836 --- [reto-backend-febrero2026] [  AuditThread-5] c.e.r.email.EmailService                 : Usando 1 emails de la base de datos
+2026-02-27T08:49:11.045-03:00  INFO 17836 --- [reto-backend-febrero2026] [  AuditThread-5] c.e.r.email.EmailService                 : Email de licitaciones enviado a 1 destinatarios con 0 licitaciones
+2026-02-27T08:49:11.045-03:00  INFO 17836 --- [reto-backend-febrero2026] [  AuditThread-5] c.e.r.AuditAspect                        : [37450481] Módulo: EMAIL_SERVICE - Mensaje: Ejecución exitosa: sendLicitacionesEmail - Detalle: [[]]
+2026-02-27T08:50:00.008-03:00  INFO 17836 --- [reto-backend-febrero2026] [   scheduling-1] c.e.r.licitacion.LicitacionScheduler     : Iniciando envío diario de licitaciones ARCE
+2026-02-27T08:50:06.144-03:00  INFO 17836 --- [reto-backend-febrero2026] [   scheduling-1] c.e.r.AuditAspect                        : [37450481] Módulo: ARCE_CLIENTE_SERVICE - Mensaje: Ejecución exitosa: obtenerLicitaciones - Detalle: [ArceRssFilters[familyCod=1, subFamilyCod=1]]
+2026-02-27T08:50:07.663-03:00  INFO 17836 --- [reto-backend-febrero2026] [   scheduling-1] c.e.r.licitacion.LicitacionScheduler     : Envío diario completado con 0 licitaciones
+2026-02-27T08:50:07.882-03:00  INFO 17836 --- [reto-backend-febrero2026] [  AuditThread-4] c.e.r.email.EmailService                 : Usando 1 emails de la base de datos
+2026-02-27T08:50:11.422-03:00  INFO 17836 --- [reto-backend-febrero2026] [  AuditThread-4] c.e.r.email.EmailService                 : Email de licitaciones enviado a 1 destinatarios con 0 licitaciones
+2026-02-27T08:50:11.422-03:00  INFO 17836 --- [reto-backend-febrero2026] [  AuditThread-4] c.e.r.AuditAspect                        : [37450481] Módulo: EMAIL_SERVICE - Mensaje: Ejecución exitosa: sendLicitacionesEmail - Detalle: [[]]
+2026-02-27T08:51:00.019-03:00  INFO 17836 --- [reto-backend-febrero2026] [   scheduling-1] c.e.r.licitacion.LicitacionScheduler     : Iniciando envío diario de licitaciones ARCE
+2026-02-27T08:51:05.532-03:00  INFO 17836 --- [reto-backend-febrero2026] [   scheduling-1] c.e.r.AuditAspect                        : [37450481] Módulo: ARCE_CLIENTE_SERVICE - Mensaje: Ejecución exitosa: obtenerLicitaciones - Detalle: [ArceRssFilters[familyCod=1, subFamilyCod=1]]
+2026-02-27T08:51:07.168-03:00  INFO 17836 --- [reto-backend-febrero2026] [   scheduling-1] c.e.r.licitacion.LicitacionScheduler     : Envío diario completado con 0 licitaciones
+2026-02-27T08:51:07.373-03:00  INFO 17836 --- [reto-backend-febrero2026] [  AuditThread-5] c.e.r.email.EmailService                 : Usando 1 emails de la base de datos
+2026-02-27T08:51:11.872-03:00  INFO 17836 --- [reto-backend-febrero2026] [  AuditThread-5] c.e.r.email.EmailService                 : Email de licitaciones enviado a 1 destinatarios con 0 licitaciones
+2026-02-27T08:51:11.879-03:00  INFO 17836 --- [reto-backend-febrero2026] [  AuditThread-5] c.e.r.AuditAspect                        : [37450481] Módulo: EMAIL_SERVICE - Mensaje: Ejecución exitosa: sendLicitacionesEmail - Detalle: [[]]
+2026-02-27T08:52:00.004-03:00  INFO 17836 --- [reto-backend-febrero2026] [   scheduling-1] c.e.r.licitacion.LicitacionScheduler     : Iniciando envío diario de licitaciones ARCE
+2026-02-27T08:52:05.638-03:00  INFO 17836 --- [reto-backend-febrero2026] [   scheduling-1] c.e.r.AuditAspect                        : [37450481] Módulo: ARCE_CLIENTE_SERVICE - Mensaje: Ejecución exitosa: obtenerLicitaciones - Detalle: [ArceRssFilters[familyCod=1, subFamilyCod=1]]
+2026-02-27T08:52:07.274-03:00  INFO 17836 --- [reto-backend-febrero2026] [   scheduling-1] c.e.r.licitacion.LicitacionScheduler     : Envío diario completado con 0 licitaciones
+2026-02-27T08:52:07.477-03:00  INFO 17836 --- [reto-backend-febrero2026] [  AuditThread-4] c.e.r.email.EmailService                 : Usando 1 emails de la base de datos
+2026-02-27T08:52:11.378-03:00  INFO 17836 --- [reto-backend-febrero2026] [  AuditThread-4] c.e.r.email.EmailService                 : Email de licitaciones enviado a 1 destinatarios con 0 licitaciones
+2026-02-27T08:52:11.378-03:00  INFO 17836 --- [reto-backend-febrero2026] [  AuditThread-4] c.e.r.AuditAspect                        : [37450481] Módulo: EMAIL_SERVICE - Mensaje: Ejecución exitosa: sendLicitacionesEmail - Detalle: [[]]
+2026-02-27T08:53:00.004-03:00  INFO 17836 --- [reto-backend-febrero2026] [   scheduling-1] c.e.r.licitacion.LicitacionScheduler     : Iniciando envío diario de licitaciones ARCE
+2026-02-27T08:53:05.552-03:00  INFO 17836 --- [reto-backend-febrero2026] [   scheduling-1] c.e.r.AuditAspect                        : [37450481] Módulo: ARCE_CLIENTE_SERVICE - Mensaje: Ejecución exitosa: obtenerLicitaciones - Detalle: [ArceRssFilters[familyCod=1, subFamilyCod=1]]
+2026-02-27T08:53:07.185-03:00  INFO 17836 --- [reto-backend-febrero2026] [   scheduling-1] c.e.r.licitacion.LicitacionScheduler     : Envío diario completado con 0 licitaciones
+2026-02-27T08:53:07.499-03:00  INFO 17836 --- [reto-backend-febrero2026] [  AuditThread-5] c.e.r.email.EmailService                 : Usando 1 emails de la base de datos
+2026-02-27T08:53:10.549-03:00  INFO 17836 --- [reto-backend-febrero2026] [  AuditThread-5] c.e.r.email.EmailService                 : Email de licitaciones enviado a 1 destinatarios con 0 licitaciones
+2026-02-27T08:53:10.549-03:00  INFO 17836 --- [reto-backend-febrero2026] [  AuditThread-5] c.e.r.AuditAspect                        : [37450481] Módulo: EMAIL_SERVICE - Mensaje: Ejecución exitosa: sendLicitacionesEmail - Detalle: [[]]
+2026-02-27T08:54:00.001-03:00  INFO 17836 --- [reto-backend-febrero2026] [   scheduling-1] c.e.r.licitacion.LicitacionScheduler     : Iniciando envío diario de licitaciones ARCE
+2026-02-27T08:54:01.659-03:00  INFO 17836 --- [reto-backend-febrero2026] [   scheduling-1] c.e.r.AuditAspect                        : [37450481] Módulo: ARCE_CLIENTE_SERVICE - Mensaje: Ejecución exitosa: obtenerLicitaciones - Detalle: [ArceRssFilters[familyCod=1, subFamilyCod=1]]
+2026-02-27T08:54:02.862-03:00  INFO 17836 --- [reto-backend-febrero2026] [   scheduling-1] c.e.r.licitacion.LicitacionScheduler     : Envío diario completado con 0 licitaciones
+2026-02-27T08:54:03.019-03:00  INFO 17836 --- [reto-backend-febrero2026] [  AuditThread-4] c.e.r.email.EmailService                 : Usando 1 emails de la base de datos
+2026-02-27T08:54:06.491-03:00  INFO 17836 --- [reto-backend-febrero2026] [  AuditThread-4] c.e.r.email.EmailService                 : Email de licitaciones enviado a 1 destinatarios con 0 licitaciones
+2026-02-27T08:54:06.491-03:00  INFO 17836 --- [reto-backend-febrero2026] [  AuditThread-4] c.e.r.AuditAspect                        : [37450481] Módulo: EMAIL_SERVICE - Mensaje: Ejecución exitosa: sendLicitacionesEmail - Detalle: [[]]
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  11:07 h
+[INFO] Finished at: 2026-02-27T08:54:12-03:00
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.springframework.boot:spring-boot-maven-plugin:3.5.10:run (default-cli) on project reto-backend-febrero2026: Process terminated with exit code: 1 -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoExecutionException
