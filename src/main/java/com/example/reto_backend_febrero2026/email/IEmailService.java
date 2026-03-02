@@ -1,6 +1,4 @@
-package com.example.reto_backend_febrero2026.channel.email;
-
-import com.example.reto_backend_febrero2026.licitacion.LicitacionDTO;
+package com.example.reto_backend_febrero2026.email;
 
 import java.util.List;
 
@@ -17,7 +15,4 @@ public interface IEmailService {
     void deactivate(String direccionEmail);
 
     List<String> findAllActiveEmails();
-
-    void sendNotification();
-
 }

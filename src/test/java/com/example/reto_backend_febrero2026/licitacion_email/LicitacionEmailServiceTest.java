@@ -1,7 +1,10 @@
 package com.example.reto_backend_febrero2026.licitacion_email;
 
-import com.example.reto_backend_febrero2026.channel.email.Email;
-import com.example.reto_backend_febrero2026.channel.email.IEmailRepository;
+import com.example.reto_backend_febrero2026.email.Email;
+import com.example.reto_backend_febrero2026.email.IEmailRepository;
+import com.example.reto_backend_febrero2026.channel.licitacion_email.ILicitacionEmailRepository;
+import com.example.reto_backend_febrero2026.channel.licitacion_email.LicitacionEmail;
+import com.example.reto_backend_febrero2026.channel.licitacion_email.LicitacionEmailService;
 import com.example.reto_backend_febrero2026.licitacion.ILicitacionRepository;
 import com.example.reto_backend_febrero2026.licitacion.Licitacion;
 import com.example.reto_backend_febrero2026.licitacion.LicitacionDTO;

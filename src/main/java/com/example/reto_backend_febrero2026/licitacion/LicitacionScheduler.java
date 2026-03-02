@@ -5,16 +5,14 @@ import com.example.reto_backend_febrero2026.config.IConfigService;
 import com.example.reto_backend_febrero2026.integration.servlet.dto.LicitacionItemRecord;
 import com.example.reto_backend_febrero2026.integration.servlet.service.ArceClientService;
 import com.example.reto_backend_febrero2026.integration.servlet.service.strategy.ArceRssFilters;
-import com.example.reto_backend_febrero2026.channel.email.IEmailService;
-import com.example.reto_backend_febrero2026.licitacion_email.ILicitacionEmailService;
-import com.example.reto_backend_febrero2026.licitacion_email.LicitacionEmailService;
+import com.example.reto_backend_febrero2026.email.IEmailService;
+import com.example.reto_backend_febrero2026.channel.licitacion_email.ILicitacionEmailService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Map;
 
 @Component
 public class LicitacionScheduler {
@@ -63,6 +61,6 @@ public class LicitacionScheduler {
     public void ejecutarProcesoNotificaciones() {
         licitacionEmailService.savePendingEmails();
 
-        emailService.sendNotification();
+        licitacionEmailService.sendNotification();
     }
 }

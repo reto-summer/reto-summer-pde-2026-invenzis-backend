@@ -1,6 +1,6 @@
-package com.example.reto_backend_febrero2026.licitacion_email;
+package com.example.reto_backend_febrero2026.channel.licitacion_email;
 
-import com.example.reto_backend_febrero2026.channel.email.Email;
+import com.example.reto_backend_febrero2026.email.Email;
 import com.example.reto_backend_febrero2026.licitacion.Licitacion;
 
 import java.util.List;
@@ -14,4 +14,6 @@ public interface ILicitacionEmailService {
     List<LicitacionEmail> getPendientes();
 
     void save(Licitacion licitacion, Email email);
+
+    void sendNotification();
 }

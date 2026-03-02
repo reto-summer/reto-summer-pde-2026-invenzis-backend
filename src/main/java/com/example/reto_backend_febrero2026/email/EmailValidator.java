@@ -1,4 +1,4 @@
-package com.example.reto_backend_febrero2026.channel.email;
+package com.example.reto_backend_febrero2026.email;
 
 import jakarta.validation.Validator;
 import jakarta.validation.constraints.Email;

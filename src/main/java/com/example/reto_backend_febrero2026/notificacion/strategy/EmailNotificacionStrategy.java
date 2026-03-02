@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 
-import com.example.reto_backend_febrero2026.channel.email.IEmailService;
+import com.example.reto_backend_febrero2026.email.IEmailService;
 import com.example.reto_backend_febrero2026.notificacion.Notificacion;
 import com.example.reto_backend_febrero2026.notificacion.NotificacionType;
 

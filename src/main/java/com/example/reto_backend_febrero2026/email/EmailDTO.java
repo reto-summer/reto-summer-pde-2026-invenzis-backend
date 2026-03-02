@@ -1,4 +1,4 @@
-package com.example.reto_backend_febrero2026.channel.email;
+package com.example.reto_backend_febrero2026.email;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

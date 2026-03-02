@@ -1,4 +1,4 @@
-package com.example.reto_backend_febrero2026.channel.email;
+package com.example.reto_backend_febrero2026.channel.licitacion_email;
 
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Value;

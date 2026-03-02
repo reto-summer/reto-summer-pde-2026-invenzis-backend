@@ -2,25 +2,18 @@ package com.example.reto_backend_febrero2026.licitacion;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
-import com.example.reto_backend_febrero2026.channel.email.Email;
-import com.example.reto_backend_febrero2026.channel.email.EmailDTO;
-import com.example.reto_backend_febrero2026.channel.email.EmailMapper;
-import com.example.reto_backend_febrero2026.channel.email.IEmailService;
-import com.example.reto_backend_febrero2026.licitacion_email.ILicitacionEmailService;
+import com.example.reto_backend_febrero2026.email.EmailMapper;
+import com.example.reto_backend_febrero2026.email.IEmailService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.reto_backend_febrero2026.audit.Auditable;
-import com.example.reto_backend_febrero2026.familia.FamiliaDTO;
 import com.example.reto_backend_febrero2026.familia.IFamiliaService;
 import com.example.reto_backend_febrero2026.integration.servlet.dto.LicitacionItemRecord;
 import com.example.reto_backend_febrero2026.subfamilia.ISubfamiliaService;
-import com.example.reto_backend_febrero2026.subfamilia.SubfamiliaDTO;
 
 @Service
 public class LicitacionService implements ILicitacionService {
@@ -30,20 +23,17 @@ public class LicitacionService implements ILicitacionService {
     private final IFamiliaService iFamiliaService;
     private final ILicitacionRepository licitacionRepository;
     private final LicitacionMapper licitacionMapper;
-    private final ILicitacionEmailService licitacionEmailService;
     private final IEmailService emailService;
     private final EmailMapper emailMapper;
 
     public LicitacionService(LicitacionUtility licitacionUtility, ISubfamiliaService subfamiliaService, IFamiliaService familiaService,
                              ILicitacionRepository licitacionRepository, LicitacionMapper licitacionMapper,
-                             ILicitacionEmailService licitacionEmailService, IEmailService emailService,
-                             EmailMapper emailMapper) {
+                             IEmailService emailService, EmailMapper emailMapper) {
         this.licitacionUtility = licitacionUtility;
         this.iSubfamiliaService = subfamiliaService;
         this.iFamiliaService = familiaService;
         this.licitacionRepository = licitacionRepository;
         this.licitacionMapper = licitacionMapper;
-        this.licitacionEmailService = licitacionEmailService;
         this.emailService = emailService;
         this.emailMapper = emailMapper;
 
@@ -117,12 +107,6 @@ public class LicitacionService implements ILicitacionService {
         Licitacion licitacion =
                 licitacionRepository.save(
                         licitacionMapper.licitacionDTOtoLicitacion(dto)
-                );
-
-        emailService.findAllActive().stream()
-                .map(emailMapper::emailDTOtoEmail)
-                .forEach(email ->
-                        licitacionEmailService.save(licitacion, email)
                 );
 
         return licitacionMapper.licitacionToLicitacionDTO(licitacion);

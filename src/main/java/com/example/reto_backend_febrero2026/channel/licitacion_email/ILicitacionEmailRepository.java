@@ -1,6 +1,5 @@
-package com.example.reto_backend_febrero2026.licitacion_email;
+package com.example.reto_backend_febrero2026.channel.licitacion_email;
 
-import com.example.reto_backend_febrero2026.licitacion.Licitacion;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -22,7 +21,10 @@ public interface ILicitacionEmailRepository extends JpaRepository<LicitacionEmai
         WHERE le.idLicitacion IN :licitacionIds 
         AND le.direccionEmail IN :emails
     """)
-    int updateEnviado(@Param("licitacionIds") List<Integer> licitacionIds, @Param("emails") Set<String> emails);
+    int updateEnviado(
+            @Param("licitacionIds") List<Integer> licitacionIds,
+            @Param("emails") Set<String> emails
+    );
 
 
     @Query("""

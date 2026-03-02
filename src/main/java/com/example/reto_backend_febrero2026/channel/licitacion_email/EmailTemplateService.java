@@ -1,4 +1,4 @@
-package com.example.reto_backend_febrero2026.channel.email;
+package com.example.reto_backend_febrero2026.channel.licitacion_email;
 
 import com.example.reto_backend_febrero2026.licitacion.LicitacionDTO;
 import org.springframework.stereotype.Service;
