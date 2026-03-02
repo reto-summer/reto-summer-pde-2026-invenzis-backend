@@ -5,8 +5,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import com.example.reto_backend_febrero2026.inciso.IIncisoService;
+import com.example.reto_backend_febrero2026.inciso.IncisoDTO;
 import jakarta.persistence.EntityNotFoundException;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,7 +17,6 @@ import com.example.reto_backend_febrero2026.familia.IFamiliaService;
 import com.example.reto_backend_febrero2026.integration.servlet.dto.LicitacionItemRecord;
 import com.example.reto_backend_febrero2026.subfamilia.ISubfamiliaService;
 import com.example.reto_backend_febrero2026.subfamilia.SubfamiliaDTO;
-import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class LicitacionService implements ILicitacionService {
@@ -26,13 +26,15 @@ public class LicitacionService implements ILicitacionService {
     private final IFamiliaService iFamiliaService;
     private final ILicitacionRepository licitacionRepository;
     private final LicitacionMapper licitacionMapper;
+    private final IIncisoService incisoService;
 
-    public LicitacionService(LicitacionUtility licitacionUtility, ISubfamiliaService subfamiliaService, IFamiliaService familiaService, ILicitacionRepository licitacionRepository, LicitacionMapper licitacionMapper ) {
+    public LicitacionService(LicitacionUtility licitacionUtility, ISubfamiliaService subfamiliaService, IFamiliaService familiaService, ILicitacionRepository licitacionRepository, LicitacionMapper licitacionMapper, IIncisoService incisoService ) {
         this.licitacionUtility = licitacionUtility;
         this.iSubfamiliaService = subfamiliaService;
         this.iFamiliaService = familiaService;
         this.licitacionRepository = licitacionRepository;
         this.licitacionMapper = licitacionMapper;
+        this.incisoService = incisoService;
     }
 
     @Override
@@ -91,11 +93,17 @@ public class LicitacionService implements ILicitacionService {
 
         SubfamiliaDTO subfamiliaDTO = iSubfamiliaService.findById(itemRecord.familiaCod(), itemRecord.subFamiliaCod());
 
+        String nombreInciso = licitacionUtility.extraerNombreInciso(itemRecord.titulo());
+
+        List<IncisoDTO> incisoDTO = incisoService.getByNombre(nombreInciso);
+
         licitacionDTO.setFamilia(familiaDTO);
         licitacionDTO.setSubfamilia(subfamiliaDTO);
+        licitacionDTO.setInciso(incisoDTO.getFirst());
 
         Licitacion licitacion = licitacionMapper.licitacionDTOtoLicitacion(licitacionDTO);
         licitacionRepository.save(licitacion);
+
         return licitacionDTO;
     }
 

@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import com.example.reto_backend_febrero2026.familia.FamiliaDTO;
+import com.example.reto_backend_febrero2026.inciso.IncisoDTO;
 import com.example.reto_backend_febrero2026.subfamilia.SubfamiliaDTO;
 
 public class LicitacionDTO {
@@ -22,6 +23,8 @@ public class LicitacionDTO {
 
     private String link;
 
+    private IncisoDTO inciso;
+
     private FamiliaDTO familia;
 
     private SubfamiliaDTO subfamilia;
@@ -31,7 +34,7 @@ public class LicitacionDTO {
 
     public LicitacionDTO(Integer idLicitacion, String titulo, String tipoLicitacion, String descripcion,
                          LocalDate fechaPublicacion, LocalDateTime fechaCierre,
-                         String link, FamiliaDTO familia,
+                         String link, IncisoDTO inciso, FamiliaDTO familia,
                          SubfamiliaDTO subfamilia) {
         this.idLicitacion = idLicitacion;
         this.titulo = titulo;
@@ -40,6 +43,7 @@ public class LicitacionDTO {
         this.fechaPublicacion = fechaPublicacion;
         this.fechaCierre = fechaCierre;
         this.link = link;
+        this.inciso = inciso;
         this.familia = familia;
         this.subfamilia = subfamilia;
     }
@@ -50,6 +54,14 @@ public class LicitacionDTO {
 
     public void setIdLicitacion(Integer idLicitacion) {
         this.idLicitacion = idLicitacion;
+    }
+
+    public IncisoDTO getInciso() {
+        return inciso;
+    }
+
+    public void setInciso(IncisoDTO inciso) {
+        this.inciso = inciso;
     }
 
     public String getTitulo() {

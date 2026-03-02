@@ -80,7 +80,6 @@ public class ArceClientService {
 
             List<LicitacionDTO> resultados = response.channel().items().stream()
                     .map(item -> {
-
                         LicitacionItemRecord record = new LicitacionItemRecord(
                                 item.titulo(),
                                 item.descripcion(),
@@ -88,7 +87,8 @@ public class ArceClientService {
                                 item.fechaPublicacion(),
                                 null,
                                 resolvedFamilyCod,
-                                resolvedSubFamilyCod
+                                resolvedSubFamilyCod,
+                                null
                         );
                         return licitacionService.save(record);
                     })

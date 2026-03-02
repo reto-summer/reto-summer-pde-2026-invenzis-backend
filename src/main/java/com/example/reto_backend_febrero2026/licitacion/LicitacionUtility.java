@@ -18,6 +18,8 @@ public class LicitacionUtility {
     private static final DateTimeFormatter FORMATTER_CIERRE = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
     private static final Pattern PATTERN_HASTA = Pattern.compile("hasta:\\s*(\\d{2}/\\d{2}/\\d{4}\\s*\\d{2}:\\d{2})");
     private static final Pattern PATTERN_ID = Pattern.compile("id/(\\d+)");
+    private static final Pattern PATTERN_INCISO =
+            Pattern.compile("-\\s*(.*?)\\s*(?:\\||$)");
 
     @Named("limpiarHTML")
     public String limpiarHTML(String texto) {
@@ -71,6 +73,17 @@ public class LicitacionUtility {
             }
         }
         return Optional.empty();
+    }
+
+    public String extraerNombreInciso(String title) {
+
+        if (title == null) return null;
+
+        Matcher matcher = PATTERN_INCISO.matcher(title);
+
+        return matcher.find()
+                ? matcher.group(1).trim()
+                : null;
     }
 
     @Named("parsearFechaPublicacion")

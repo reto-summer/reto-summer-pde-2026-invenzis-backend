@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import com.example.reto_backend_febrero2026.familia.Familia;
+import com.example.reto_backend_febrero2026.inciso.Inciso;
 import com.example.reto_backend_febrero2026.subfamilia.Subfamilia;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
@@ -37,6 +38,10 @@ public class Licitacion {
     private String link;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_inciso", referencedColumnName = "id_inciso")
+    private Inciso inciso;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "familia_cod", referencedColumnName = "cod")
     private Familia familia;
 
@@ -52,7 +57,7 @@ public class Licitacion {
 
     public Licitacion(Integer idLicitacion, String titulo, String tipoLicitacion, String descripcion,
                       LocalDate fechaPublicacion, LocalDateTime fechaCierre,
-                      String link, Familia familia, Subfamilia subfamilia) {
+                      String link, Familia familia, Subfamilia subfamilia, Inciso inciso) {
         this.idLicitacion = idLicitacion;
         this.titulo = titulo;
         this.tipoLicitacion = tipoLicitacion;
@@ -62,6 +67,7 @@ public class Licitacion {
         this.link = link;
         this.familia = familia;
         this.subfamilia = subfamilia;
+        this.inciso = inciso;
     }
 
     public Integer getIdLicitacion() {
@@ -82,6 +88,14 @@ public class Licitacion {
 
     public String getDescripcion() {
         return descripcion;
+    }
+
+    public Inciso getInciso() {
+        return inciso;
+    }
+
+    public void setInciso(Inciso inciso) {
+        this.inciso = inciso;
     }
 
     public void setDescripcion(String descripcion) {

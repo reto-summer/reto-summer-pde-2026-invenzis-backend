@@ -54,7 +54,8 @@ class LicitacionServiceTest {
                         "Tue, 24 Feb 2026 15:00:00 -0300",
                         null,
                         10,
-                        20
+                        20,
+                        null
                 );
 
         when(licitacionUtility.extraerIdDelLink(itemRecord.link()))
@@ -108,7 +109,8 @@ class LicitacionServiceTest {
                         "Tue, 24 Feb 2026 15:00:00 -0300",
                         null,
                         10,
-                        20
+                        20,
+                        null
                 );
 
         when(licitacionUtility.extraerIdDelLink(itemRecord.link()))
