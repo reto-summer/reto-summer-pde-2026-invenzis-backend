@@ -63,9 +63,9 @@ public class EmailService implements IEmailService, IChannel {
     }
 
     @Override
-    public EmailDTO findById(String emailAddress) {
-        Email email = emailRepository.findById(emailAddress)
-                .orElseThrow(() -> new EntityNotFoundException("Email no encontrado: " + emailAddress));
+    public EmailDTO findById(String DireccionEmail) {
+        Email email = emailRepository.findById(DireccionEmail)
+                .orElseThrow(() -> new EntityNotFoundException("Email no encontrado: " + DireccionEmail));
         return emailMapper.emailToDTO(email);
     }
 
@@ -82,39 +82,39 @@ public class EmailService implements IEmailService, IChannel {
 
     private EmailDTO handleExistingEmail(Email emailEntity){
         if (emailEntity.isActivo()) {
-            log.info("El email {} ya existe y esta activo", emailEntity.getEmailAddress());
+            log.info("El email {} ya existe y esta activo", emailEntity.getDireccionEmail());
             return emailMapper.emailToDTO(emailEntity);
         }
 
-        log.info("Reactivando email {}", emailEntity.getEmailAddress());
-        emailRepository.updateActivo(emailEntity.getEmailAddress(), true);
+        log.info("Reactivando email {}", emailEntity.getDireccionEmail());
+        emailRepository.updateActivo(emailEntity.getDireccionEmail(), true);
 
         emailEntity.setActivo(true);
         return emailMapper.emailToDTO(emailEntity);
     }
 
-    private EmailDTO createNewMail(String emailAddress) {
-        log.info("Creando mail {}", emailAddress);
-        Email emailEntity = new Email(emailAddress);
+    private EmailDTO createNewMail(String DireccionEmail) {
+        log.info("Creando mail {}", DireccionEmail);
+        Email emailEntity = new Email(DireccionEmail);
         return emailMapper.emailToDTO(emailRepository.save(emailEntity));
     }
 
     @Override
     @Transactional
-    public EmailDTO update(String emailAddress, Boolean activo) {
-        EmailDTO existingEmail = findById(emailAddress);
+    public EmailDTO update(String DireccionEmail, Boolean activo) {
+        EmailDTO existingEmail = findById(DireccionEmail);
 
         if(activo != null && !activo.equals(existingEmail.getActivo())) {
-            log.info("Cambiando estado de email {} a activo ={}", emailAddress, activo);
-            emailRepository.updateActivo(emailAddress, activo);
+            log.info("Cambiando estado de email {} a activo ={}", DireccionEmail, activo);
+            emailRepository.updateActivo(DireccionEmail, activo);
             existingEmail.setActivo(activo);
         }
         return existingEmail;
     }
 
     @Override
-    public void deactivate(String emailAddress) {
-        update(emailAddress, false);
+    public void deactivate(String DireccionEmail) {
+        update(DireccionEmail, false);
     }
 
     @Override
@@ -150,7 +150,7 @@ public class EmailService implements IEmailService, IChannel {
         String[] recipients;
 
         if (!emailsFromDb.isEmpty()) {
-            recipients = emailsFromDb.stream().map(Email::getEmailAddress).toArray(String[]::new);
+            recipients = emailsFromDb.stream().map(Email::getDireccionEmail).toArray(String[]::new);
             log.info("Usando {} emails de la base de datos", emailsFromDb.size());
         } else {
             recipients = parseEmailList(mailTo);

@@ -33,4 +33,9 @@ public class NotificacionController {
         return notificacion.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
+
+    @GetMapping("/exitosas")
+    public ResponseEntity<List<NotificacionResumenDTO>> getExitosas() {
+        return ResponseEntity.ok(notificacionService.findExitosas());
+    }
 }

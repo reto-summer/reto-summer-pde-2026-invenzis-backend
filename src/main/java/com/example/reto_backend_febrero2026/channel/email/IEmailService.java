@@ -8,13 +8,13 @@ public interface IEmailService {
 
     List<EmailDTO> findAllActive();
 
-    EmailDTO findById(String emailAddress);
+    EmailDTO findById(String direccionEmail);
 
     EmailDTO create(String email);
 
-    EmailDTO update(String emailAddress, Boolean habilitadoEnvio);
+    EmailDTO update(String direccionEmail, Boolean habilitadoEnvio);
 
-    void deactivate(String emailAddress);
+    void deactivate(String direccionEmail);
 
     List<String> findAllActiveEmails();
 

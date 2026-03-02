@@ -13,22 +13,22 @@ public class EmailValidator {
         this.validator = validator;
     }
 
-    public boolean isValid(String emailAddress) {
-        if(emailAddress == null || emailAddress.isBlank()) {
+    public boolean isValid(String direccionEmail) {
+        if(direccionEmail == null || direccionEmail.isBlank()) {
             return false;
         }
 
-        return  validator.validateValue(EmailWrapper.class, "email", emailAddress).isEmpty();
+        return  validator.validateValue(EmailWrapper.class, "email", direccionEmail).isEmpty();
     }
 
-    public void validateOrThrow(String emailAddress) {
-       if (!isValid(emailAddress)) {
-           throw new IllegalArgumentException("El formate de email no es valido: " + emailAddress);
+    public void validateOrThrow(String direccionEmail) {
+       if (!isValid(direccionEmail)) {
+           throw new IllegalArgumentException("El formate de email no es valido: " + direccionEmail);
        }
     }
 
-    public String normalize(String emailAddress) {
-        return emailAddress != null ? emailAddress.trim().toLowerCase() : null;
+    public String normalize(String direccionEmail) {
+        return direccionEmail != null ? direccionEmail.trim().toLowerCase() : null;
     }
 
 

@@ -1,6 +1,5 @@
 package com.example.reto_backend_febrero2026.channel.email;
 
-import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;

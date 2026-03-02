@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Optional;
 
 import jakarta.persistence.EntityNotFoundException;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,7 +15,6 @@ import com.example.reto_backend_febrero2026.familia.IFamiliaService;
 import com.example.reto_backend_febrero2026.integration.servlet.dto.LicitacionItemRecord;
 import com.example.reto_backend_febrero2026.subfamilia.ISubfamiliaService;
 import com.example.reto_backend_febrero2026.subfamilia.SubfamiliaDTO;
-import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class LicitacionService implements ILicitacionService {

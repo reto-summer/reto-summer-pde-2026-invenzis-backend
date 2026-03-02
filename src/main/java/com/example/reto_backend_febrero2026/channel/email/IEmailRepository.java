@@ -10,13 +10,13 @@ import java.util.List;
 
 public interface IEmailRepository extends JpaRepository<Email, String> {
 
-    @Query("SELECT m.emailAddress FROM Email m WHERE m.activo = true")
+    @Query("SELECT m.direccionEmail FROM Email m WHERE m.activo = true")
     List<String> findAllActiveEmails();
 
     List<Email> findByActivoTrue();
 
     @Modifying
     @Transactional
-    @Query("UPDATE Email e SET e.activo = :activo WHERE e.emailAddress = :email")
+    @Query("UPDATE Email e SET e.activo = :activo WHERE e.direccionEmail = :email")
     void updateActivo(@Param("email") String email, @Param("activo") Boolean activo);
 }

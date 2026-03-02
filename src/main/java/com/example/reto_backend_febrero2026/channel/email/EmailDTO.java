@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 
 public class EmailDTO {
 
-    private String emailAddress;
+    private String direccionEmail;
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Boolean activo;
@@ -19,12 +19,12 @@ public class EmailDTO {
 
     public EmailDTO() {}
 
-    public String getEmailAddress() {
-        return emailAddress;
+    public String getDireccionEmail() {
+        return direccionEmail;
     }
 
-    public void setEmailAddress(String emailAddress) {
-        this.emailAddress = emailAddress;
+    public void setDireccionEmail(String direccionEmail) {
+        this.direccionEmail = direccionEmail;
     }
 
     public Boolean getActivo() {

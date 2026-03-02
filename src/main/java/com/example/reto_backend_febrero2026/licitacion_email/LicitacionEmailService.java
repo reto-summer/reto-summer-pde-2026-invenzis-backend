@@ -1,75 +1,97 @@
 package com.example.reto_backend_febrero2026.licitacion_email;
 
 import com.example.reto_backend_febrero2026.channel.email.Email;
-import com.example.reto_backend_febrero2026.channel.email.IEmailRepository;
-import com.example.reto_backend_febrero2026.licitacion.ILicitacionRepository;
+import com.example.reto_backend_febrero2026.channel.email.EmailDTO;
+import com.example.reto_backend_febrero2026.channel.email.EmailMapper;
+import com.example.reto_backend_febrero2026.channel.email.IEmailService;
+import com.example.reto_backend_febrero2026.licitacion.ILicitacionService;
 import com.example.reto_backend_febrero2026.licitacion.Licitacion;
 import com.example.reto_backend_febrero2026.licitacion.LicitacionDTO;
+import com.example.reto_backend_febrero2026.licitacion.LicitacionMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Set;
+import java.time.LocalDate;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class LicitacionEmailService implements ILicitacionEmailService {
 
     private final ILicitacionEmailRepository licitacionEmailRepository;
-    private final ILicitacionRepository licitacionRepository;
-    private final IEmailRepository emailRepository;
+    private final ILicitacionService licitacionService;
+    private final IEmailService emailService;
+    private final EmailMapper emailMapper;
+    private final LicitacionMapper licitacionMapper;
 
-    public LicitacionEmailService(ILicitacionEmailRepository licitacionEmailRepository,
-                                  ILicitacionRepository licitacionRepository,
-                                  IEmailRepository emailRepository) {
+    public LicitacionEmailService(ILicitacionEmailRepository licitacionEmailRepository, ILicitacionService licitacionService, IEmailService emailService,
+                                  EmailMapper emailMapper, LicitacionMapper licitacionMapper) {
         this.licitacionEmailRepository = licitacionEmailRepository;
-        this.licitacionRepository = licitacionRepository;
-        this.emailRepository = emailRepository;
+        this.licitacionService = licitacionService;
+        this.emailService = emailService;
+        this.emailMapper = emailMapper;
+        this.licitacionMapper = licitacionMapper;
     }
 
     @Override
     @Transactional
-    public void registrarPendientes(List<LicitacionDTO> licitaciones, List<String> emails) {
-        List<Integer> licitacionIds = licitaciones.stream()
-                .map(LicitacionDTO::getIdLicitacion)
-                .collect(Collectors.toList());
+    public void savePendingEmails() {
+        List<LicitacionDTO> licitacionesDTO = getLicitaciones();
+        List<EmailDTO> emailsDTO = emailService.findAllActive();
+        if (licitacionesDTO.isEmpty() || emailsDTO.isEmpty()) {
+            return;
+        }
 
-        Set<LicitacionEmailId> existentes = licitacionEmailRepository
-                .findByIdIdLicitacionIn(licitacionIds)
-                .stream()
-                .map(LicitacionEmail::getId)
+        Map<Integer, Licitacion> licitacionMap = mapLicitaciones(licitacionesDTO);
+        Map<String, Email> emailMap = mapEmails(emailsDTO);
+
+        Set<LicitacionEmail> emailsToSave = createLicitacionEmailSet(licitacionMap, emailMap);
+        licitacionEmailRepository.saveAll(emailsToSave);
+    }
+
+    @Override
+    @Transactional
+    public void saveSentEmails() {
+        List<LicitacionDTO> licitacionesDTO = getLicitaciones();
+        List<EmailDTO> emailsDTO = emailService.findAllActive();
+        if (licitacionesDTO.isEmpty() || emailsDTO.isEmpty()) return;
+
+        Map<Integer, Licitacion> licitacionMap = mapLicitaciones(licitacionesDTO);
+        Set<String> emailAddresses = emailsDTO.stream()
+                .map(EmailDTO::getDireccionEmail)
                 .collect(Collectors.toSet());
 
-        for (LicitacionDTO dto : licitaciones) {
-            Licitacion licitacion = licitacionRepository.getReferenceById(dto.getIdLicitacion());
-            for (String emailAddress : emails) {
-                LicitacionEmailId id = new LicitacionEmailId(dto.getIdLicitacion(), emailAddress);
-                if (existentes.contains(id)) {
-                    continue;
-                }
-                Email email = emailRepository.getReferenceById(emailAddress);
-                licitacionEmailRepository.save(new LicitacionEmail(licitacion, email, false));
-            }
-        }
+        List<Integer> licitacionIds = new ArrayList<>(licitacionMap.keySet());
+        licitacionEmailRepository.updateEnviado(licitacionIds, emailAddresses);
     }
 
-    @Override
-    @Transactional
-    public void registrarEnvios(List<LicitacionDTO> licitaciones, List<String> emails) {
-        for (LicitacionDTO dto : licitaciones) {
-            Licitacion licitacion = licitacionRepository.getReferenceById(dto.getIdLicitacion());
-            for (String emailAddress : emails) {
-                LicitacionEmailId id = new LicitacionEmailId(dto.getIdLicitacion(), emailAddress);
-                LicitacionEmail registro = licitacionEmailRepository.findById(id).orElseGet(() -> {
-                    Email email = emailRepository.getReferenceById(emailAddress);
-                    return new LicitacionEmail(licitacion, email, false);
-                });
+    private List<LicitacionDTO> getLicitaciones() {
+        return licitacionService.findByFilters(null, null, LocalDate.now(), null, null, null);
+    }
 
-                registro.setEnviado(true);
-                registro.setFechaEnvio(LocalDateTime.now());
-                licitacionEmailRepository.save(registro);
+    private Map<Integer, Licitacion> mapLicitaciones(List<LicitacionDTO> licitacionesDTO) {
+        return licitacionesDTO.stream()
+                .collect(Collectors.toMap(LicitacionDTO::getIdLicitacion, licitacionMapper::licitacionDTOtoLicitacion));
+    }
+
+    private Map<String, Email> mapEmails(List<EmailDTO> emailsDTO) {
+        return emailsDTO.stream()
+                .collect(Collectors.toMap(EmailDTO::getDireccionEmail, emailMapper::emailDTOtoEmail));
+    }
+
+    private Set<LicitacionEmail> createLicitacionEmailSet(Map<Integer, Licitacion> licitacionMap, Map<String, Email> emailMap) {
+        Set<LicitacionEmail> emailsToSave = new HashSet<>();
+        for (Licitacion licitacion : licitacionMap.values()) {
+            for (Email email : emailMap.values()) {
+                LicitacionEmail licitacionEmail = new LicitacionEmail(licitacion, email);
+                emailsToSave.add(licitacionEmail);
             }
         }
+        return emailsToSave;
     }
 }
+
+
+
+

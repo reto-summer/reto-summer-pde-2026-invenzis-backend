@@ -15,7 +15,7 @@ public class Email {
 
     @Id
     @Column(name = "email_address", nullable = false, unique = true)
-    private String emailAddress;
+    private String direccionEmail;
 
     @Column(name = "activo", nullable = false)
     private boolean activo = true;
@@ -31,16 +31,16 @@ public class Email {
 
     public Email() {}
 
-    public Email(String emailAddress) {
-        this.emailAddress = emailAddress;
+    public Email(String direccionEmail) {
+        this.direccionEmail = direccionEmail;
     }
 
-    public String getEmailAddress() {
-        return emailAddress;
+    public String getDireccionEmail() {
+        return direccionEmail;
     }
 
-    public void setEmailAddress(String emailAddress) {
-        this.emailAddress = emailAddress;
+    public void setDireccionEmail(String direccionEmail) {
+        this.direccionEmail = direccionEmail;
     }
 
     public boolean isActivo() {

@@ -20,9 +20,9 @@ public class EmailController {
         return ResponseEntity.ok(emailService.findAllActiveEmails());
     }
 
-    @GetMapping("/{emailAddress:.+}")
-    public EmailDTO getDestinationById(@PathVariable String emailAddress) {
-        return emailService.findById(emailAddress);
+    @GetMapping("/{direccionEmail:.+}")
+    public EmailDTO getDestinationById(@PathVariable String direccionEmail) {
+        return emailService.findById(direccionEmail);
     }
 
     @PostMapping
@@ -32,14 +32,14 @@ public class EmailController {
     }
 
     // controller para futuras implementaciones de la app
-/*    @PutMapping("/{emailAddress:.+}")
-    public ResponseEntity<EmailDTO> updateDestination(@PathVariable String emailAddress, @RequestBody EmailDTO body) {
-        return ResponseEntity.ok(emailService.update(emailAddress, body.getActivo()));
+/*    @PutMapping("/{direccionEmail:.+}")
+    public ResponseEntity<EmailDTO> updateDestination(@PathVariable String direccionEmail, @RequestBody EmailDTO body) {
+        return ResponseEntity.ok(emailService.update(direccionEmail, body.getActivo()));
     }*/
 
-    @DeleteMapping("/{emailAddress:.+}")
-    public ResponseEntity<Object> deleteDestination(@PathVariable String emailAddress) {
-        emailService.deactivate(emailAddress);
+    @DeleteMapping("/{direccionEmail:.+}")
+    public ResponseEntity<Object> deleteDestination(@PathVariable String direccionEmail) {
+        emailService.deactivate(direccionEmail);
         return ResponseEntity.noContent().build();
     }
 }
