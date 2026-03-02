@@ -63,10 +63,11 @@ class NotificacionServiceTest {
     @Test
     void findAllResumen_deberiaRetornarListaDeDTOs() {
         // Arrange
-        LocalDateTime fecha = LocalDateTime.of(2026, 2, 27, 10, 0);
-        Notificacion n1 = new Notificacion("[EMAIL] Test1", true, "D1", "C1", fecha);
+        LocalDateTime fechaMasNueva = LocalDateTime.of(2026, 2, 27, 10, 5);
+        LocalDateTime fechaMasAntigua = LocalDateTime.of(2026, 2, 27, 10, 0);
+        Notificacion n1 = new Notificacion("[EMAIL] Test1", true, "D1", "C1", fechaMasNueva);
         n1.setId(1);
-        Notificacion n2 = new Notificacion("[EMAIL] Test2", false, "D2", "C2", fecha);
+        Notificacion n2 = new Notificacion("[EMAIL] Test2", false, "D2", "C2", fechaMasAntigua);
         n2.setId(2);
 
         when(notificacionRepository.findAll()).thenReturn(List.of(n1, n2));
