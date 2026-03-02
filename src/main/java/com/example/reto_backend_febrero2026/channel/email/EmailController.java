@@ -27,15 +27,9 @@ public class EmailController {
 
     @PostMapping
     public ResponseEntity<String> createDestination(@RequestBody EmailDTO body) {
-        emailService.create(body.getEmailAddress());
+        emailService.create(body.getDireccionEmail());
         return ResponseEntity.ok("Email creado exitosamente");
     }
-
-    // controller para futuras implementaciones de la app
-/*    @PutMapping("/{direccionEmail:.+}")
-    public ResponseEntity<EmailDTO> updateDestination(@PathVariable String direccionEmail, @RequestBody EmailDTO body) {
-        return ResponseEntity.ok(emailService.update(direccionEmail, body.getActivo()));
-    }*/
 
     @DeleteMapping("/{direccionEmail:.+}")
     public ResponseEntity<Object> deleteDestination(@PathVariable String direccionEmail) {

@@ -18,5 +18,4 @@ public interface IEmailService {
 
     List<String> findAllActiveEmails();
 
-    void sendLicitacionesEmail(List<LicitacionDTO> licitaciones);
 }

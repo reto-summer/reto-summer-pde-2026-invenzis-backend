@@ -25,8 +25,8 @@ public class LicitacionEmailService implements ILicitacionEmailService {
     private final EmailMapper emailMapper;
     private final LicitacionMapper licitacionMapper;
 
-    public LicitacionEmailService(ILicitacionEmailRepository licitacionEmailRepository, ILicitacionService licitacionService, IEmailService emailService,
-                                  EmailMapper emailMapper, LicitacionMapper licitacionMapper) {
+    public LicitacionEmailService(ILicitacionEmailRepository licitacionEmailRepository, ILicitacionService licitacionService,
+                                  IEmailService emailService, EmailMapper emailMapper, LicitacionMapper licitacionMapper) {
         this.licitacionEmailRepository = licitacionEmailRepository;
         this.licitacionService = licitacionService;
         this.emailService = emailService;
@@ -34,64 +34,65 @@ public class LicitacionEmailService implements ILicitacionEmailService {
         this.licitacionMapper = licitacionMapper;
     }
 
-    @Override
+
     @Transactional
     public void savePendingEmails() {
         List<LicitacionDTO> licitacionesDTO = getLicitaciones();
         List<EmailDTO> emailsDTO = emailService.findAllActive();
-        if (licitacionesDTO.isEmpty() || emailsDTO.isEmpty()) {
-            return;
-        }
-
-        Map<Integer, Licitacion> licitacionMap = mapLicitaciones(licitacionesDTO);
-        Map<String, Email> emailMap = mapEmails(emailsDTO);
-
-        Set<LicitacionEmail> emailsToSave = createLicitacionEmailSet(licitacionMap, emailMap);
-        licitacionEmailRepository.saveAll(emailsToSave);
-    }
-
-    @Override
-    @Transactional
-    public void saveSentEmails() {
-        List<LicitacionDTO> licitacionesDTO = getLicitaciones();
-        List<EmailDTO> emailsDTO = emailService.findAllActive();
         if (licitacionesDTO.isEmpty() || emailsDTO.isEmpty()) return;
 
-        Map<Integer, Licitacion> licitacionMap = mapLicitaciones(licitacionesDTO);
-        Set<String> emailAddresses = emailsDTO.stream()
-                .map(EmailDTO::getDireccionEmail)
-                .collect(Collectors.toSet());
+        Set<String> existingKeys = licitacionEmailRepository.findByLicitacionesAndEmails(getLicitacionIds(licitacionesDTO), getEmailAddresses(emailsDTO));
 
-        List<Integer> licitacionIds = new ArrayList<>(licitacionMap.keySet());
-        licitacionEmailRepository.updateEnviado(licitacionIds, emailAddresses);
+        List<LicitacionEmail> toSave = new ArrayList<>();
+
+        for (LicitacionDTO lDto : licitacionesDTO) {
+            for (EmailDTO eDto : emailsDTO) {
+                String compositeKey = lDto.getIdLicitacion() + "_" + eDto.getDireccionEmail();
+
+                // Solo agrega si no existe el registro pendiente/enviado
+                if (!existingKeys.contains(compositeKey)) {
+                    Licitacion l = licitacionMapper.licitacionDTOtoLicitacion(lDto);
+                    Email e = emailMapper.emailDTOtoEmail(eDto);
+                    toSave.add(new LicitacionEmail(l, e));
+                }
+            }
+        }
+
+        if (!toSave.isEmpty()) {
+            licitacionEmailRepository.saveAll(toSave);
+            licitacionEmailRepository.flush();
+        }
+    }
+
+    @Transactional
+    public void saveSentEmails(List<Integer> licitacionIds, List<String> emailAddresses) {
+        if (licitacionIds.isEmpty() || emailAddresses.isEmpty()) return;
+
+        HashSet<String> direcciones = new HashSet<>(emailAddresses);
+
+        licitacionEmailRepository.updateEnviado(licitacionIds, direcciones);
     }
 
     private List<LicitacionDTO> getLicitaciones() {
         return licitacionService.findByFilters(null, null, LocalDate.now(), null, null, null);
     }
 
-    private Map<Integer, Licitacion> mapLicitaciones(List<LicitacionDTO> licitacionesDTO) {
-        return licitacionesDTO.stream()
-                .collect(Collectors.toMap(LicitacionDTO::getIdLicitacion, licitacionMapper::licitacionDTOtoLicitacion));
+
+    public List<LicitacionEmail> getPendientes() {
+        return licitacionEmailRepository.findByEnviadoFalse();
     }
 
-    private Map<String, Email> mapEmails(List<EmailDTO> emailsDTO) {
+    private Set<String> getEmailAddresses(List<EmailDTO> emailsDTO) {
         return emailsDTO.stream()
-                .collect(Collectors.toMap(EmailDTO::getDireccionEmail, emailMapper::emailDTOtoEmail));
+                .map(EmailDTO::getDireccionEmail)
+                .collect(Collectors.toSet());
     }
 
-    private Set<LicitacionEmail> createLicitacionEmailSet(Map<Integer, Licitacion> licitacionMap, Map<String, Email> emailMap) {
-        Set<LicitacionEmail> emailsToSave = new HashSet<>();
-        for (Licitacion licitacion : licitacionMap.values()) {
-            for (Email email : emailMap.values()) {
-                LicitacionEmail licitacionEmail = new LicitacionEmail(licitacion, email);
-                emailsToSave.add(licitacionEmail);
-            }
-        }
-        return emailsToSave;
+    private List<Integer> getLicitacionIds(List<LicitacionDTO> licitacionesDTO) {
+        return licitacionesDTO.stream()
+                .map(LicitacionDTO::getIdLicitacion)
+                .collect(Collectors.toList());
     }
 }
-
-
 
 

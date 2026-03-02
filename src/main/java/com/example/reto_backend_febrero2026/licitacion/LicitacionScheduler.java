@@ -59,18 +59,5 @@ public class LicitacionScheduler {
         }
     }
 
-    public List<String> getActiveEmails() {
-        List<String> emails = mailService.findAllActiveEmails();
-        return emails;
-    }
 
-    public void updateLicitacionNotification(){
-        Config config = configService.getEntityConfig();
-        List<LicitacionDTO> licitaciones =licitacionService.findByFilters(null, null,
-                null,null, config.getFamilia().getCod(), config.getSubfamilia().getCod());
-        List<String> mails = getActiveEmails();
-
-        licitacionEmailService.registrarPendientes(licitaciones, mails);
-
-    }
 }

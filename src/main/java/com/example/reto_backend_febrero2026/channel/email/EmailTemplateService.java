@@ -5,6 +5,8 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
 
@@ -18,11 +20,11 @@ public class EmailTemplateService {
         this.templateEngine = templateEngine;
     }
 
-    public String generarLicitacionesHtml(List<LicitacionDTO> items, String fecha){
+    public String generarLicitacionesHtml(List<LicitacionDTO> items, LocalDateTime fecha) {
+        String fechaFormateada = fecha.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
         Context ctx = new Context(defaultLocale);
         ctx.setVariable("items", items != null ? items : List.of());
-        ctx.setVariable("fecha", fecha);
-
+        ctx.setVariable("fecha", fechaFormateada);
         return templateEngine.process("email/licitaciones", ctx);
     }
 

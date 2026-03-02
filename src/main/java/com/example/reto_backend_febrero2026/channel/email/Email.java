@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 public class Email {
 
     @Id
-    @Column(name = "email_address", nullable = false, unique = true)
+    @Column(name = "direccion_email", nullable = false, unique = true)
     private String direccionEmail;
 
     @Column(name = "activo", nullable = false)

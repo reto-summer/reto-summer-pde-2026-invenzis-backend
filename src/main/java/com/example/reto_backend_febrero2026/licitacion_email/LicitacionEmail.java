@@ -18,7 +18,7 @@ public class LicitacionEmail {
     private Integer idLicitacion;
 
     @Id
-    @Column(name = "email")
+    @Column(name = "direccion_email")
     private String direccionEmail;
 
     @Column(name = "enviado", nullable = false)
@@ -32,7 +32,12 @@ public class LicitacionEmail {
     private Licitacion licitacion;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "email", insertable = false, updatable = false)
+    @JoinColumn(
+            name = "direccion_email",
+            referencedColumnName = "direccion_email",
+            insertable = false,
+            updatable = false
+    )
     private Email email;
 
     public LicitacionEmail() {}

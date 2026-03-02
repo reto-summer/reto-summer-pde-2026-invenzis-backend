@@ -3,56 +3,52 @@ package com.example.reto_backend_febrero2026.channel.email;
 import com.example.reto_backend_febrero2026.audit.Auditable;
 import com.example.reto_backend_febrero2026.channel.IChannel;
 import com.example.reto_backend_febrero2026.licitacion.LicitacionDTO;
-import com.example.reto_backend_febrero2026.licitacion.LicitacionService;
-import com.example.reto_backend_febrero2026.notificacion.Notificacion;
-import jakarta.mail.internet.MimeMessage;
+import com.example.reto_backend_febrero2026.licitacion.LicitacionMapper;
+import com.example.reto_backend_febrero2026.licitacion_email.ILicitacionEmailService;
+import com.example.reto_backend_febrero2026.licitacion_email.LicitacionEmail;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import org.thymeleaf.context.Context;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
+import java.util.Map;
+import java.util.stream.Collectors;
 
-import org.slf4j.MDC;
 
 @Service
 public class EmailService implements IEmailService, IChannel {
-
     private static final Logger log = LoggerFactory.getLogger(EmailService.class);
 
-
-    private final JavaMailSender mailSender;
-    private final EmailValidator emailValidator;
-    private final EmailTemplateService emailTemplateService;
+    private final EmailTemplateService templateService;
     private final IEmailRepository emailRepository;
     private final EmailMapper emailMapper;
-    private final LicitacionService
+    private final ILicitacionEmailService licitacionEmailService;
+    private final EmailTransportService emailTransportService;
+    private final EmailValidator emailValidator;
+    private final LicitacionMapper  licitacionMapper;
 
-    @Value("${mail.to}")
-    private String mailTo;
-
-    @Value("${spring.mail.username}")
-    private String mailFrom;
-
-    public EmailService(JavaMailSender mailSender, EmailValidator emailValidator,
-                        EmailTemplateService emailTemplateService, IEmailRepository emailRepository,
-                        EmailMapper emailMapper) {
-        this.mailSender = mailSender;
-        this.emailValidator = emailValidator;
-        this.emailTemplateService = emailTemplateService;
+    public EmailService(EmailTemplateService templateService,
+                        IEmailRepository emailRepository,
+                        EmailMapper emailMapper,
+                        ILicitacionEmailService licitacionEmailService,
+                        EmailRecipientResolver recipientResolver,
+                        EmailTransportService emailTransportService,
+                        EmailValidator emailValidator,
+                        LicitacionMapper licitacionMapper) {
+        this.templateService = templateService;
         this.emailRepository = emailRepository;
         this.emailMapper = emailMapper;
+        this.licitacionEmailService = licitacionEmailService;
+        this.emailTransportService = emailTransportService;
+        this.emailValidator = emailValidator;
+        this.licitacionMapper = licitacionMapper;
     }
 
     @Override
@@ -122,85 +118,56 @@ public class EmailService implements IEmailService, IChannel {
         return emailRepository.findAllActiveEmails();
     }
 
+    @Override
     @Async
     @Auditable(module = "EMAIL_SERVICE", action = "SEND_MAIL")
-    @Override
-    public void sendLicitacionesEmail(List<LicitacionDTO> licitaciones) {
-        List<LicitacionDTO> safeItems = licitaciones == null ? List.of() : licitaciones;
-        String fecha = LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy", new Locale("es", "UY")));
-        String subject = safeItems.isEmpty()
-                ? "Sin nuevas licitaciones ARCE - " + fecha
-                : safeItems.size() + " Licitaciones ARCE - " + fecha;
+    public void sendNotification() {
 
-        Context ctx = new Context(new Locale("es", "UY"));
-        ctx.setVariable("items", safeItems);
-        ctx.setVariable("fecha", fecha);
+        List<LicitacionEmail> pendientes =
+                licitacionEmailService.getPendientes();
 
-        String htmlContent = templateEngine.process("email/licitaciones", ctx);
-
-        // Set notification context for AuditAspect
-        MDC.put("notificationTitle", subject);
-
-        String licitacionIds = safeItems.stream()
-                .filter(dto -> dto.getIdLicitacion() != null)
-                .map(dto -> String.valueOf(dto.getIdLicitacion()))
-                .collect(java.util.stream.Collectors.joining(", "));
-
-        List<Email> emailsFromDb = emailRepository.findByActivoTrue();
-        String[] recipients;
-
-        if (!emailsFromDb.isEmpty()) {
-            recipients = emailsFromDb.stream().map(Email::getDireccionEmail).toArray(String[]::new);
-            log.info("Usando {} emails de la base de datos", emailsFromDb.size());
-        } else {
-            recipients = parseEmailList(mailTo);
-            log.info("Usando emails de application.properties");
-        }
-
-        MDC.put("notificationContent", licitacionIds.isBlank() ? "sin IDs" : licitacionIds);
-
-        if (recipients.length == 0) {
-            MDC.put("notificationSuccess", "false");
-            MDC.put("notificationDetail", "Sin destinatarios válidos en BD ni mail.to");
-            log.error("No hay destinatarios válidos configurados en BD ni en mail.to");
+        if (pendientes.isEmpty()) {
+            log.info("No hay notificaciones pendientes para enviar.");
             return;
         }
 
-        try {
-            MDC.put("notificationDetail", "Envío exitoso");
-            MDC.put("notificationSuccess", "true");
+        Map<String, List<LicitacionEmail>> pendientesPorEmail =
+                pendientes.stream()
+                        .collect(Collectors.groupingBy(
+                                le -> le.getEmail().getDireccionEmail()));
 
-            MimeMessage message = mailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
-            helper.setFrom(mailFrom);
-            helper.setTo(recipients);
-            helper.setSubject(subject);
-            helper.setText(htmlContent, true);
+        for (Map.Entry<String, List<LicitacionEmail>> entry : pendientesPorEmail.entrySet()) {
 
-            mailSender.send(message);
-            log.info("Email de licitaciones enviado a {} destinatarios con {} licitaciones", recipients.length, safeItems.size());
-        } catch (Exception e) {
-            MDC.put("notificationSuccess", "false");
-            MDC.put("notificationDetail", e.getMessage());
-            log.error("Error al enviar email de licitaciones: {}", e.getMessage(), e);
-            throw new RuntimeException("ERROR en envío de mail: " + e);
+            String email = entry.getKey();
+            List<LicitacionEmail> registros = entry.getValue();
+
+            List<LicitacionDTO> licitaciones =
+                    registros.stream()
+                            .map(LicitacionEmail::getLicitacion)
+                            .map(licitacionMapper::licitacionToLicitacionDTO)
+                            .toList();
+
+            if (licitaciones.isEmpty()) {
+                continue;
+            }
+
+            try {
+                String html = templateService.generarLicitacionesHtml(
+                        licitaciones,
+                        LocalDateTime.now()
+                );
+
+                String subject =  licitaciones.size() + " Licitaciones ARCE - " + LocalDate.now();
+
+                emailTransportService.sendHtmlEmail(List.of(email), subject, html);
+
+                registros.forEach(LicitacionEmail::marcarComoEnviado);
+
+                log.info("Email enviado a {} con {} licitaciones", email, licitaciones.size());
+
+            } catch (Exception e) {
+                log.error("Error enviando mail a {}: {}", email, e.getMessage(), e);
+            }
         }
-    }
-
-    private String[] parseEmailList(String emailString) {
-        if (emailString == null || emailString.trim().isEmpty()) {
-            log.warn("Lista de emails vacía");
-            return new String[0];
-        }
-        return Arrays.stream(emailString.split(","))
-                .map(String::trim)
-                .filter(email -> !email.isEmpty())
-                .filter(email -> email.matches(EMAIL_REGEX))
-                .toArray(String[]::new);
-    }
-
-    @Override
-    public void sendNotification(){
-        List<LicitacionDTO> licitacionesParaEsteEMail =
     }
 }
