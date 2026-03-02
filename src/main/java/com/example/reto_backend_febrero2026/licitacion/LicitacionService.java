@@ -95,11 +95,16 @@ public class LicitacionService implements ILicitacionService {
 
         String nombreInciso = licitacionUtility.extraerNombreInciso(itemRecord.titulo());
 
-        List<IncisoDTO> incisoDTO = incisoService.getByNombre(nombreInciso);
+        List<IncisoDTO> incisos = incisoService.getByNombre(nombreInciso);
+
+        if (incisos != null && !incisos.isEmpty()) {
+            licitacionDTO.setInciso(incisos.getFirst());
+        } else {
+            System.err.println("WARN: No se encontró el inciso '" + nombreInciso + "' en la base de datos.");
+        }
 
         licitacionDTO.setFamilia(familiaDTO);
         licitacionDTO.setSubfamilia(subfamiliaDTO);
-        licitacionDTO.setInciso(incisoDTO.getFirst());
 
         Licitacion licitacion = licitacionMapper.licitacionDTOtoLicitacion(licitacionDTO);
         licitacionRepository.save(licitacion);

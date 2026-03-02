@@ -97,7 +97,8 @@ public class ArceClientService {
             return CompletableFuture.completedFuture(resultados);
 
         } catch (Exception e) {
-            throw new RuntimeException("Error al conectar con ARCE RSS: " + e.getMessage(), e);
+            String errorDetail = (e.getMessage() != null) ? e.getMessage() : e.getClass().getSimpleName();
+            throw new RuntimeException("Error crítico en ARCE Client: " + errorDetail, e);
         }
     }
 

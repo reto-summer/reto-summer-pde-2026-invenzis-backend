@@ -1,5 +1,6 @@
 package com.example.reto_backend_febrero2026.licitacion;
 
+import jdk.jfr.Name;
 import org.mapstruct.Named;
 import org.springframework.stereotype.Component;
 
@@ -75,6 +76,7 @@ public class LicitacionUtility {
         return Optional.empty();
     }
 
+    @Named("extraerNombreInciso")
     public String extraerNombreInciso(String title) {
 
         if (title == null) return null;
