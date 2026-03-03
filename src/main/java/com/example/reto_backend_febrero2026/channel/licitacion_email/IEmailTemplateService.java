@@ -8,4 +8,6 @@ import java.util.List;
 public interface IEmailTemplateService {
 
     String generarLicitacionesHtml(List<LicitacionDTO> items, LocalDateTime fecha);
+
+    String generarSinLicitacionesHtml(LocalDateTime fecha);
 }

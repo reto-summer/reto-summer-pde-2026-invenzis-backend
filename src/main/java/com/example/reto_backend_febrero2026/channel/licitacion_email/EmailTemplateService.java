@@ -29,4 +29,12 @@ public class EmailTemplateService implements IEmailTemplateService {
         return templateEngine.process("email/licitaciones", ctx);
     }
 
+    @Override
+    public String generarSinLicitacionesHtml(LocalDateTime fecha) {
+        String fechaFormateada = fecha.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+        Context ctx = new Context(defaultLocale);
+        ctx.setVariable("fecha", fechaFormateada);
+        return templateEngine.process("email/sin-licitaciones", ctx);
+    }
+
 }
