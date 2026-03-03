@@ -1,7 +1,7 @@
 package com.example.reto_backend_febrero2026;
 
-import com.example.reto_backend_febrero2026.audit.AuditService;
 import com.example.reto_backend_febrero2026.audit.Auditable;
+import com.example.reto_backend_febrero2026.audit.IAuditService;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
@@ -11,7 +11,6 @@ import org.aspectj.lang.annotation.Aspect;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.PrintWriter;
@@ -26,8 +25,11 @@ public class AuditAspect {
     private static final Logger log = LoggerFactory.getLogger(AuditAspect.class);
     private static final String TRACE_KEY = "traceId";
 
-    @Autowired
-    private AuditService auditService;
+    private final IAuditService auditService;
+
+    public AuditAspect(IAuditService auditService) {
+        this.auditService = auditService;
+    }
 
     @Around("@annotation(auditable)")
     public Object around(ProceedingJoinPoint joinPoint, Auditable auditable) throws Throwable {
