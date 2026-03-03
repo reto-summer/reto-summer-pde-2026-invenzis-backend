@@ -34,7 +34,7 @@ public class LicitacionScheduler {
         this.licitacionMapper = licitacionMapper;
     }
 
-    @Scheduled(cron = "0 * * * * *", zone = "America/Montevideo")
+    @Scheduled(cron = "0 0 0 * * *", zone = "America/Montevideo")
     public void getLicitacionesByConfig() {
         try {
             Config config = configService.getEntityConfig();
@@ -52,7 +52,7 @@ public class LicitacionScheduler {
         }
     }
 
-    @Scheduled(cron = "0 * * * * *", zone = "America/Montevideo")
+    @Scheduled(cron = "0 0 0 * * *", zone = "America/Montevideo")
     public void ejecutarProcesoNotificaciones() {
         licitacionEmailService.savePendingEmails();
 
