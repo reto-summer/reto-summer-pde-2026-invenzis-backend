@@ -1,6 +1,5 @@
 package com.example.reto_backend_febrero2026.channel.licitacion_email;
 
-import com.example.reto_backend_febrero2026.audit.Auditable;
 import com.example.reto_backend_febrero2026.channel.IChannel;
 import com.example.reto_backend_febrero2026.email.Email;
 import com.example.reto_backend_febrero2026.email.EmailDTO;
@@ -10,7 +9,8 @@ import com.example.reto_backend_febrero2026.licitacion.ILicitacionService;
 import com.example.reto_backend_febrero2026.licitacion.Licitacion;
 import com.example.reto_backend_febrero2026.licitacion.LicitacionDTO;
 import com.example.reto_backend_febrero2026.licitacion.LicitacionMapper;
-import org.springframework.scheduling.annotation.Async;
+import com.example.reto_backend_febrero2026.notificacion.INotificacionService;
+import com.example.reto_backend_febrero2026.notificacion.NotificacionType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,10 +30,12 @@ public class LicitacionEmailService implements ILicitacionEmailService, IChannel
     private final LicitacionMapper licitacionMapper;
     private final IEmailTemplateService emailTemplateService;
     private final IEmailTransportService emailTransportService;
+    private final INotificacionService notificacionService;
 
     public LicitacionEmailService(ILicitacionEmailRepository licitacionEmailRepository, ILicitacionService licitacionService,
                                   IEmailService emailService, EmailMapper emailMapper, LicitacionMapper licitacionMapper,
-                                  IEmailTransportService emailTransportService, IEmailTemplateService emailTemplateService) {
+                                  IEmailTransportService emailTransportService, IEmailTemplateService emailTemplateService,
+                                  INotificacionService notificacionService) {
         this.licitacionEmailRepository = licitacionEmailRepository;
         this.licitacionService = licitacionService;
         this.emailService = emailService;
@@ -41,11 +43,10 @@ public class LicitacionEmailService implements ILicitacionEmailService, IChannel
         this.licitacionMapper = licitacionMapper;
         this.emailTransportService = emailTransportService;
         this.emailTemplateService = emailTemplateService;
+        this.notificacionService = notificacionService;
     }
 
     @Override
-    @Async
-    @Auditable(module = "EMAIL_SERVICE", action = "SEND_MAIL")
     public void sendNotification() {
 
         List<LicitacionEmail> pendientes = getPendientes();
@@ -59,22 +60,24 @@ public class LicitacionEmailService implements ILicitacionEmailService, IChannel
                         .collect(Collectors.groupingBy(
                                 le -> le.getEmail().getDireccionEmail()));
 
-        for (Map.Entry<String, List<LicitacionEmail>> entry : pendientesPorEmail.entrySet()) {
+        int totalEnviadas = 0;
 
-            String email = entry.getKey();
-            List<LicitacionEmail> registros = entry.getValue();
+        try {
+            for (Map.Entry<String, List<LicitacionEmail>> entry : pendientesPorEmail.entrySet()) {
 
-            List<LicitacionDTO> licitaciones =
-                    registros.stream()
-                            .map(LicitacionEmail::getLicitacion)
-                            .map(licitacionMapper::licitacionToLicitacionDTO)
-                            .toList();
+                String email = entry.getKey();
+                List<LicitacionEmail> registros = entry.getValue();
 
-            if (licitaciones.isEmpty()) {
-                continue;
-            }
+                List<LicitacionDTO> licitaciones =
+                        registros.stream()
+                                .map(LicitacionEmail::getLicitacion)
+                                .map(licitacionMapper::licitacionToLicitacionDTO)
+                                .toList();
 
-            try {
+                if (licitaciones.isEmpty()) {
+                    continue;
+                }
+
                 String html = emailTemplateService.generarLicitacionesHtml(licitaciones, LocalDateTime.now());
                 String subject = licitaciones.size() + " Licitaciones ARCE - " + LocalDate.now();
 
@@ -85,11 +88,28 @@ public class LicitacionEmailService implements ILicitacionEmailService, IChannel
                         .toList();
 
                 saveSentEmails(idsLicitaciones, List.of(email));
+                totalEnviadas += licitaciones.size();
+            }
 
-            }
-            catch (Exception e) {
-                throw e;
-            }
+            notificacionService.create(
+                    NotificacionType.EMAIL,
+                    "Envío de licitaciones ARCE - " + LocalDate.now(),
+                    true,
+                    totalEnviadas + " licitaciones enviadas a " + pendientesPorEmail.size() + " destinatario(s)",
+                    null,
+                    LocalDateTime.now()
+            );
+
+        } catch (Exception e) {
+            notificacionService.create(
+                    NotificacionType.EMAIL,
+                    "Error en envío de licitaciones ARCE - " + LocalDate.now(),
+                    false,
+                    e.getMessage(),
+                    null,
+                    LocalDateTime.now()
+            );
+            throw e;
         }
     }
 
@@ -159,5 +179,3 @@ public class LicitacionEmailService implements ILicitacionEmailService, IChannel
         licitacionEmailRepository.save(licEm);
     }
 }
-
-

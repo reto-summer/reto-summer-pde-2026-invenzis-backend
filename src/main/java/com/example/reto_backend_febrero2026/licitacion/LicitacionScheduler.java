@@ -7,8 +7,6 @@ import com.example.reto_backend_febrero2026.integration.servlet.service.ArceClie
 import com.example.reto_backend_febrero2026.integration.servlet.service.strategy.ArceRssFilters;
 import com.example.reto_backend_febrero2026.email.IEmailService;
 import com.example.reto_backend_febrero2026.channel.licitacion_email.ILicitacionEmailService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -16,8 +14,6 @@ import java.util.List;
 
 @Component
 public class LicitacionScheduler {
-
-    private static final Logger log = LoggerFactory.getLogger(LicitacionScheduler.class);
 
     private final ArceClientService arceClientService;
     private final IEmailService emailService;
@@ -38,9 +34,8 @@ public class LicitacionScheduler {
         this.licitacionMapper = licitacionMapper;
     }
 
-    @Scheduled(cron = "0 0 0 * * *", zone = "America/Montevideo")
+    @Scheduled(cron = "0 * * * * *", zone = "America/Montevideo")
     public void getLicitacionesByConfig() {
-        log.info("Iniciando envío diario de licitaciones ARCE");
         try {
             Config config = configService.getEntityConfig();
             ArceRssFilters filters = new ArceRssFilters(config.getFamilia().getCod(), config.getSubfamilia().getCod());
@@ -57,7 +52,7 @@ public class LicitacionScheduler {
         }
     }
 
-    @Scheduled(cron = "0 0 0 * * *", zone = "America/Montevideo")
+    @Scheduled(cron = "0 * * * * *", zone = "America/Montevideo")
     public void ejecutarProcesoNotificaciones() {
         licitacionEmailService.savePendingEmails();
 

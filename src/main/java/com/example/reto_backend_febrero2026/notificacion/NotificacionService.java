@@ -6,6 +6,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.reto_backend_febrero2026.notificacion.strategy.INotificacionStrategy;
 import com.example.reto_backend_febrero2026.notificacion.strategy.NotificacionStrategyResolver;
@@ -23,6 +25,7 @@ public class NotificacionService implements INotificacionService {
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public Notificacion create(NotificacionType canal, String titulo, boolean exito, String detalle, String contenido, LocalDateTime fechaEjecucion) {
         INotificacionStrategy strategy = strategyResolver.resolve(canal);
         Notificacion notificacion = strategy.send(titulo, exito, detalle, contenido, fechaEjecucion);
