@@ -1,5 +1,6 @@
-/*package com.example.reto_backend_febrero2026.email;
+package com.example.reto_backend_febrero2026.email;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -8,7 +9,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -52,7 +52,6 @@ class EmailControllerTest {
 
     @Test
     void getDestinationById_emailExistente_deberiaRetornar200ConEmailDTO() throws Exception {
-        // Arrange
         LocalDateTime now = LocalDateTime.now();
         EmailDTO dto = new EmailDTO();
         dto.setEmail("test@example.com");
@@ -60,7 +59,7 @@ class EmailControllerTest {
         dto.setFechaCreacion(now);
         dto.setFechaActualizacion(now);
 
-        when(emailService.findById("test@example.com")).thenReturn(Optional.of(dto));
+        when(emailService.findById("test@example.com")).thenReturn(dto);
 
         mockMvc.perform(get("/email/test@example.com"))
                 .andExpect(status().isOk())
@@ -72,10 +71,12 @@ class EmailControllerTest {
 
     @Test
     void getDestinationById_emailInexistente_deberiaRetornar404() throws Exception {
-        when(emailService.findById("noexiste@example.com")).thenReturn(Optional.empty());
+        when(emailService.findById("noexiste@example.com"))
+                .thenThrow(new EntityNotFoundException("Email no encontrado"));
 
         mockMvc.perform(get("/email/noexiste@example.com"))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message").value("Email no encontrado"));
 
         verify(emailService).findById("noexiste@example.com");
     }
@@ -89,7 +90,7 @@ class EmailControllerTest {
         dto.setFechaCreacion(now);
         dto.setFechaActualizacion(now);
 
-        when(emailService.findById("user+tag@example.co.uk")).thenReturn(Optional.of(dto));
+        when(emailService.findById("user+tag@example.co.uk")).thenReturn(dto);
 
         mockMvc.perform(get("/email/user+tag@example.co.uk"))
                 .andExpect(status().isOk())
@@ -113,10 +114,7 @@ class EmailControllerTest {
 
     @Test
     void createDestination_emailConMayusculas_deberiaCrearNormalizado() throws Exception {
-        EmailDTO dto = new EmailDTO();
-        dto.setEmail("newemail@example.com");
-
-        when(emailService.create("NEWEMAIL@EXAMPLE.COM")).thenReturn(dto);
+        when(emailService.create("NEWEMAIL@EXAMPLE.COM")).thenReturn(new EmailDTO());
 
         mockMvc.perform(post("/email")
                 .contentType("application/json")
@@ -136,7 +134,7 @@ class EmailControllerTest {
                 .contentType("application/json")
                 .content("{\"email\":\"invalidemail\"}"))
                 .andExpect(status().isBadRequest())
-                .andExpect(content().string("El formato del email no es válido"));
+                .andExpect(jsonPath("$.message").value("El formato del email no es válido"));
 
         verify(emailService).create("invalidemail");
     }
@@ -154,13 +152,12 @@ class EmailControllerTest {
 
     @Test
     void deleteDestination_emailInexistente_deberiaRetornar404() throws Exception {
-        doThrow(new org.springframework.web.server.ResponseStatusException(
-                org.springframework.http.HttpStatus.NOT_FOUND, 
-                "Destino de email no encontrado: noexiste@example.com"))
+        doThrow(new IllegalArgumentException("Destino de email no encontrado: noexiste@example.com"))
                 .when(emailService).deactivate("noexiste@example.com");
 
         mockMvc.perform(delete("/email/noexiste@example.com"))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("Destino de email no encontrado: noexiste@example.com"));
 
         verify(emailService).deactivate("noexiste@example.com");
     }
@@ -174,4 +171,4 @@ class EmailControllerTest {
 
         verify(emailService).deactivate("user+tag@example.co.uk");
     }
-}*/
+}

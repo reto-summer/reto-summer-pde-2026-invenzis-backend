@@ -1,14 +1,10 @@
 package com.example.reto_backend_febrero2026.channel.licitacion_email;
 
-import com.example.reto_backend_febrero2026.channel.IChannel;
 import com.example.reto_backend_febrero2026.email.Email;
 import com.example.reto_backend_febrero2026.email.EmailDTO;
 import com.example.reto_backend_febrero2026.email.EmailMapper;
 import com.example.reto_backend_febrero2026.email.IEmailService;
-import com.example.reto_backend_febrero2026.licitacion.ILicitacionService;
-import com.example.reto_backend_febrero2026.licitacion.Licitacion;
-import com.example.reto_backend_febrero2026.licitacion.LicitacionDTO;
-import com.example.reto_backend_febrero2026.licitacion.LicitacionMapper;
+import com.example.reto_backend_febrero2026.licitacion.*;
 import com.example.reto_backend_febrero2026.notificacion.INotificacionService;
 import com.example.reto_backend_febrero2026.notificacion.NotificacionType;
 import org.springframework.stereotype.Service;
@@ -20,8 +16,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional
-public class LicitacionEmailService implements ILicitacionEmailService, IChannel {
+public class LicitacionEmailService implements ILicitacionEmailService {
 
     private final ILicitacionEmailRepository licitacionEmailRepository;
     private final ILicitacionService licitacionService;
@@ -32,10 +27,16 @@ public class LicitacionEmailService implements ILicitacionEmailService, IChannel
     private final IEmailTransportService emailTransportService;
     private final INotificacionService notificacionService;
 
-    public LicitacionEmailService(ILicitacionEmailRepository licitacionEmailRepository, ILicitacionService licitacionService,
-                                  IEmailService emailService, EmailMapper emailMapper, LicitacionMapper licitacionMapper,
-                                  IEmailTransportService emailTransportService, IEmailTemplateService emailTemplateService,
-                                  INotificacionService notificacionService) {
+    public LicitacionEmailService(
+            ILicitacionEmailRepository licitacionEmailRepository,
+            ILicitacionService licitacionService,
+            IEmailService emailService,
+            EmailMapper emailMapper,
+            LicitacionMapper licitacionMapper,
+            IEmailTransportService emailTransportService,
+            IEmailTemplateService emailTemplateService,
+            INotificacionService notificacionService) {
+
         this.licitacionEmailRepository = licitacionEmailRepository;
         this.licitacionService = licitacionService;
         this.emailService = emailService;
@@ -46,99 +47,20 @@ public class LicitacionEmailService implements ILicitacionEmailService, IChannel
         this.notificacionService = notificacionService;
     }
 
-    @Override
-    public void sendNotification() {
-
-        List<LicitacionEmail> pendientes = getPendientes();
-
-        if (pendientes.isEmpty()) {
-            return;
-        }
-
-        Map<String, List<LicitacionEmail>> pendientesPorEmail =
-                pendientes.stream()
-                        .collect(Collectors.groupingBy(
-                                le -> le.getEmail().getDireccionEmail()));
-
-        int totalEnviadas = 0;
-
-        try {
-            for (Map.Entry<String, List<LicitacionEmail>> entry : pendientesPorEmail.entrySet()) {
-
-                String email = entry.getKey();
-                List<LicitacionEmail> registros = entry.getValue();
-
-                List<LicitacionDTO> licitaciones =
-                        registros.stream()
-                                .map(LicitacionEmail::getLicitacion)
-                                .map(licitacionMapper::licitacionToLicitacionDTO)
-                                .toList();
-
-                if (licitaciones.isEmpty()) {
-                    continue;
-                }
-
-                String html = emailTemplateService.generarLicitacionesHtml(licitaciones, LocalDateTime.now());
-                String subject = licitaciones.size() + " Licitaciones ARCE - " + LocalDate.now();
-
-                emailTransportService.sendHtmlEmail(List.of(email), subject, html);
-
-                List<Integer> idsLicitaciones = registros.stream()
-                        .map(LicitacionEmail::getIdLicitacion)
-                        .toList();
-
-                saveSentEmails(idsLicitaciones, List.of(email));
-                totalEnviadas += licitaciones.size();
-            }
-
-            notificacionService.create(
-                    NotificacionType.EMAIL,
-                    "Envío de licitaciones ARCE - " + LocalDate.now(),
-                    true,
-                    totalEnviadas + " licitaciones enviadas a " + pendientesPorEmail.size() + " destinatario(s)",
-                    null,
-                    LocalDateTime.now()
-            );
-
-        } catch (Exception e) {
-            notificacionService.create(
-                    NotificacionType.EMAIL,
-                    "Error en envío de licitaciones ARCE - " + LocalDate.now(),
-                    false,
-                    e.getMessage(),
-                    null,
-                    LocalDateTime.now()
-            );
-            throw e;
-        }
-    }
-
     @Transactional
-    public void saveSentEmails(List<Integer> licitacionIds, List<String> emailAddresses) {
-        if (licitacionIds.isEmpty() || emailAddresses.isEmpty()) return;
-
-        HashSet<String> direcciones = new HashSet<>(emailAddresses);
-
-        licitacionEmailRepository.updateEnviado(licitacionIds, direcciones);
-    }
-
     @Override
-    @Transactional
     public void savePendingEmails() {
-        // 1. Traemos licitaciones de hoy (o los últimos 2 días para dar margen)
-        List<LicitacionDTO> licitacionesDTO = getLicitaciones();
+        List<LicitacionDTO> licitacionesDTO = licitacionService.findByFilters(null, null, LocalDate.now(), null, null, null);
         List<EmailDTO> emailsDTO = emailService.findAllActive();
 
         if (licitacionesDTO.isEmpty() || emailsDTO.isEmpty()) return;
 
-        // 2. Buscamos qué combinaciones YA existen para no duplicar
         Set<String> existingKeys = licitacionEmailRepository.findByLicitacionesAndEmails(
-                getLicitacionIds(licitacionesDTO),
-                getEmailAddresses(emailsDTO)
+                licitacionesDTO.stream().map(LicitacionDTO::getIdLicitacion).toList(),
+                emailsDTO.stream().map(EmailDTO::getDireccionEmail).collect(Collectors.toSet())
         );
 
         List<LicitacionEmail> aCrear = new ArrayList<>();
-
         for (LicitacionDTO l : licitacionesDTO) {
             for (EmailDTO e : emailsDTO) {
                 String key = l.getIdLicitacion() + "_" + e.getDireccionEmail();
@@ -153,29 +75,54 @@ public class LicitacionEmailService implements ILicitacionEmailService, IChannel
         licitacionEmailRepository.saveAll(aCrear);
     }
 
-    private List<LicitacionDTO> getLicitaciones() {
-        return licitacionService.findByFilters(null, null, LocalDate.now(), null, null, null);
-    }
-
-    public List<LicitacionEmail> getPendientes() {
-        return licitacionEmailRepository.findByEnviadoFalse();
-    }
-
-    private Set<String> getEmailAddresses(List<EmailDTO> emailsDTO) {
-        return emailsDTO.stream()
-                .map(EmailDTO::getDireccionEmail)
-                .collect(Collectors.toSet());
-    }
-
-    private List<Integer> getLicitacionIds(List<LicitacionDTO> licitacionesDTO) {
-        return licitacionesDTO.stream()
-                .map(LicitacionDTO::getIdLicitacion)
-                .collect(Collectors.toList());
-    }
-
+    @Transactional
     @Override
-    public void save(Licitacion licitacion, Email email) {
-        LicitacionEmail licEm = new LicitacionEmail(licitacion, email);
-        licitacionEmailRepository.save(licEm);
+    public void sendNotification() {
+        List<LicitacionEmail> pendientes = licitacionEmailRepository.findByEnviadoFalse();
+        if (pendientes.isEmpty()) return;
+
+        Map<String, List<LicitacionEmail>> agrupados = pendientes.stream()
+                .collect(Collectors.groupingBy(le -> le.getEmail().getDireccionEmail()));
+
+        int totalEnviadas = 0;
+
+        for (Map.Entry<String, List<LicitacionEmail>> entry : agrupados.entrySet()) {
+            String email = entry.getKey();
+            List<LicitacionEmail> registros = entry.getValue();
+
+            List<LicitacionDTO> licitaciones = registros.stream()
+                    .map(LicitacionEmail::getLicitacion)
+                    .map(licitacionMapper::licitacionToLicitacionDTO)
+                    .toList();
+
+            if (licitaciones.isEmpty()) continue;
+
+            String html = emailTemplateService.generarLicitacionesHtml(licitaciones, LocalDateTime.now());
+            String subject = licitaciones.size() + " Licitaciones ARCE - " + LocalDate.now();
+
+            emailTransportService.sendHtmlEmail(List.of(email), subject, html);
+
+            saveSentEmails(
+                    registros.stream().map(LicitacionEmail::getIdLicitacion).toList(),
+                    List.of(email)
+            );
+
+            totalEnviadas += licitaciones.size();
+        }
+
+        notificacionService.create(
+                NotificacionType.EMAIL,
+                "Envío de licitaciones ARCE",
+                true,
+                totalEnviadas + " licitaciones enviadas",
+                null,
+                LocalDateTime.now()
+        );
+    }
+
+    @Transactional
+    public void saveSentEmails(List<Integer> licitacionIds, List<String> emailAddresses) {
+        if (licitacionIds.isEmpty() || emailAddresses.isEmpty()) return;
+        licitacionEmailRepository.updateEnviado(licitacionIds, new HashSet<>(emailAddresses));
     }
 }
