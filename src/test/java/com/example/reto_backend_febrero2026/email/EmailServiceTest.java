@@ -6,8 +6,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.thymeleaf.TemplateEngine;
-import org.springframework.mail.javamail.JavaMailSender;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,6 +15,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -27,16 +26,13 @@ import static org.mockito.Mockito.when;
 class EmailServiceTest {
 
     @Mock
-    private JavaMailSender mailSender;
-
-    @Mock
-    private TemplateEngine templateEngine;
-
-    @Mock
     private IEmailRepository emailRepository;
 
     @Mock
     private EmailMapper emailMapper;
+
+    @Mock
+    private EmailValidator emailValidator;
 
     @InjectMocks
     private EmailService emailService;
@@ -46,32 +42,32 @@ class EmailServiceTest {
         Email email1 = new Email("admin@example.com");
         Email email2 = new Email("user@example.com");
         EmailDTO dto1 = new EmailDTO();
-        dto1.setEmail("admin@example.com");
+        dto1.setDireccionEmail("admin@example.com");
         EmailDTO dto2 = new EmailDTO();
-        dto2.setEmail("user@example.com");
+        dto2.setDireccionEmail("user@example.com");
 
         when(emailRepository.findByActivoTrue()).thenReturn(List.of(email1, email2));
-        when(emailMapper.emailToEmailDTO(email1)).thenReturn(dto1);
-        when(emailMapper.emailToEmailDTO(email2)).thenReturn(dto2);
+        when(emailMapper.emailToDTO(email1)).thenReturn(dto1);
+        when(emailMapper.emailToDTO(email2)).thenReturn(dto2);
 
         List<EmailDTO> result = emailService.findAllActive();
 
         assertEquals(2, result.size());
         verify(emailRepository).findByActivoTrue();
-        verify(emailMapper, times(2)).emailToEmailDTO(any(Email.class));
+        verify(emailMapper, times(2)).emailToDTO(any(Email.class));
     }
 
     @Test
     void findById_existente_deberiaRetornarDTO() {
         Email email = new Email("test@example.com");
         EmailDTO dto = new EmailDTO();
-        dto.setEmail("test@example.com");
+        dto.setDireccionEmail("test@example.com");
         when(emailRepository.findById("test@example.com")).thenReturn(Optional.of(email));
-        when(emailMapper.emailToEmailDTO(email)).thenReturn(dto);
+        when(emailMapper.emailToDTO(email)).thenReturn(dto);
 
         EmailDTO result = emailService.findById("test@example.com");
 
-        assertEquals("test@example.com", result.getEmail());
+        assertEquals("test@example.com", result.getDireccionEmail());
         verify(emailRepository).findById("test@example.com");
     }
 
@@ -86,6 +82,10 @@ class EmailServiceTest {
 
     @Test
     void create_emailInvalido_deberiaLanzarIllegalArgument() {
+        when(emailValidator.normalize("invalidemail")).thenReturn("invalidemail");
+        doThrow(new IllegalArgumentException("El formate de email no es valido: invalidemail"))
+                .when(emailValidator).validateOrThrow("invalidemail");
+
         assertThrows(IllegalArgumentException.class, () -> emailService.create("invalidemail"));
         verifyNoInteractions(emailRepository);
     }
@@ -94,15 +94,17 @@ class EmailServiceTest {
     void create_emailNuevo_deberiaGuardarNormalizado() {
         Email saved = new Email("newemail@example.com");
         EmailDTO dto = new EmailDTO();
-        dto.setEmail("newemail@example.com");
+        dto.setDireccionEmail("newemail@example.com");
+
+        when(emailValidator.normalize(" NEWEMAIL@EXAMPLE.COM ")).thenReturn("newemail@example.com");
         when(emailRepository.findById("newemail@example.com")).thenReturn(Optional.empty());
         when(emailRepository.save(any(Email.class))).thenReturn(saved);
-        when(emailMapper.emailToEmailDTO(saved)).thenReturn(dto);
+        when(emailMapper.emailToDTO(saved)).thenReturn(dto);
 
         EmailDTO result = emailService.create(" NEWEMAIL@EXAMPLE.COM ");
 
-        assertEquals("newemail@example.com", result.getEmail());
-        verify(emailRepository).save(argThat(e -> "newemail@example.com".equals(e.getEmailAddress())));
+        assertEquals("newemail@example.com", result.getDireccionEmail());
+        verify(emailRepository).save(argThat(e -> "newemail@example.com".equals(e.getDireccionEmail())));
     }
 
     @Test
@@ -110,13 +112,15 @@ class EmailServiceTest {
         Email existing = new Email("existing@example.com");
         existing.setActivo(true);
         EmailDTO dto = new EmailDTO();
-        dto.setEmail("existing@example.com");
+        dto.setDireccionEmail("existing@example.com");
+
+        when(emailValidator.normalize("existing@example.com")).thenReturn("existing@example.com");
         when(emailRepository.findById("existing@example.com")).thenReturn(Optional.of(existing));
-        when(emailMapper.emailToEmailDTO(existing)).thenReturn(dto);
+        when(emailMapper.emailToDTO(existing)).thenReturn(dto);
 
         EmailDTO result = emailService.create("existing@example.com");
 
-        assertEquals("existing@example.com", result.getEmail());
+        assertEquals("existing@example.com", result.getDireccionEmail());
         verify(emailRepository, never()).save(any(Email.class));
         verify(emailRepository, never()).updateActivo(anyString(), anyBoolean());
     }
@@ -125,19 +129,16 @@ class EmailServiceTest {
     void create_emailExistenteInactivo_deberiaReactivar() {
         Email inactive = new Email("reactivate@example.com");
         inactive.setActivo(false);
-        Email reactivated = new Email("reactivate@example.com");
-        reactivated.setActivo(true);
         EmailDTO dto = new EmailDTO();
-        dto.setEmail("reactivate@example.com");
+        dto.setDireccionEmail("reactivate@example.com");
 
-        when(emailRepository.findById("reactivate@example.com"))
-                .thenReturn(Optional.of(inactive))
-                .thenReturn(Optional.of(reactivated));
-        when(emailMapper.emailToEmailDTO(reactivated)).thenReturn(dto);
+        when(emailValidator.normalize("reactivate@example.com")).thenReturn("reactivate@example.com");
+        when(emailRepository.findById("reactivate@example.com")).thenReturn(Optional.of(inactive));
+        when(emailMapper.emailToDTO(inactive)).thenReturn(dto);
 
         EmailDTO result = emailService.create("reactivate@example.com");
 
-        assertEquals("reactivate@example.com", result.getEmail());
+        assertEquals("reactivate@example.com", result.getDireccionEmail());
         verify(emailRepository).updateActivo("reactivate@example.com", true);
         verify(emailRepository, never()).save(any(Email.class));
     }
@@ -146,28 +147,31 @@ class EmailServiceTest {
     void update_existente_conActivo_deberiaActualizar() {
         Email email = new Email("update@example.com");
         EmailDTO dto = new EmailDTO();
-        dto.setEmail("update@example.com");
-        when(emailRepository.existsById("update@example.com")).thenReturn(true);
+        dto.setDireccionEmail("update@example.com");
         when(emailRepository.findById("update@example.com")).thenReturn(Optional.of(email));
-        when(emailMapper.emailToEmailDTO(email)).thenReturn(dto);
+        when(emailMapper.emailToDTO(email)).thenReturn(dto);
 
         EmailDTO result = emailService.update("update@example.com", true);
 
-        assertEquals("update@example.com", result.getEmail());
+        assertEquals("update@example.com", result.getDireccionEmail());
         verify(emailRepository).updateActivo("update@example.com", true);
     }
 
     @Test
-    void update_inexistente_deberiaLanzarIllegalArgument() {
-        when(emailRepository.existsById("noexiste@example.com")).thenReturn(false);
+    void update_inexistente_deberiaLanzarEntityNotFound() {
+        when(emailRepository.findById("noexiste@example.com")).thenReturn(Optional.empty());
 
-        assertThrows(IllegalArgumentException.class, () -> emailService.update("noexiste@example.com", true));
+        assertThrows(EntityNotFoundException.class, () -> emailService.update("noexiste@example.com", true));
         verify(emailRepository, never()).updateActivo(anyString(), anyBoolean());
     }
 
     @Test
     void deactivate_existente_deberiaDesactivar() {
-        when(emailRepository.existsById("deactivate@example.com")).thenReturn(true);
+        Email email = new Email("deactivate@example.com");
+        EmailDTO dto = new EmailDTO();
+        dto.setDireccionEmail("deactivate@example.com");
+        when(emailRepository.findById("deactivate@example.com")).thenReturn(Optional.of(email));
+        when(emailMapper.emailToDTO(email)).thenReturn(dto);
 
         emailService.deactivate("deactivate@example.com");
 
@@ -175,10 +179,10 @@ class EmailServiceTest {
     }
 
     @Test
-    void deactivate_inexistente_deberiaLanzarIllegalArgument() {
-        when(emailRepository.existsById("noexiste@example.com")).thenReturn(false);
+    void deactivate_inexistente_deberiaLanzarEntityNotFound() {
+        when(emailRepository.findById("noexiste@example.com")).thenReturn(Optional.empty());
 
-        assertThrows(IllegalArgumentException.class, () -> emailService.deactivate("noexiste@example.com"));
+        assertThrows(EntityNotFoundException.class, () -> emailService.deactivate("noexiste@example.com"));
         verify(emailRepository, never()).updateActivo(anyString(), anyBoolean());
     }
 

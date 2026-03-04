@@ -81,6 +81,12 @@ class LicitacionServiceTest {
 
         when(licitacionMapper.licitacionDTOtoLicitacion(dto))
                 .thenReturn(licitacion);
+        when(licitacionRepository.save(licitacion)).thenReturn(licitacion);
+
+        LicitacionDTO dtoFinal = new LicitacionDTO();
+        dtoFinal.setFamilia(familiaDTO);
+        dtoFinal.setSubfamilia(subfamiliaDTO);
+        when(licitacionMapper.licitacionToLicitacionDTO(licitacion)).thenReturn(dtoFinal);
 
         LicitacionDTO resultado = licitacionService.save(itemRecord);
 

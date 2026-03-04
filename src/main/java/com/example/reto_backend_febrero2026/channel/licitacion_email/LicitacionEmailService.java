@@ -111,7 +111,7 @@ public class LicitacionEmailService implements ILicitacionEmailService {
                 String html;
                 String subject;
                 if (licitaciones.isEmpty()) {
-                    html = emailTemplateService.generarSinLicitacionesHtml(LocalDateTime.now());
+                    html = emailTemplateService.generarLicitacionesHtml(List.of(), LocalDateTime.now());
                     subject = "Sin licitaciones ARCE - " + LocalDate.now();
                 } else {
                     html = emailTemplateService.generarLicitacionesHtml(licitaciones, LocalDateTime.now());
