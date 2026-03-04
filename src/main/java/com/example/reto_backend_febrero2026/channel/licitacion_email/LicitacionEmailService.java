@@ -79,45 +79,66 @@ public class LicitacionEmailService implements ILicitacionEmailService {
     @Override
     public void sendNotification() {
         List<LicitacionEmail> pendientes = licitacionEmailRepository.findByEnviadoFalse();
-        if (pendientes.isEmpty()) return;
+        if (pendientes.isEmpty()) {
+            return;
+        }
 
-        Map<String, List<LicitacionEmail>> agrupados = pendientes.stream()
-                .collect(Collectors.groupingBy(le -> le.getEmail().getDireccionEmail()));
+        Map<String, List<LicitacionEmail>> pendientesPorEmail =
+                pendientes.stream()
+                        .collect(Collectors.groupingBy(
+                                le -> le.getEmail().getDireccionEmail()));
 
         int totalEnviadas = 0;
 
-        for (Map.Entry<String, List<LicitacionEmail>> entry : agrupados.entrySet()) {
-            String email = entry.getKey();
-            List<LicitacionEmail> registros = entry.getValue();
+        try {
+            for (Map.Entry<String, List<LicitacionEmail>> entry : pendientesPorEmail.entrySet()) {
 
-            List<LicitacionDTO> licitaciones = registros.stream()
-                    .map(LicitacionEmail::getLicitacion)
-                    .map(licitacionMapper::licitacionToLicitacionDTO)
-                    .toList();
+                String email = entry.getKey();
+                List<LicitacionEmail> registros = entry.getValue();
 
-            if (licitaciones.isEmpty()) continue;
+                List<LicitacionDTO> licitaciones =
+                        registros.stream()
+                                .map(LicitacionEmail::getLicitacion)
+                                .map(licitacionMapper::licitacionToLicitacionDTO)
+                                .toList();
 
-            String html = emailTemplateService.generarLicitacionesHtml(licitaciones, LocalDateTime.now());
-            String subject = licitaciones.size() + " Licitaciones ARCE - " + LocalDate.now();
+                if (licitaciones.isEmpty()) {
+                    continue;
+                }
 
-            emailTransportService.sendHtmlEmail(List.of(email), subject, html);
+                String html = emailTemplateService.generarLicitacionesHtml(licitaciones, LocalDateTime.now());
+                String subject = licitaciones.size() + " Licitaciones ARCE - " + LocalDate.now();
 
-            saveSentEmails(
-                    registros.stream().map(LicitacionEmail::getIdLicitacion).toList(),
-                    List.of(email)
+                emailTransportService.sendHtmlEmail(List.of(email), subject, html);
+
+                List<Integer> idsLicitaciones = registros.stream()
+                        .map(LicitacionEmail::getIdLicitacion)
+                        .toList();
+
+                saveSentEmails(idsLicitaciones, List.of(email));
+                totalEnviadas += licitaciones.size();
+            }
+
+            notificacionService.create(
+                    NotificacionType.EMAIL,
+                    "Envío de licitaciones ARCE - " + LocalDate.now(),
+                    true,
+                    totalEnviadas + " licitaciones enviadas a " + pendientesPorEmail.size() + " destinatario(s)",
+                    null,
+                    LocalDateTime.now()
             );
 
-            totalEnviadas += licitaciones.size();
+        } catch (Exception e) {
+            notificacionService.create(
+                    NotificacionType.EMAIL,
+                    "Error en envío de licitaciones ARCE - " + LocalDate.now(),
+                    false,
+                    e.getMessage(),
+                    null,
+                    LocalDateTime.now()
+            );
+            throw e;
         }
-
-        notificacionService.create(
-                NotificacionType.EMAIL,
-                "Envío de licitaciones ARCE",
-                true,
-                totalEnviadas + " licitaciones enviadas",
-                null,
-                LocalDateTime.now()
-        );
     }
 
     @Transactional
