@@ -80,6 +80,7 @@ public class LicitacionEmailService implements ILicitacionEmailService {
     public void sendNotification() {
         List<LicitacionEmail> pendientes = licitacionEmailRepository.findByEnviadoFalse();
         if (pendientes.isEmpty()) {
+            enviarNotificacionSinLicitaciones();
             return;
         }
 
@@ -145,5 +146,37 @@ public class LicitacionEmailService implements ILicitacionEmailService {
     public void saveSentEmails(List<Integer> licitacionIds, List<String> emailAddresses) {
         if (licitacionIds.isEmpty() || emailAddresses.isEmpty()) return;
         licitacionEmailRepository.updateEnviado(licitacionIds, new HashSet<>(emailAddresses));
+    }
+
+    private void enviarNotificacionSinLicitaciones() {
+        List<String> emailsActivos = emailService.findAllActiveEmails();
+
+        if (emailsActivos.isEmpty()) return;
+
+        try {
+            String html = emailTemplateService.generarSinLicitacionesHtml(LocalDateTime.now());
+            String subject = "Sin licitaciones ARCE - " + LocalDate.now();
+
+            emailTransportService.sendHtmlEmail(emailsActivos, subject, html);
+
+            notificacionService.create(
+                    NotificacionType.EMAIL,
+                    "Notificación de sin licitaciones ARCE - " + LocalDate.now(),
+                    true,
+                    "Notificación enviada a " + emailsActivos.size() + " destinatario(s)",
+                    null,
+                    LocalDateTime.now()
+            );
+        } catch (Exception e) {
+            notificacionService.create(
+                    NotificacionType.EMAIL,
+                    "Error en envío de notificación sin licitaciones - " + LocalDate.now(),
+                    false,
+                    e.getMessage(),
+                    null,
+                    LocalDateTime.now()
+            );
+            throw e;
+        }
     }
 }
