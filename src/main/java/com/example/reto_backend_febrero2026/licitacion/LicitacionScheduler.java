@@ -17,7 +17,7 @@ public class LicitacionScheduler {
         this.licitacionEmailService = licitacionEmailService;
     }
 
-    @Scheduled(cron = "0 0 0 * * *", zone = "America/Montevideo")
+    @Scheduled(cron = "0 * * * * *", zone = "America/Montevideo")
     public void executeDailyTask() {
         syncService.getLicitacionesByConfig();
 
