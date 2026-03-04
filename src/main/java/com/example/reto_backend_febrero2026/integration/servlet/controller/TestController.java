@@ -48,6 +48,7 @@ public class TestController {
         return arceClientService.obtenerLicitaciones(filters);
     }
 
+    @Operation(summary = "Obtener URL RSS", description = "Devuelve la URL del feed RSS con los filtros aplicados. Params opc.: familyCod, subFamilyCod")
     @GetMapping("/api/rss-url")
     public String getRssUrl(
             @RequestParam(required = false) Integer familyCod,
