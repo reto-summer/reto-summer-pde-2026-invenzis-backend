@@ -3,8 +3,6 @@ package com.example.reto_backend_febrero2026.subfamilia;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/subfamilias")
 public class SubfamiliaController {

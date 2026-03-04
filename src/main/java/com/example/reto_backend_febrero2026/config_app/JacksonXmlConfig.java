@@ -1,4 +1,4 @@
-package com.example.reto_backend_febrero2026.config;
+package com.example.reto_backend_febrero2026.config_app;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;

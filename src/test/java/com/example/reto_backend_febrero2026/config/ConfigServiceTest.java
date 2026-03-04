@@ -1,5 +1,10 @@
 package com.example.reto_backend_febrero2026.config;
 
+import com.example.reto_backend_febrero2026.config_entity.Config;
+import com.example.reto_backend_febrero2026.config_entity.ConfigDTO;
+import com.example.reto_backend_febrero2026.config_entity.ConfigService;
+import com.example.reto_backend_febrero2026.config_entity.ConfigUpdateDTO;
+import com.example.reto_backend_febrero2026.config_entity.IConfigRepository;
 import com.example.reto_backend_febrero2026.familia.Familia;
 import com.example.reto_backend_febrero2026.familia.IFamiliaService;
 import com.example.reto_backend_febrero2026.integration.servlet.service.ArceClientService;

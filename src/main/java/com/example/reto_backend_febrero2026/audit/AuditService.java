@@ -4,7 +4,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 @Service
-public class AuditService {
+public class AuditService implements IAuditService{
 
     private final AuditRepository auditRepository;
 
@@ -12,6 +12,7 @@ public class AuditService {
         this.auditRepository = auditRepository;
     }
 
+    @Override
     @Async("taskExecutor")
     public void saveAuditLog(String traceId, String module, String action, String message, String detail, String level) {
         AuditLog log = new AuditLog(traceId, module, action, message, detail, level);

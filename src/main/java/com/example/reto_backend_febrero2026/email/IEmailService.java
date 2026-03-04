@@ -1,23 +1,18 @@
 package com.example.reto_backend_febrero2026.email;
 
-import com.example.reto_backend_febrero2026.licitacion.LicitacionDTO;
-
 import java.util.List;
-import java.util.Optional;
 
 public interface IEmailService {
 
     List<EmailDTO> findAllActive();
 
-    EmailDTO findById(String emailAddress);
+    EmailDTO findById(String direccionEmail);
 
     EmailDTO create(String email);
 
-    EmailDTO update(String emailAddress, Boolean activo);
+    EmailDTO update(String direccionEmail, Boolean habilitadoEnvio);
 
-    void deactivate(String emailAddress);
+    void deactivate(String direccionEmail);
 
     List<String> findAllActiveEmails();
-
-    void sendLicitacionesEmail(List<LicitacionDTO> licitaciones);
 }

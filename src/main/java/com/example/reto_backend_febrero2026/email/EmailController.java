@@ -31,7 +31,7 @@ public class EmailController {
     @Operation(summary = "Crear destinatario", description = "Registra una nueva dirección de email para recibir licitaciones.")
     @PostMapping
     public ResponseEntity<String> createDestination(@RequestBody EmailDTO body) {
-        emailService.create(body.getEmail());
+        emailService.create(body.getDireccionEmail());
         return ResponseEntity.ok("Email creado exitosamente");
     }
 

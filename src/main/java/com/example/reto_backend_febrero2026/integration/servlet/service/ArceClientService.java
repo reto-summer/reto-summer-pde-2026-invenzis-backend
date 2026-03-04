@@ -3,7 +3,7 @@ package com.example.reto_backend_febrero2026.integration.servlet.service;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.reto_backend_febrero2026.audit.IAuditService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.xml.MappingJackson2XmlHttpMessageConverter;
@@ -13,7 +13,6 @@ import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
-import com.example.reto_backend_febrero2026.audit.AuditService;
 import com.example.reto_backend_febrero2026.audit.Auditable;
 import com.example.reto_backend_febrero2026.integration.servlet.dto.LicitacionItemRecord;
 import com.example.reto_backend_febrero2026.integration.servlet.dto.RssResponseDTO;
@@ -38,14 +37,15 @@ public class ArceClientService {
     @Value("${arce.rss.default.subfamily-cod:0}")
     private Integer defaultSubFamilyCod;
 
-    @Autowired
-    AuditService auditService;
+    private final IAuditService auditService;
 
-    @Autowired
-    ILicitacionService licitacionService;
+    private final ILicitacionService licitacionService;
 
-    public ArceClientService(RestClient.Builder builder, ArceRssUrlStrategyResolver urlStrategyResolver) {
+
+    public ArceClientService(RestClient.Builder builder, ArceRssUrlStrategyResolver urlStrategyResolver, IAuditService auditService, ILicitacionService licitacionService) {
         this.urlStrategyResolver = urlStrategyResolver;
+        this.auditService = auditService;
+        this.licitacionService = licitacionService;
         XmlMapper xmlMapper = new XmlMapper();
         xmlMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         MappingJackson2XmlHttpMessageConverter converter = new MappingJackson2XmlHttpMessageConverter(xmlMapper);
@@ -54,7 +54,6 @@ public class ArceClientService {
                 .messageConverters(converters -> converters.add(converter))
                 .build();
     }
-
 
         @Retryable(
             retryFor = {Exception.class},

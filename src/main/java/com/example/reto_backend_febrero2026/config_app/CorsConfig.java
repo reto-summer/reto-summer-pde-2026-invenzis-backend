@@ -1,4 +1,4 @@
-package com.example.reto_backend_febrero2026.config;
+package com.example.reto_backend_febrero2026.config_app;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

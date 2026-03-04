@@ -54,7 +54,7 @@ class EmailControllerTest {
     void getDestinationById_emailExistente_deberiaRetornar200ConEmailDTO() throws Exception {
         LocalDateTime now = LocalDateTime.now();
         EmailDTO dto = new EmailDTO();
-        dto.setEmail("test@example.com");
+        dto.setDireccionEmail("test@example.com");
         dto.setActivo(true);
         dto.setFechaCreacion(now);
         dto.setFechaActualizacion(now);
@@ -63,7 +63,7 @@ class EmailControllerTest {
 
         mockMvc.perform(get("/email/test@example.com"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.email").value("test@example.com"))
+                .andExpect(jsonPath("$.direccionEmail").value("test@example.com"))
                 .andExpect(jsonPath("$.activo").value(true));
 
         verify(emailService).findById("test@example.com");
@@ -85,7 +85,7 @@ class EmailControllerTest {
     void getDestinationById_emailConCaracteresEspeciales_deberiaRetornar200() throws Exception {
         LocalDateTime now = LocalDateTime.now();
         EmailDTO dto = new EmailDTO();
-        dto.setEmail("user+tag@example.co.uk");
+        dto.setDireccionEmail("user+tag@example.co.uk");
         dto.setActivo(true);
         dto.setFechaCreacion(now);
         dto.setFechaActualizacion(now);
@@ -94,7 +94,7 @@ class EmailControllerTest {
 
         mockMvc.perform(get("/email/user+tag@example.co.uk"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.email").value("user+tag@example.co.uk"));
+                .andExpect(jsonPath("$.direccionEmail").value("user+tag@example.co.uk"));
 
         verify(emailService).findById("user+tag@example.co.uk");
     }
@@ -105,7 +105,7 @@ class EmailControllerTest {
 
         mockMvc.perform(post("/email")
                 .contentType("application/json")
-                .content("{\"email\":\"newemail@example.com\"}"))
+                .content("{\"direccionEmail\":\"newemail@example.com\"}"))
                 .andExpect(status().isOk())
                 .andExpect(content().string("Email creado exitosamente"));
 
@@ -118,7 +118,7 @@ class EmailControllerTest {
 
         mockMvc.perform(post("/email")
                 .contentType("application/json")
-                .content("{\"email\":\"NEWEMAIL@EXAMPLE.COM\"}"))
+                .content("{\"direccionEmail\":\"NEWEMAIL@EXAMPLE.COM\"}"))
                 .andExpect(status().isOk())
                 .andExpect(content().string("Email creado exitosamente"));
 
@@ -132,7 +132,7 @@ class EmailControllerTest {
 
         mockMvc.perform(post("/email")
                 .contentType("application/json")
-                .content("{\"email\":\"invalidemail\"}"))
+                .content("{\"direccionEmail\":\"invalidemail\"}"))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message").value("El formato del email no es válido"));
 
