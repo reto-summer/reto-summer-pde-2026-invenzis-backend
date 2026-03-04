@@ -3,10 +3,7 @@ package com.example.reto_backend_febrero2026.subfamilia;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.mapstruct.ap.shaded.freemarker.template.utility.NullArgumentException;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import jakarta.persistence.EntityNotFoundException;
 

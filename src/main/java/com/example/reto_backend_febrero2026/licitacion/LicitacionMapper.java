@@ -19,4 +19,6 @@ public interface LicitacionMapper {
     @Mapping(source = "titulo", target = "tipoLicitacion", qualifiedByName = "extraerTipoLicitacion")
 
     LicitacionDTO itemRecordToDTO(LicitacionItemRecord itemRecord);
+
+    LicitacionItemRecord DTOtoLicitacionItemRecordItem(LicitacionDTO licitacionDTO);
 }

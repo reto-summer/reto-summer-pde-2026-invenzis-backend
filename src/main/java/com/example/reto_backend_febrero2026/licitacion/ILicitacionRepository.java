@@ -8,7 +8,6 @@ import org.springframework.stereotype.Repository;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface ILicitacionRepository extends JpaRepository<Licitacion, Integer> {
@@ -21,10 +20,10 @@ public interface ILicitacionRepository extends JpaRepository<Licitacion, Integer
         SELECT DISTINCT l FROM Licitacion l
         LEFT JOIN FETCH l.familia
         LEFT JOIN FETCH l.subfamilia
-        JOIN LicitacionEmail le ON le.id.idLicitacion = l.idLicitacion
+        JOIN LicitacionEmail le ON le.idLicitacion = l.idLicitacion
         WHERE l.familia.cod = :familiaCod
         AND l.subfamilia.cod = :subfamiliaCod
-        AND le.id.email IN :emails
+        AND le.direccionEmail IN :emails
     """)
     List<Licitacion> findNoEnviadasByFamiliaAndSubfamiliaAndEmails(
             @Param("familiaCod") Integer familiaCod,

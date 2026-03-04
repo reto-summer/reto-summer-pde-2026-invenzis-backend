@@ -7,14 +7,18 @@ import java.util.List;
 
 public interface ILicitacionService {
     List<LicitacionDTO> findByFilters(LocalDate fechaPublicacionDesde, LocalDate fechaPublicacionHasta,
-                                LocalDate fechaCierreDesde, LocalDate fechaCierreHasta, Integer familiaCod,
-                                Integer subfamiliaCod);
+                                      LocalDate fechaCierreDesde, LocalDate fechaCierreHasta, Integer familiaCod,
+                                      Integer subfamiliaCod);
+
     LicitacionDTO getLicitacionById(int id);
+
     List<LicitacionDTO> getLicitacionByTitulo(String titulo);
+
     LicitacionDTO save(LicitacionItemRecord itemRecord);
+
+    // USAR EL FINDBYFILTERS
     List<LicitacionDTO> getLicitacionesByFamiliaAndSubfamilia(Integer familia_cod, Integer subfamilia_cod);
-    List<LicitacionDTO> getLicitacionesNoEnviadasByFamiliaAndSubfamilia(Integer familiaCod, Integer subfamiliaCod, List<String> emails);
-    //LicitacionModelDTO getlicitacionByfecha_publicacion(LocalDate fecha);
-    //LicitacionModelDTO getlicitacionByfecha_cierre(LocalDateTime fecha);
-    //LicitacionModelDTO getlicitacionByfecha_inicio_fin(LocalDate fecha_inicio, LocalDate fecha_fin);
+
+
+
 }

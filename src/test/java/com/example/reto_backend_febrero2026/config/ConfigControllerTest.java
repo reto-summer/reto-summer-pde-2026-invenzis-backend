@@ -1,5 +1,10 @@
 package com.example.reto_backend_febrero2026.config;
 
+import com.example.reto_backend_febrero2026.config_app.GlobalExceptionHandler;
+import com.example.reto_backend_febrero2026.config_entity.ConfigController;
+import com.example.reto_backend_febrero2026.config_entity.ConfigDTO;
+import com.example.reto_backend_febrero2026.config_entity.ConfigUpdateDTO;
+import com.example.reto_backend_febrero2026.config_entity.IConfigService;
 import com.example.reto_backend_febrero2026.familia.FamiliaDTO;
 import com.example.reto_backend_febrero2026.subfamilia.SubfamiliaDTO;
 import org.junit.jupiter.api.Test;
