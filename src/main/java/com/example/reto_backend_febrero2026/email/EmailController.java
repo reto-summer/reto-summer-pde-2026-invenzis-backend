@@ -1,5 +1,6 @@
 package com.example.reto_backend_febrero2026.email;
 
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,11 +21,13 @@ public class EmailController {
         return ResponseEntity.ok(emailService.findAllActiveEmails());
     }
 
+    @Operation(summary = "Obtener destinatario", description = "Devuelve un destinatario por su dirección de email.")
     @GetMapping("/{emailAddress:.+}")
     public EmailDTO getDestinationById(@PathVariable String emailAddress) {
         return emailService.findById(emailAddress);
     }
 
+    @Operation(summary = "Crear destinatario", description = "Registra un nuevo destinatario. Body: { email }")
     @PostMapping
     public ResponseEntity<String> createDestination(@RequestBody EmailDTO body) {
         emailService.create(body.getEmail());
@@ -37,6 +40,7 @@ public class EmailController {
         return ResponseEntity.ok(emailService.update(emailAddress, body.getActivo()));
     }*/
 
+    @Operation(summary = "Desactivar destinatario", description = "Marca un destinatario como inactivo (soft delete).")
     @DeleteMapping("/{emailAddress:.+}")
     public ResponseEntity<Object> deleteDestination(@PathVariable String emailAddress) {
         emailService.deactivate(emailAddress);
