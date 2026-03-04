@@ -22,18 +22,24 @@ public class NotificacionController {
         this.notificacionService = notificacionService;
     }
 
-    @Operation(summary = "Listar notificaciones", description = "Devuelve el resumen de todas las notificaciones enviadas.")
+    @Operation(summary = "Listar notificaciones", description = "Devuelve el resumen de todas las notificaciones.")
     @GetMapping
     public ResponseEntity<List<NotificacionResumenDTO>> getAll() {
         return ResponseEntity.ok(notificacionService.findAllResumen());
     }
 
 
-    @Operation(summary = "Obtener notificación por ID", description = "Devuelve el detalle completo de una notificación.")
+    @Operation(summary = "Notificación por ID", description = "Obtiene el detalle de una notificación por su ID.")
     @GetMapping("/{id}")
     public ResponseEntity<NotificacionDetalleDTO> getById(@PathVariable Integer id) {
         Optional<NotificacionDetalleDTO> notificacion = notificacionService.findById(id);
         return notificacion.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @Operation(summary = "Notificaciones exitosas", description = "Devuelve solo las notificaciones enviadas con éxito.")
+    @GetMapping("/exitosas")
+    public ResponseEntity<List<NotificacionResumenDTO>> getExitosas() {
+        return ResponseEntity.ok(notificacionService.findExitosas());
     }
 }

@@ -34,7 +34,7 @@ public class TestController {
         this.licitacionService = licitacionService;
     }
 
-    @Operation(summary = "Sincronizar RSS", description = "Obtiene licitaciones del feed ARCE y las persiste. Params opc.: familyCod, subFamilyCod")
+    @Operation(summary = "Sincronizar RSS", description = "Obtiene licitaciones del feed RSS de ARCE y las persiste. Params opcionales: familyCod, subFamilyCod.")
     @GetMapping("/api/save-rss")
     public CompletableFuture<List<LicitacionDTO>> saveLicitaciones(
             @RequestParam(required = false) Integer familyCod,
@@ -48,7 +48,7 @@ public class TestController {
         return arceClientService.obtenerLicitaciones(filters);
     }
 
-    @Operation(summary = "Obtener URL RSS", description = "Devuelve la URL del feed RSS con los filtros aplicados. Params opc.: familyCod, subFamilyCod")
+    @Operation(summary = "URL del feed RSS", description = "Devuelve la URL del feed RSS de ARCE según los filtros indicados.")
     @GetMapping("/api/rss-url")
     public String getRssUrl(
             @RequestParam(required = false) Integer familyCod,
@@ -62,32 +62,32 @@ public class TestController {
         return arceClientService.obtenerUrlConsulta(filters);
     }
 
-    @Operation(summary = "Buscar licitaciones por título", description = "Devuelve licitaciones cuyo título contiene el texto indicado.")
+    @Operation(summary = "Buscar licitación por título", description = "Busca licitaciones cuyo título contenga el texto indicado.")
     @GetMapping("licitaciones/titulo/{titulo}")
     public ResponseEntity<List<LicitacionDTO>> getLicitacionByTitle(@PathVariable String titulo) {
         return ResponseEntity.ok(licitacionService.getLicitacionByTitulo(titulo));
     }
 
 
-    @Operation(summary = "Licitaciones por familia y subfamilia", description = "Filtra licitaciones por código de familia y subfamilia.")
+    @Operation(summary = "Licitaciones por familia y subfamilia", description = "Lista licitaciones filtradas por familia y subfamilia.")
     @GetMapping("/familias/{familiaCod}/subfamilia/{subfamiliaCod}")
     public List<LicitacionDTO> getLicitacionesByFamiliaAndSubfamilia(@PathVariable Integer familiaCod, @PathVariable Integer subfamiliaCod) {
         return licitacionService.getLicitacionesByFamiliaAndSubfamilia(familiaCod, subfamiliaCod);
     }
 
-    @Operation(summary = "Obtener familia por código", description = "Devuelve una familia ARCE por su código.")
+    @Operation(summary = "Familia por código", description = "Obtiene una familia por su código.")
     @GetMapping("/familia/{cod}")
     public FamiliaDTO findById(@PathVariable Integer cod) {
         return familiaService.findById(cod);
     }
 
-    @Operation(summary = "Listar subfamilias", description = "Devuelve todas las subfamilias del catálogo ARCE.")
+    @Operation(summary = "Listar subfamilias", description = "Devuelve todas las subfamilias.")
     @GetMapping("/subfamilias")
     public List<SubfamiliaDTO> findAll() {
         return subfamiliaService.findAll();
     }
 
-    @Operation(summary = "Subfamilias por familia", description = "Devuelve las subfamilias de una familia dada.")
+    @Operation(summary = "Subfamilias por familia", description = "Lista subfamilias de una familia dada.")
     @GetMapping("/subfamilias/familia/{famiCod}")
     public List<SubfamiliaDTO> findByFamiCod(@PathVariable Integer famiCod) {
         return subfamiliaService.findByFamiCod(famiCod);

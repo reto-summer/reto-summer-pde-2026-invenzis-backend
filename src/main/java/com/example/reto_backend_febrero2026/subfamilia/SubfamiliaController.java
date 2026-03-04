@@ -15,7 +15,7 @@ public class SubfamiliaController {
         this.subfamiliaService = subfamiliaService;
     }
 
-    @Operation(summary = "Obtener subfamilia", description = "Devuelve una subfamilia por clave compuesta (famiCod + cod).")
+    @Operation(summary = "Subfamilia por clave", description = "Obtiene una subfamilia por familia y código.")
     @GetMapping("/familia/{famiCod}/subfamilia/{cod}")
     public SubfamiliaDTO findById(@PathVariable Integer famiCod, @PathVariable Integer cod) {
         return subfamiliaService.findById(famiCod, cod);

@@ -22,7 +22,7 @@ public class LicitacionController {
         this.licitacionService = licitacionService;
     }
 
-    @Operation(summary = "Listar licitaciones", description = "Filtros opcionales: fechaPublicacionDesde/Hasta, fechaCierreDesde/Hasta, familiaCod, subfamiliaCod.")
+    @Operation(summary = "Listar licitaciones", description = "Lista licitaciones con filtros opcionales: fechas de publicación/cierre, familia, subfamilia.")
     @GetMapping
     public ResponseEntity<List<LicitacionDTO>> findByFilters(@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaPublicacionDesde,
                                                              @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaPublicacionHasta,
@@ -42,7 +42,7 @@ public class LicitacionController {
         );
     }
 
-    @Operation(summary = "Obtener licitación por ID", description = "Devuelve una licitación por su identificador.")
+    @Operation(summary = "Licitación por ID", description = "Obtiene una licitación por su ID.")
     @GetMapping("/{id}")
     public ResponseEntity<LicitacionDTO> getLicitacionById(@PathVariable Integer id) {
         return ResponseEntity.ok(licitacionService.getLicitacionById(id));
