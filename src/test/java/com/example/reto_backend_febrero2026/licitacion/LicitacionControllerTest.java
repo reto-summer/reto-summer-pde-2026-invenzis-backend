@@ -1,6 +1,6 @@
 package com.example.reto_backend_febrero2026.licitacion;
 
-import com.example.reto_backend_febrero2026.config.GlobalExceptionHandler;
+import com.example.reto_backend_febrero2026.config_app.GlobalExceptionHandler;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
