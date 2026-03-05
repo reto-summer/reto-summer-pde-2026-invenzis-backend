@@ -79,17 +79,24 @@ public class LicitacionService implements ILicitacionService {
     @Transactional
     public LicitacionDTO save(LicitacionItemRecord itemRecord) {
 
-        Integer id = licitacionUtility
-                .extraerIdDelLink(itemRecord.link())
-                .orElse(null);
+        Integer id = licitacionUtility.extraerIdDelLink(itemRecord.link()).orElseThrow(() -> new IllegalArgumentException("No se pudo extraer ID del link"));
 
-        if (id != null) {
-            return licitacionRepository.findById(id)
-                    .map(licitacionMapper::licitacionToLicitacionDTO)
-                    .orElseGet(() -> crearNuevaLicitacion(itemRecord));
-        }
+        LicitacionDTO dto = licitacionMapper.itemRecordToDTO(itemRecord);
 
-        return crearNuevaLicitacion(itemRecord);
+        dto.setFamilia(iFamiliaService.findById(itemRecord.familiaCod()));
+        dto.setSubfamilia(
+                iSubfamiliaService.findById(
+                        itemRecord.familiaCod(),
+                        itemRecord.subFamiliaCod()
+                )
+        );
+
+        Licitacion entity = licitacionMapper.licitacionDTOtoLicitacion(dto);
+        entity.setIdLicitacion(id);
+
+        Licitacion saved = licitacionRepository.save(entity);
+
+        return licitacionMapper.licitacionToLicitacionDTO(saved);
     }
 
     private LicitacionDTO crearNuevaLicitacion(LicitacionItemRecord itemRecord) {
