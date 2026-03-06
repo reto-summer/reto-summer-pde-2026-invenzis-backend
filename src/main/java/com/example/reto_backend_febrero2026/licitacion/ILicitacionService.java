@@ -15,10 +15,4 @@ public interface ILicitacionService {
     List<LicitacionDTO> getLicitacionByTitulo(String titulo);
 
     LicitacionDTO save(LicitacionItemRecord itemRecord);
-
-    // USAR EL FINDBYFILTERS
-    List<LicitacionDTO> getLicitacionesByFamiliaAndSubfamilia(Integer familia_cod, Integer subfamilia_cod);
-
-
-
 }

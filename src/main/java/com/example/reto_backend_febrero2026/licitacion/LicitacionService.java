@@ -4,14 +4,12 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import com.example.reto_backend_febrero2026.email.EmailMapper;
-import com.example.reto_backend_febrero2026.email.IEmailService;
+import com.example.reto_backend_febrero2026.subfamilia.Subfamilia;
+import com.example.reto_backend_febrero2026.subfamilia.SubfamiliaDTO;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.example.reto_backend_febrero2026.audit.Auditable;
-import com.example.reto_backend_febrero2026.familia.IFamiliaService;
 import com.example.reto_backend_febrero2026.integration.servlet.dto.LicitacionItemRecord;
 import com.example.reto_backend_febrero2026.subfamilia.ISubfamiliaService;
 
@@ -19,24 +17,16 @@ import com.example.reto_backend_febrero2026.subfamilia.ISubfamiliaService;
 public class LicitacionService implements ILicitacionService {
 
     private final LicitacionUtility licitacionUtility;
-    private final ISubfamiliaService iSubfamiliaService;
-    private final IFamiliaService iFamiliaService;
+    private final ISubfamiliaService subfamiliaService;
     private final ILicitacionRepository licitacionRepository;
     private final LicitacionMapper licitacionMapper;
-    private final IEmailService emailService;
-    private final EmailMapper emailMapper;
 
-    public LicitacionService(LicitacionUtility licitacionUtility, ISubfamiliaService subfamiliaService, IFamiliaService familiaService,
-                             ILicitacionRepository licitacionRepository, LicitacionMapper licitacionMapper,
-                             IEmailService emailService, EmailMapper emailMapper) {
+    public LicitacionService(LicitacionUtility licitacionUtility, ISubfamiliaService subfamiliaService,
+                             ILicitacionRepository licitacionRepository, LicitacionMapper licitacionMapper) {
         this.licitacionUtility = licitacionUtility;
-        this.iSubfamiliaService = subfamiliaService;
-        this.iFamiliaService = familiaService;
+        this.subfamiliaService = subfamiliaService;
         this.licitacionRepository = licitacionRepository;
         this.licitacionMapper = licitacionMapper;
-        this.emailService = emailService;
-        this.emailMapper = emailMapper;
-
     }
 
     @Override
@@ -75,39 +65,39 @@ public class LicitacionService implements ILicitacionService {
                 .orElseThrow(() -> new EntityNotFoundException("No existe licitación con id: " + id));
     }
 
-    @Auditable(module = "LICITACION_SERVICE", action = "CLEAN_SAVE")
     @Transactional
     public LicitacionDTO save(LicitacionItemRecord itemRecord) {
+        Integer id = licitacionUtility.extraerIdDelLink(itemRecord.link())
+                .orElseThrow(() -> new IllegalArgumentException("No se pudo extraer ID del link"));
 
-        Integer id = licitacionUtility
-                .extraerIdDelLink(itemRecord.link())
-                .orElse(null);
+        Licitacion licitacion = licitacionRepository.findById(id)
+                .orElseGet(() -> licitacionRepository.save(
+                        licitacionMapper.licitacionDTOtoLicitacion(crearNuevaLicitacion(itemRecord))
+                ));
 
-        if (id != null) {
-            return licitacionRepository.findById(id)
-                    .map(licitacionMapper::licitacionToLicitacionDTO)
-                    .orElseGet(() -> crearNuevaLicitacion(itemRecord));
+        Subfamilia subfamilia = subfamiliaService.getEntityById(itemRecord.familiaCod(), itemRecord.subFamiliaCod());
+        if (!licitacion.getSubfamilias().contains(subfamilia)) {
+            licitacion.getSubfamilias().add(subfamilia);
+            licitacion = licitacionRepository.save(licitacion);
         }
 
-        return crearNuevaLicitacion(itemRecord);
+        return licitacionMapper.licitacionToLicitacionDTO(licitacion);
     }
 
     private LicitacionDTO crearNuevaLicitacion(LicitacionItemRecord itemRecord) {
 
+        if(itemRecord.familiaCod() == null || itemRecord.subFamiliaCod() == null) {
+            throw new IllegalArgumentException("Familia o Subfamilia nulas para el item: " + itemRecord.link());
+        }
+
         LicitacionDTO dto = licitacionMapper.itemRecordToDTO(itemRecord);
 
-        dto.setFamilia(iFamiliaService.findById(itemRecord.familiaCod()));
-        dto.setSubfamilia(
-                iSubfamiliaService.findById(
-                        itemRecord.familiaCod(),
-                        itemRecord.subFamiliaCod()
-                )
-        );
+        SubfamiliaDTO subfamiliaDTO = subfamiliaService.findById(itemRecord.familiaCod(), itemRecord.subFamiliaCod());
+        dto.setSubfamilias(List.of(subfamiliaDTO));
 
-        Licitacion licitacion =
-                licitacionRepository.save(
-                        licitacionMapper.licitacionDTOtoLicitacion(dto)
-                );
+        Licitacion licitacion = licitacionRepository.save(
+                licitacionMapper.licitacionDTOtoLicitacion(dto)
+        );
 
         return licitacionMapper.licitacionToLicitacionDTO(licitacion);
     }
@@ -121,32 +111,4 @@ public class LicitacionService implements ILicitacionService {
                 .map(licitacionMapper::licitacionToLicitacionDTO)
                 .toList();
     }
-
-
-    // SIN SENTIDO, USAR EL FINDBYFILTERS
-    @Override
-    @Transactional(readOnly = true)
-    public List<LicitacionDTO> getLicitacionesByFamiliaAndSubfamilia(Integer familiaCod, Integer subfamiliaCod) {
-
-        if (subfamiliaCod != null && familiaCod == null) {
-            throw new IllegalArgumentException( "No se puede filtrar por subfamilia sin especificar la familia correspondiente.");
-        }
-
-        List<Licitacion> licitaciones =
-                licitacionRepository.findByFamilia_CodAndSubfamilia_Cod(familiaCod, subfamiliaCod);
-
-        if (licitaciones.isEmpty()) {
-            throw new IllegalArgumentException(
-                    "No existen licitaciones para familiaCod=" + familiaCod +
-                            " y subfamiliaCod=" + subfamiliaCod
-            );
-        }
-
-        List<LicitacionDTO> resultado = licitaciones.stream()
-                .map(licitacionMapper::licitacionToLicitacionDTO)
-                .toList();
-
-        return resultado;
-    }
-
 }

@@ -64,12 +64,6 @@ public class TestController {
         return ResponseEntity.ok(licitacionService.getLicitacionByTitulo(titulo));
     }
 
-
-    @GetMapping("/familias/{familiaCod}/subfamilia/{subfamiliaCod}")
-    public List<LicitacionDTO> getLicitacionesByFamiliaAndSubfamilia(@PathVariable Integer familiaCod, @PathVariable Integer subfamiliaCod) {
-        return licitacionService.getLicitacionesByFamiliaAndSubfamilia(familiaCod, subfamiliaCod);
-    }
-
     @GetMapping("/familia/{cod}")
     public FamiliaDTO findById(@PathVariable Integer cod) {
         return familiaService.findById(cod);
