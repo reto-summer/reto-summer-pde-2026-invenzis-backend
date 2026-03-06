@@ -14,33 +14,16 @@ public interface ILicitacionRepository extends JpaRepository<Licitacion, Integer
 
     List<Licitacion> findByTituloContainingIgnoreCase(String titulo);
 
-    List<Licitacion> findByFamilia_CodAndSubfamilia_Cod(Integer familiaCod, Integer subfamiliaCod);
-
     @Query("""
         SELECT DISTINCT l FROM Licitacion l
-        LEFT JOIN FETCH l.familia
-        LEFT JOIN FETCH l.subfamilia
-        JOIN LicitacionEmail le ON le.idLicitacion = l.idLicitacion
-        WHERE l.familia.cod = :familiaCod
-        AND l.subfamilia.cod = :subfamiliaCod
-        AND le.direccionEmail IN :emails
-    """)
-    List<Licitacion> findNoEnviadasByFamiliaAndSubfamiliaAndEmails(
-            @Param("familiaCod") Integer familiaCod,
-            @Param("subfamiliaCod") Integer subfamiliaCod,
-            @Param("emails") List<String> emails
-    );
-
-    @Query("""
-        SELECT l FROM Licitacion l
-        LEFT JOIN FETCH l.familia f
-        LEFT JOIN FETCH l.subfamilia s
+        LEFT JOIN FETCH l.subfamilias s
+        LEFT JOIN FETCH s.familia f
         WHERE (l.fechaPublicacion >= COALESCE(:fechaPublicacionDesde, l.fechaPublicacion))
-        AND (l.fechaPublicacion <= COALESCE(:fechaPublicacionHasta, l.fechaPublicacion))
-        AND (l.fechaCierre >= COALESCE(:fechaCierreDesde, l.fechaCierre))
-        AND (l.fechaCierre <= COALESCE(:fechaCierreHasta, l.fechaCierre))
-        AND (f.cod = COALESCE(:familiaCod, f.cod))
-        AND (s.cod = COALESCE(:subfamiliaCod, s.cod))
+          AND (l.fechaPublicacion <= COALESCE(:fechaPublicacionHasta, l.fechaPublicacion))
+          AND (l.fechaCierre >= COALESCE(:fechaCierreDesde, l.fechaCierre))
+          AND (l.fechaCierre <= COALESCE(:fechaCierreHasta, l.fechaCierre))
+          AND (:familiaCod IS NULL OR f.cod = :familiaCod)
+          AND (:subfamiliaCod IS NULL OR s.cod = :subfamiliaCod)
         ORDER BY l.fechaCierre ASC
     """)
     List<Licitacion> findByFilters(

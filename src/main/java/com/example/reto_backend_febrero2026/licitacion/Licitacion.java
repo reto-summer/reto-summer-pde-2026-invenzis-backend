@@ -2,6 +2,7 @@ package com.example.reto_backend_febrero2026.licitacion;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import com.example.reto_backend_febrero2026.familia.Familia;
 import com.example.reto_backend_febrero2026.subfamilia.Subfamilia;
@@ -36,23 +37,24 @@ public class Licitacion {
     @Column(name = "link")
     private String link;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "familia_cod", referencedColumnName = "cod")
-    private Familia familia;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "licitacion_subfamilia",
+            joinColumns = @JoinColumn(name = "licitacion_id", referencedColumnName = "id_licitacion"),
+            inverseJoinColumns = {
+                    @JoinColumn(name = "subfami_cod", referencedColumnName = "cod"),
+                    @JoinColumn(name = "fami_cod", referencedColumnName = "fami_cod")
+            }
+    )
+    private List<Subfamilia> subfamilias;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumns({
-            @JoinColumn(name = "subfami_fami_cod", referencedColumnName = "fami_cod"),
-            @JoinColumn(name = "subfami_cod", referencedColumnName = "cod")
-    })
-    private Subfamilia subfamilia;
 
     public Licitacion() {
     }
 
     public Licitacion(Integer idLicitacion, String titulo, String tipoLicitacion, String descripcion,
                       LocalDate fechaPublicacion, LocalDateTime fechaCierre,
-                      String link, Familia familia, Subfamilia subfamilia) {
+                      String link, List<Subfamilia> subfamilias) {
         this.idLicitacion = idLicitacion;
         this.titulo = titulo;
         this.tipoLicitacion = tipoLicitacion;
@@ -60,8 +62,7 @@ public class Licitacion {
         this.fechaPublicacion = fechaPublicacion;
         this.fechaCierre = fechaCierre;
         this.link = link;
-        this.familia = familia;
-        this.subfamilia = subfamilia;
+        this.subfamilias = subfamilias;
     }
 
     public Integer getIdLicitacion() {
@@ -112,20 +113,12 @@ public class Licitacion {
         this.link = link;
     }
 
-    public Familia getFamilia() {
-        return familia;
+    public List<Subfamilia> getSubfamilias() {
+        return subfamilias;
     }
 
-    public void setFamilia(Familia familia) {
-        this.familia = familia;
-    }
-
-    public Subfamilia getSubfamilia() {
-        return subfamilia;
-    }
-
-    public void setSubfamilia(Subfamilia subfamilia) {
-        this.subfamilia = subfamilia;
+    public void setSubfamilias(List<Subfamilia> subfamilias) {
+        this.subfamilias = subfamilias;
     }
 
     public String getTipoLicitacion() { return tipoLicitacion; }
