@@ -1,5 +1,6 @@
 package com.example.reto_backend_febrero2026.licitacion;
 
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,7 @@ import java.util.List;
         this.licitacionService = licitacionService;
     }
 
+    @Operation(summary = "Listar licitaciones", description = "Lista licitaciones con filtros opcionales: fechas de publicación/cierre, familia, subfamilia.")
     @GetMapping
     public ResponseEntity<List<LicitacionDTO>> findByFilters(@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaPublicacionDesde,
                                                              @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaPublicacionHasta,
@@ -36,6 +38,7 @@ import java.util.List;
         );
     }
 
+    @Operation(summary = "Licitación por ID", description = "Obtiene una licitación por su ID.")
     @GetMapping("/{id}")
     public ResponseEntity<LicitacionDTO> getLicitacionById(@PathVariable Integer id) {
         return ResponseEntity.ok(licitacionService.getLicitacionById(id));
