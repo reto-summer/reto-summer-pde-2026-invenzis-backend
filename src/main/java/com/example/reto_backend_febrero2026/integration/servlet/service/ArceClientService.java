@@ -64,8 +64,8 @@ public class ArceClientService {
     public CompletableFuture<List<LicitacionDTO>> obtenerLicitaciones(ArceRssFilters filters) {
         try {
             String rssPath = urlStrategyResolver.buildPath(filters);
-            Integer resolvedFamilyCod = filters.familyCod() != null ? filters.familyCod() : defaultFamilyCod;
-            Integer resolvedSubFamilyCod = filters.subFamilyCod() != null ? filters.subFamilyCod() : defaultSubFamilyCod;
+            Integer resolvedFamilyCod = filters.familyCod();
+            Integer resolvedSubFamilyCod = filters.subFamilyCod();
 
             RssResponseDTO response = restClient.get()
                     .uri(rssPath)
@@ -75,6 +75,10 @@ public class ArceClientService {
 
             if (response == null || response.channel() == null || response.channel().items() == null) {
                 return CompletableFuture.completedFuture(List.of());
+            }
+
+            if (resolvedFamilyCod == null || resolvedSubFamilyCod == null) {
+                return null;
             }
 
             List<LicitacionDTO> resultados = response.channel().items().stream()

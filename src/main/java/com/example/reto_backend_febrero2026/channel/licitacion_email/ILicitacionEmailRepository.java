@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Set;
@@ -14,11 +15,12 @@ public interface ILicitacionEmailRepository extends JpaRepository<LicitacionEmai
 
     List<LicitacionEmail> findByIdLicitacionIn(List<Integer> idLicitaciones);
 
+    @Transactional
     @Modifying
     @Query("""
-        UPDATE LicitacionEmail le 
-        SET le.enviado = true, le.fechaEnvio = CURRENT_TIMESTAMP 
-        WHERE le.idLicitacion IN :licitacionIds 
+        UPDATE LicitacionEmail le
+        SET le.enviado = true, le.fechaEnvio = CURRENT_TIMESTAMP
+        WHERE le.idLicitacion IN :licitacionIds
         AND le.direccionEmail IN :emails
     """)
     int updateEnviado(

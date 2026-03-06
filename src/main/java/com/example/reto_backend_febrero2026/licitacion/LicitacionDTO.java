@@ -2,8 +2,8 @@ package com.example.reto_backend_febrero2026.licitacion;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
-import com.example.reto_backend_febrero2026.familia.FamiliaDTO;
 import com.example.reto_backend_febrero2026.subfamilia.SubfamiliaDTO;
 
 public class LicitacionDTO {
@@ -22,17 +22,14 @@ public class LicitacionDTO {
 
     private String link;
 
-    private FamiliaDTO familia;
-
-    private SubfamiliaDTO subfamilia;
+    private List<SubfamiliaDTO> subfamilias;
 
     public LicitacionDTO() {
     }
 
     public LicitacionDTO(Integer idLicitacion, String titulo, String tipoLicitacion, String descripcion,
                          LocalDate fechaPublicacion, LocalDateTime fechaCierre,
-                         String link, FamiliaDTO familia,
-                         SubfamiliaDTO subfamilia) {
+                         String link, List<SubfamiliaDTO> subfamilias) {
         this.idLicitacion = idLicitacion;
         this.titulo = titulo;
         this.tipoLicitacion = tipoLicitacion;
@@ -40,8 +37,7 @@ public class LicitacionDTO {
         this.fechaPublicacion = fechaPublicacion;
         this.fechaCierre = fechaCierre;
         this.link = link;
-        this.familia = familia;
-        this.subfamilia = subfamilia;
+        this.subfamilias = subfamilias;
     }
 
     public Integer getIdLicitacion() {
@@ -92,20 +88,12 @@ public class LicitacionDTO {
         this.link = link;
     }
 
-    public FamiliaDTO getFamilia() {
-        return familia;
+    public List<SubfamiliaDTO> getSubfamilias() {
+        return subfamilias;
     }
 
-    public void setFamilia(FamiliaDTO familia) {
-        this.familia = familia;
-    }
-
-    public SubfamiliaDTO getSubfamilia() {
-        return subfamilia;
-    }
-
-    public void setSubfamilia(SubfamiliaDTO subfamilia) {
-        this.subfamilia = subfamilia;
+    public void setSubfamilias(List<SubfamiliaDTO> subfamilias) {
+        this.subfamilias = subfamilias;
     }
 
     public String getTipoLicitacion() { return tipoLicitacion; }

@@ -39,11 +39,6 @@ public class LicitacionSyncService implements ILicitacionSyncService{
 
             List<LicitacionDTO> nuevasLicitaciones = arceClientService.obtenerLicitaciones(filters).get();
 
-            for (LicitacionDTO dto : nuevasLicitaciones) {
-                LicitacionItemRecord record = licitacionMapper.DTOtoLicitacionItemRecordItem(dto);
-                licitacionService.save(record);
-            }
-
             System.out.println(nuevasLicitaciones.size() + " licitaciones sincronizadas.");
 
         } catch (Exception e) {

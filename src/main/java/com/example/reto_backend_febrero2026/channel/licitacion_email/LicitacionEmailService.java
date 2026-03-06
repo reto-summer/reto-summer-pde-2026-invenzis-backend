@@ -77,6 +77,7 @@ public class LicitacionEmailService implements ILicitacionEmailService {
     }
 
     @Async("taskExecutor")
+    @Transactional
     @Override
     public void sendNotification() {
         List<LicitacionEmail> pendientes = licitacionEmailRepository.findByEnviadoFalse();

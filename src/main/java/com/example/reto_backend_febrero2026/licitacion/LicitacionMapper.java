@@ -14,8 +14,7 @@ public interface LicitacionMapper {
     @Mapping(source = "descripcion", target = "descripcion", qualifiedByName = "limpiarHTML")
     @Mapping(source = "fechaPublicacion", target = "fechaPublicacion", qualifiedByName = "parsearFechaPublicacion")
     @Mapping(source = "descripcion", target = "fechaCierre", qualifiedByName = "extraerFechaCierre")
-    @Mapping(target = "familia", ignore = true)
-    @Mapping(target = "subfamilia", ignore = true)
+    @Mapping(target = "subfamilias", ignore = true)
     @Mapping(source = "titulo", target = "tipoLicitacion", qualifiedByName = "extraerTipoLicitacion")
 
     LicitacionDTO itemRecordToDTO(LicitacionItemRecord itemRecord);
