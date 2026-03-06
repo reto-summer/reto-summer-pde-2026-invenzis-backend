@@ -3,7 +3,7 @@ name: Deploy to DEV
 on:
   push:
     branches:
-      - dev
+      - main
   workflow_dispatch:
 
 permissions:
@@ -13,8 +13,8 @@ permissions:
 env:
   REGION: us-east1
   AR_REPO: reto-summer-pde-2026
-  SERVICE_NAME: qa-reto-summer-pde-2026-invenzis-backend
-  IMAGE_NAME: qa-reto-summer-pde-2026-invenzis-backend
+  SERVICE_NAME: prod-reto-summer-pde-2026-invenzis-backend
+  IMAGE_NAME: prod-reto-summer-pde-2026-invenzis-backend
 
 jobs:
   deploy:

@@ -67,21 +67,25 @@ public class LicitacionService implements ILicitacionService {
 
     @Transactional
     public LicitacionDTO save(LicitacionItemRecord itemRecord) {
-        Integer id = licitacionUtility.extraerIdDelLink(itemRecord.link())
-                .orElseThrow(() -> new IllegalArgumentException("No se pudo extraer ID del link"));
 
-        Licitacion licitacion = licitacionRepository.findById(id)
-                .orElseGet(() -> licitacionRepository.save(
-                        licitacionMapper.licitacionDTOtoLicitacion(crearNuevaLicitacion(itemRecord))
-                ));
+        Integer id = licitacionUtility.extraerIdDelLink(itemRecord.link()).orElseThrow(() -> new IllegalArgumentException("No se pudo extraer ID del link"));
 
-        Subfamilia subfamilia = subfamiliaService.getEntityById(itemRecord.familiaCod(), itemRecord.subFamiliaCod());
-        if (!licitacion.getSubfamilias().contains(subfamilia)) {
-            licitacion.getSubfamilias().add(subfamilia);
-            licitacion = licitacionRepository.save(licitacion);
-        }
+        LicitacionDTO dto = licitacionMapper.itemRecordToDTO(itemRecord);
 
-        return licitacionMapper.licitacionToLicitacionDTO(licitacion);
+        dto.setFamilia(iFamiliaService.findById(itemRecord.familiaCod()));
+        dto.setSubfamilia(
+                iSubfamiliaService.findById(
+                        itemRecord.familiaCod(),
+                        itemRecord.subFamiliaCod()
+                )
+        );
+
+        Licitacion entity = licitacionMapper.licitacionDTOtoLicitacion(dto);
+        entity.setIdLicitacion(id);
+
+        Licitacion saved = licitacionRepository.save(entity);
+
+        return licitacionMapper.licitacionToLicitacionDTO(saved);
     }
 
     private LicitacionDTO crearNuevaLicitacion(LicitacionItemRecord itemRecord) {
