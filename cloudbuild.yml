@@ -40,6 +40,8 @@ steps:
       - --platform
       - managed
       - --allow-unauthenticated
+      - --set-env-vars
+      - MAIL_HOST=${_MAIL_HOST},MAIL_PORT=${_MAIL_PORT},MAIL_USERNAME=${_MAIL_USERNAME},MAIL_PASSWORD=${_MAIL_PASSWORD},MAIL_TO=${_MAIL_TO}
     timeout: 600s
 
 images:
